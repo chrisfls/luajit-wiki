@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-type" content="text/html;charset=utf-8">
+  <meta name="MobileOptimized" content="width">
+  <meta name="HandheldFriendly" content="true">
+  <meta name="viewport" content="width=device-width">
+  <link rel=”alternate” type=”application/rss+xml” title=”wiki.luajit.org edit and commit log” href=”http://wiki.luajit.org/feeds/global.xml” />
+  <link rel="stylesheet" type="text/css" href="/luajit-wiki/css/gollum.css" media="all">
+  <link rel="stylesheet" type="text/css" href="/luajit-wiki/css/editor.css" media="all">
+  <link rel="stylesheet" type="text/css" href="/luajit-wiki/css/dialog.css" media="all">
+  <link rel="stylesheet" type="text/css" href="/luajit-wiki/css/template.css" media="all">
+  <link rel="stylesheet" type="text/css" href="/luajit-wiki/css/print.css" media="print">
+  <link rel="stylesheet" type="text/css" href="/luajit-wiki/custom.css" media="all">
+  
+
+  <!--[if IE 7]>
+  <link rel="stylesheet" type="text/css" href="/luajit-wiki/css/ie7.css" media="all">
+  <![endif]-->
+
+  <script>
+      var baseUrl = '';
+      var uploadDest   = '';
+      var pageFullPath = 'FFI Bindings';
+  </script>
+  <script type="text/javascript" src="/luajit-wiki/javascript/jquery-1.7.2.min.js"></script>
+  <script type="text/javascript" src="/luajit-wiki/javascript/mousetrap.min.js"></script>
+  <script type="text/javascript" src="/luajit-wiki/javascript/gollum.js"></script>
+  <script type="text/javascript" src="/luajit-wiki/javascript/gollum.dialog.js"></script>
+  <script type="text/javascript" src="/luajit-wiki/javascript/gollum.placeholder.js"></script>
+  <script type="text/javascript" src="/luajit-wiki/javascript/editor/gollum.editor.js"></script>
+
+  
+
+  <title>FFI Bindings</title>
+</head>
+<body>
+
+<div id="cust-site">
+  <a href="http://luajit.org"><span>Lua<span id="cust-logo">JIT</span></span></a>
+</div>
+<div id="cust-header">
+  <h1>The LuaJIT Wiki</h1>
+</div>
+<div id="user">
+    <p>
+      not logged in | <strong><a href="/luajit-wiki/__omnigollum__/login">[Login]</a></strong>
+    <p>
+</div>
+
+<div id="wiki-wrapper" class="history">
+<div id="head">
+  <h1>History for <strong>FFI Bindings</strong></h1>
+  <ul class="actions">
+    <li class="minibutton">
+      <div id="searchbar">
+        <form action="/search" method="get" id="search-form">
+        <div id="searchbar-fauxtext">
+          <input type="text" name="q" id="search-query" value="Search&hellip;" autocomplete="off">
+          <a href="#" id="search-submit" title="Search this wiki">
+            <span>Search</span>
+          </a>
+        </div>
+        </form>
+      </div>    </li>
+    <li class="minibutton"><a href="/luajit-wiki/FFI-Bindings"
+       class="action-view-page">View Page</a></li>
+      <li class="minibutton"><a href="/luajit-wiki/edit/FFI-Bindings"
+         class="action-edit-page">Edit Page</a></li>
+  </ul>
+</div>
+<div id="wiki-history">
+
+  <ul class="actions">
+    <li class="minibutton"><a href="javascript:void(0);"
+       class="action-compare-revision">Compare Revisions</a></li>
+  </ul>
+
+  <form name="compare-versions" id="version-form" method="post"
+   action="/compare/FFI-Bindings">
+  <fieldset>
+  <table>
+    <tbody>
+
+      <tr>
+        <td class="checkbox">
+          <input type="checkbox" name="versions[]" value="0283f08cabb58a01f4ba724e60d92f027a6ac56c">
+        </td>
+        <td class="author">
+            <a href="javascript:void(0)">
+            <img src="https://secure.gravatar.com/avatar/83f963e27e548b183ec409b383b92002?s=16"
+                alt="avatar: Uzume (Uzume)" class="mini-gravatar"/>
+                <span class="username">Uzume (Uzume)</span>
+            </a>
+        </td>
+        <td class="commit-name">
+          <span class="time-elapsed" title="2020-12-16 05:30:22 +0000">December 16, 2020:</span>&nbsp;
+          https
+          [<a href="/luajit-wiki/FFI-Bindings/0283f08cabb58a01f4ba724e60d92f027a6ac56c" title="View commit">0283f08</a>]
+        </td>
+      </tr>
+      <tr>
+        <td class="checkbox">
+          <input type="checkbox" name="versions[]" value="4938d9d2303a757b62633577eb3d68c99e8ded1f">
+        </td>
+        <td class="author">
+            <a href="javascript:void(0)">
+            <img src="https://secure.gravatar.com/avatar/17b6f0931e20c1097e999229d5390402?s=16"
+                alt="avatar: Victor Bombi (sonoro1234)" class="mini-gravatar"/>
+                <span class="username">Victor Bombi (sonoro1234)</span>
+            </a>
+        </td>
+        <td class="commit-name">
+          <span class="time-elapsed" title="2018-12-03 14:59:14 +0000">December 03, 2018:</span>&nbsp;
+          Updated FFI Bindings (markdown)
+          [<a href="/luajit-wiki/FFI-Bindings/4938d9d2303a757b62633577eb3d68c99e8ded1f" title="View commit">4938d9d</a>]
+        </td>
+      </tr>
+      <tr>
+        <td class="checkbox">
+          <input type="checkbox" name="versions[]" value="6e22cbcc3f7f6e66e15486d41e512d583c2123ad">
+        </td>
+        <td class="author">
+            <a href="javascript:void(0)">
+            <img src="https://secure.gravatar.com/avatar/f51f03e2e41ea9e19d0a1ef0ec0a68a9?s=16"
+                alt="avatar: HW (hwhw)" class="mini-gravatar"/>
+                <span class="username">HW (hwhw)</span>
+            </a>
+        </td>
+        <td class="commit-name">
+          <span class="time-elapsed" title="2018-08-13 08:41:11 +0000">August 13, 2018:</span>&nbsp;
+          Updated FFI Bindings (markdown)
+          [<a href="/luajit-wiki/FFI-Bindings/6e22cbcc3f7f6e66e15486d41e512d583c2123ad" title="View commit">6e22cbc</a>]
+        </td>
+      </tr>
+      <tr>
+        <td class="checkbox">
+          <input type="checkbox" name="versions[]" value="444368832a14bfbff3104b9e5ce9d9a5068a7e77">
+        </td>
+        <td class="author">
+            <a href="javascript:void(0)">
+            <img src="https://secure.gravatar.com/avatar/f51f03e2e41ea9e19d0a1ef0ec0a68a9?s=16"
+                alt="avatar: HW (hwhw)" class="mini-gravatar"/>
+                <span class="username">HW (hwhw)</span>
+            </a>
+        </td>
+        <td class="commit-name">
+          <span class="time-elapsed" title="2018-08-13 08:40:40 +0000">August 13, 2018:</span>&nbsp;
+          Added Link to libmosquitto binding
+          [<a href="/luajit-wiki/FFI-Bindings/444368832a14bfbff3104b9e5ce9d9a5068a7e77" title="View commit">4443688</a>]
+        </td>
+      </tr>
+      <tr>
+        <td class="checkbox">
+          <input type="checkbox" name="versions[]" value="0fbd9555f966789d55192570902336ccab631536">
+        </td>
+        <td class="author">
+            <a href="javascript:void(0)">
+            <img src="https://secure.gravatar.com/avatar/422b698b031716505e67c7d184c67d23?s=16"
+                alt="avatar: Bob Holcomb (bholcomb)" class="mini-gravatar"/>
+                <span class="username">Bob Holcomb (bholcomb)</span>
+            </a>
+        </td>
+        <td class="commit-name">
+          <span class="time-elapsed" title="2018-04-29 21:11:05 +0000">April 29, 2018:</span>&nbsp;
+          Updated FFI Bindings (markdown)
+          [<a href="/luajit-wiki/FFI-Bindings/0fbd9555f966789d55192570902336ccab631536" title="View commit">0fbd955</a>]
+        </td>
+      </tr>
+      <tr>
+        <td class="checkbox">
+          <input type="checkbox" name="versions[]" value="c7933151001ec28371eb1e767b5df1c3df232971">
+        </td>
+        <td class="author">
+            <a href="javascript:void(0)">
+            <img src="https://secure.gravatar.com/avatar/e1a3fce392f4aa0fe2c1f5d7f0b80e9a?s=16"
+                alt="avatar: 周晶 (idevz)" class="mini-gravatar"/>
+                <span class="username">周晶 (idevz)</span>
+            </a>
+        </td>
+        <td class="commit-name">
+          <span class="time-elapsed" title="2017-12-06 11:24:43 +0000">December 06, 2017:</span>&nbsp;
+          Updated FFI Bindings (markdown)
+          [<a href="/luajit-wiki/FFI-Bindings/c7933151001ec28371eb1e767b5df1c3df232971" title="View commit">c793315</a>]
+        </td>
+      </tr>
+      <tr>
+        <td class="checkbox">
+          <input type="checkbox" name="versions[]" value="10aa8b720be67decb7c0bbcfadcbf2d5bac84857">
+        </td>
+        <td class="author">
+            <a href="javascript:void(0)">
+            <img src="https://secure.gravatar.com/avatar/f0ec12aaff86fe39e181d2cbe6a0c8cc?s=16"
+                alt="avatar: Playermet (Playermet)" class="mini-gravatar"/>
+                <span class="username">Playermet (Playermet)</span>
+            </a>
+        </td>
+        <td class="commit-name">
+          <span class="time-elapsed" title="2016-06-05 00:38:37 +0000">June 05, 2016:</span>&nbsp;
+          Updated FFI Bindings (markdown)
+          [<a href="/luajit-wiki/FFI-Bindings/10aa8b720be67decb7c0bbcfadcbf2d5bac84857" title="View commit">10aa8b7</a>]
+        </td>
+      </tr>
+      <tr>
+        <td class="checkbox">
+          <input type="checkbox" name="versions[]" value="57d3f8c9f35aaf3af66c8d4eee2c0c902f1bc7de">
+        </td>
+        <td class="author">
+            <a href="javascript:void(0)">
+            <img src="https://secure.gravatar.com/avatar/f0ec12aaff86fe39e181d2cbe6a0c8cc?s=16"
+                alt="avatar: Playermet (Playermet)" class="mini-gravatar"/>
+                <span class="username">Playermet (Playermet)</span>
+            </a>
+        </td>
+        <td class="commit-name">
+          <span class="time-elapsed" title="2016-05-27 09:08:19 +0000">May 27, 2016:</span>&nbsp;
+          Update luajit-glfw bindings version;
+          [<a href="/luajit-wiki/FFI-Bindings/57d3f8c9f35aaf3af66c8d4eee2c0c902f1bc7de" title="View commit">57d3f8c</a>]
+        </td>
+      </tr>
+      <tr>
+        <td class="checkbox">
+          <input type="checkbox" name="versions[]" value="1a0c8dbbe77aab0d411a70ef09321cb84631d7b4">
+        </td>
+        <td class="author">
+            <a href="javascript:void(0)">
+            <img src="https://secure.gravatar.com/avatar/f0ec12aaff86fe39e181d2cbe6a0c8cc?s=16"
+                alt="avatar: Playermet (Playermet)" class="mini-gravatar"/>
+                <span class="username">Playermet (Playermet)</span>
+            </a>
+        </td>
+        <td class="commit-name">
+          <span class="time-elapsed" title="2015-08-05 11:39:44 +0000">August 05, 2015:</span>&nbsp;
+          Update luajit-glfw version;
+          [<a href="/luajit-wiki/FFI-Bindings/1a0c8dbbe77aab0d411a70ef09321cb84631d7b4" title="View commit">1a0c8db</a>]
+        </td>
+      </tr>
+      <tr>
+        <td class="checkbox">
+          <input type="checkbox" name="versions[]" value="4d8e74029fcf46881e5ee631f4df9c27068d1c0b">
+        </td>
+        <td class="author">
+            <a href="javascript:void(0)">
+            <img src="https://secure.gravatar.com/avatar/6ed9c81f7dad91894ac41cc715e55b22?s=16"
+                alt="avatar: Cosmin Apreutesei (capr)" class="mini-gravatar"/>
+                <span class="username">Cosmin Apreutesei (capr)</span>
+            </a>
+        </td>
+        <td class="commit-name">
+          <span class="time-elapsed" title="2015-05-24 12:05:11 +0000">May 24, 2015:</span>&nbsp;
+          Updated FFI Bindings (markdown)
+          [<a href="/luajit-wiki/FFI-Bindings/4d8e74029fcf46881e5ee631f4df9c27068d1c0b" title="View commit">4d8e740</a>]
+        </td>
+      </tr>
+      <tr>
+        <td class="checkbox">
+          <input type="checkbox" name="versions[]" value="2daa11e14f1100944def5951356957414b3d136d">
+        </td>
+        <td class="author">
+            <a href="javascript:void(0)">
+            <img src="https://secure.gravatar.com/avatar/6ed9c81f7dad91894ac41cc715e55b22?s=16"
+                alt="avatar: Cosmin Apreutesei (capr)" class="mini-gravatar"/>
+                <span class="username">Cosmin Apreutesei (capr)</span>
+            </a>
+        </td>
+        <td class="commit-name">
+          <span class="time-elapsed" title="2015-05-14 10:50:02 +0000">May 14, 2015:</span>&nbsp;
+          Updated FFI Bindings (markdown)
+          [<a href="/luajit-wiki/FFI-Bindings/2daa11e14f1100944def5951356957414b3d136d" title="View commit">2daa11e</a>]
+        </td>
+      </tr>
+      <tr>
+        <td class="checkbox">
+          <input type="checkbox" name="versions[]" value="5d83dfda8e235ab0e8ceb28a5bc556ceef1e4bc0">
+        </td>
+        <td class="author">
+            <a href="javascript:void(0)">
+            <img src="https://secure.gravatar.com/avatar/6ed9c81f7dad91894ac41cc715e55b22?s=16"
+                alt="avatar: Cosmin Apreutesei (capr)" class="mini-gravatar"/>
+                <span class="username">Cosmin Apreutesei (capr)</span>
+            </a>
+        </td>
+        <td class="commit-name">
+          <span class="time-elapsed" title="2015-05-13 20:59:20 +0000">May 13, 2015:</span>&nbsp;
+          Updated FFI Bindings (markdown)
+          [<a href="/luajit-wiki/FFI-Bindings/5d83dfda8e235ab0e8ceb28a5bc556ceef1e4bc0" title="View commit">5d83dfd</a>]
+        </td>
+      </tr>
+      <tr>
+        <td class="checkbox">
+          <input type="checkbox" name="versions[]" value="379e9c99b3588c347ddb4dbec0ead0c76f0bf023">
+        </td>
+        <td class="author">
+            <a href="javascript:void(0)">
+            <img src="https://secure.gravatar.com/avatar/6ed9c81f7dad91894ac41cc715e55b22?s=16"
+                alt="avatar: Cosmin Apreutesei (capr)" class="mini-gravatar"/>
+                <span class="username">Cosmin Apreutesei (capr)</span>
+            </a>
+        </td>
+        <td class="commit-name">
+          <span class="time-elapsed" title="2015-05-09 12:50:03 +0000">May 09, 2015:</span>&nbsp;
+          Updated FFI Bindings (markdown)
+          [<a href="/luajit-wiki/FFI-Bindings/379e9c99b3588c347ddb4dbec0ead0c76f0bf023" title="View commit">379e9c9</a>]
+        </td>
+      </tr>
+      <tr>
+        <td class="checkbox">
+          <input type="checkbox" name="versions[]" value="01f52400bae94c226c688ced29d54e76caf91258">
+        </td>
+        <td class="author">
+            <a href="javascript:void(0)">
+            <img src="https://secure.gravatar.com/avatar/af89ccfcc9c13eb1365caf5baaae16f4?s=16"
+                alt="avatar: Evandro Costa" class="mini-gravatar"/>
+                <span class="username">Evandro Costa</span>
+            </a>
+        </td>
+        <td class="commit-name">
+          <span class="time-elapsed" title="2015-03-18 19:38:32 +0000">March 18, 2015:</span>&nbsp;
+          Updated FFI Bindings (markdown)
+          [<a href="/luajit-wiki/FFI-Bindings/01f52400bae94c226c688ced29d54e76caf91258" title="View commit">01f5240</a>]
+        </td>
+      </tr>
+      <tr>
+        <td class="checkbox">
+          <input type="checkbox" name="versions[]" value="9635471631f6102c6eb8c08c4c577f5ec0482a30">
+        </td>
+        <td class="author">
+            <a href="javascript:void(0)">
+            <img src="https://secure.gravatar.com/avatar/f0ec12aaff86fe39e181d2cbe6a0c8cc?s=16"
+                alt="avatar: Playermet (Playermet)" class="mini-gravatar"/>
+                <span class="username">Playermet (Playermet)</span>
+            </a>
+        </td>
+        <td class="commit-name">
+          <span class="time-elapsed" title="2015-02-09 18:47:48 +0000">February 09, 2015:</span>&nbsp;
+          Updated FFI Bindings (markdown)
+          [<a href="/luajit-wiki/FFI-Bindings/9635471631f6102c6eb8c08c4c577f5ec0482a30" title="View commit">9635471</a>]
+        </td>
+      </tr>
+      <tr>
+        <td class="checkbox">
+          <input type="checkbox" name="versions[]" value="efd758d6efdfee1abe59d23ee7b9abd5b9e7af3d">
+        </td>
+        <td class="author">
+            <a href="javascript:void(0)">
+            <img src="https://secure.gravatar.com/avatar/f0ec12aaff86fe39e181d2cbe6a0c8cc?s=16"
+                alt="avatar: Playermet (Playermet)" class="mini-gravatar"/>
+                <span class="username">Playermet (Playermet)</span>
+            </a>
+        </td>
+        <td class="commit-name">
+          <span class="time-elapsed" title="2015-02-06 22:10:57 +0000">February 06, 2015:</span>&nbsp;
+          Updated FFI Bindings (markdown)
+          [<a href="/luajit-wiki/FFI-Bindings/efd758d6efdfee1abe59d23ee7b9abd5b9e7af3d" title="View commit">efd758d</a>]
+        </td>
+      </tr>
+      <tr>
+        <td class="checkbox">
+          <input type="checkbox" name="versions[]" value="e56595c8ac8107bebf020acc224088e1e9f8e44b">
+        </td>
+        <td class="author">
+            <a href="javascript:void(0)">
+            <img src="https://secure.gravatar.com/avatar/f0ec12aaff86fe39e181d2cbe6a0c8cc?s=16"
+                alt="avatar: Playermet (Playermet)" class="mini-gravatar"/>
+                <span class="username">Playermet (Playermet)</span>
+            </a>
+        </td>
+        <td class="commit-name">
+          <span class="time-elapsed" title="2015-02-06 22:10:06 +0000">February 06, 2015:</span>&nbsp;
+          Updated FFI Bindings (markdown)
+          [<a href="/luajit-wiki/FFI-Bindings/e56595c8ac8107bebf020acc224088e1e9f8e44b" title="View commit">e56595c</a>]
+        </td>
+      </tr>
+      <tr>
+        <td class="checkbox">
+          <input type="checkbox" name="versions[]" value="6946a8fb671171746fa7e8603af0fa3d1f50fc5c">
+        </td>
+        <td class="author">
+            <a href="javascript:void(0)">
+            <img src="https://secure.gravatar.com/avatar/f0ec12aaff86fe39e181d2cbe6a0c8cc?s=16"
+                alt="avatar: Playermet (Playermet)" class="mini-gravatar"/>
+                <span class="username">Playermet (Playermet)</span>
+            </a>
+        </td>
+        <td class="commit-name">
+          <span class="time-elapsed" title="2015-01-21 23:17:42 +0000">January 21, 2015:</span>&nbsp;
+          Updated FFI Bindings (markdown)
+          [<a href="/luajit-wiki/FFI-Bindings/6946a8fb671171746fa7e8603af0fa3d1f50fc5c" title="View commit">6946a8f</a>]
+        </td>
+      </tr>
+      <tr>
+        <td class="checkbox">
+          <input type="checkbox" name="versions[]" value="462e6ee167e83352cdbd3a93de1dd10717c2276b">
+        </td>
+        <td class="author">
+            <a href="javascript:void(0)">
+            <img src="https://secure.gravatar.com/avatar/056018ad7b7c21e09546b06b00fa71f5?s=16"
+                alt="avatar: Cheyi Lin (CheyiLin)" class="mini-gravatar"/>
+                <span class="username">Cheyi Lin (CheyiLin)</span>
+            </a>
+        </td>
+        <td class="commit-name">
+          <span class="time-elapsed" title="2014-10-29 18:43:33 +0000">October 29, 2014:</span>&nbsp;
+          add ljlz4.
+          [<a href="/luajit-wiki/FFI-Bindings/462e6ee167e83352cdbd3a93de1dd10717c2276b" title="View commit">462e6ee</a>]
+        </td>
+      </tr>
+      <tr>
+        <td class="checkbox">
+          <input type="checkbox" name="versions[]" value="420f8acb4e568efd8752748546e3bdc34ac4659f">
+        </td>
+        <td class="author">
+            <a href="javascript:void(0)">
+            <img src="https://secure.gravatar.com/avatar/d5aa521ffc0e336d24151eb0a5147c1f?s=16"
+                alt="avatar: Vladislav Manchev (blablacio)" class="mini-gravatar"/>
+                <span class="username">Vladislav Manchev (blablacio)</span>
+            </a>
+        </td>
+        <td class="commit-name">
+          <span class="time-elapsed" title="2014-10-20 04:41:06 +0000">October 20, 2014:</span>&nbsp;
+          Adding lua-bcrypt - an OpenBSD specific bcrypt binding
+          [<a href="/luajit-wiki/FFI-Bindings/420f8acb4e568efd8752748546e3bdc34ac4659f" title="View commit">420f8ac</a>]
+        </td>
+      </tr>
+      <tr>
+        <td class="checkbox">
+          <input type="checkbox" name="versions[]" value="c273f73aa9d1d0de7d28db3d86f99bde363618e2">
+        </td>
+        <td class="author">
+            <a href="javascript:void(0)">
+            <img src="https://secure.gravatar.com/avatar/e86fe41e9dc23940297715ec32cdfdf1?s=16"
+                alt="avatar: Aapo Talvensaari (bungle)" class="mini-gravatar"/>
+                <span class="username">Aapo Talvensaari (bungle)</span>
+            </a>
+        </td>
+        <td class="commit-name">
+          <span class="time-elapsed" title="2014-10-09 22:51:48 +0000">October 09, 2014:</span>&nbsp;
+          Added lua-resty-fileinfo.
+          [<a href="/luajit-wiki/FFI-Bindings/c273f73aa9d1d0de7d28db3d86f99bde363618e2" title="View commit">c273f73</a>]
+        </td>
+      </tr>
+      <tr>
+        <td class="checkbox">
+          <input type="checkbox" name="versions[]" value="4a360dcd1e1903dd188f11ad806e0db77758220f">
+        </td>
+        <td class="author">
+            <a href="javascript:void(0)">
+            <img src="https://secure.gravatar.com/avatar/e86fe41e9dc23940297715ec32cdfdf1?s=16"
+                alt="avatar: Aapo Talvensaari (bungle)" class="mini-gravatar"/>
+                <span class="username">Aapo Talvensaari (bungle)</span>
+            </a>
+        </td>
+        <td class="commit-name">
+          <span class="time-elapsed" title="2014-10-09 16:32:49 +0000">October 09, 2014:</span>&nbsp;
+          Added lua-resty-hoedown, lua-resty-snappy, lua-resty-scrypt and renamed lua-resty-cjson to lua-resty-libcjson.
+          [<a href="/luajit-wiki/FFI-Bindings/4a360dcd1e1903dd188f11ad806e0db77758220f" title="View commit">4a360dc</a>]
+        </td>
+      </tr>
+      <tr>
+        <td class="checkbox">
+          <input type="checkbox" name="versions[]" value="bb8e8239af51831a041b710a9cd0a6c6632ac9c2">
+        </td>
+        <td class="author">
+            <a href="javascript:void(0)">
+            <img src="https://secure.gravatar.com/avatar/6ed9c81f7dad91894ac41cc715e55b22?s=16"
+                alt="avatar: Cosmin Apreutesei (capr)" class="mini-gravatar"/>
+                <span class="username">Cosmin Apreutesei (capr)</span>
+            </a>
+        </td>
+        <td class="commit-name">
+          <span class="time-elapsed" title="2014-09-21 22:26:12 +0000">September 21, 2014:</span>&nbsp;
+          Updated FFI Bindings (markdown)
+          [<a href="/luajit-wiki/FFI-Bindings/bb8e8239af51831a041b710a9cd0a6c6632ac9c2" title="View commit">bb8e823</a>]
+        </td>
+      </tr>
+      <tr>
+        <td class="checkbox">
+          <input type="checkbox" name="versions[]" value="b1bfc69982ebcb1a6893014366f508ffbc7e6e61">
+        </td>
+        <td class="author">
+            <a href="javascript:void(0)">
+            <img src="https://secure.gravatar.com/avatar/e86fe41e9dc23940297715ec32cdfdf1?s=16"
+                alt="avatar: Aapo Talvensaari (bungle)" class="mini-gravatar"/>
+                <span class="username">Aapo Talvensaari (bungle)</span>
+            </a>
+        </td>
+        <td class="commit-name">
+          <span class="time-elapsed" title="2014-07-22 11:02:41 +0000">July 22, 2014:</span>&nbsp;
+          Updated the link to cJSON bindings.
+          [<a href="/luajit-wiki/FFI-Bindings/b1bfc69982ebcb1a6893014366f508ffbc7e6e61" title="View commit">b1bfc69</a>]
+        </td>
+      </tr>
+      <tr>
+        <td class="checkbox">
+          <input type="checkbox" name="versions[]" value="225ee5e2928654cd72bf6d1ab3c8f8e11e324f98">
+        </td>
+        <td class="author">
+            <a href="javascript:void(0)">
+            <img src="https://secure.gravatar.com/avatar/e86fe41e9dc23940297715ec32cdfdf1?s=16"
+                alt="avatar: Aapo Talvensaari (bungle)" class="mini-gravatar"/>
+                <span class="username">Aapo Talvensaari (bungle)</span>
+            </a>
+        </td>
+        <td class="commit-name">
+          <span class="time-elapsed" title="2014-07-22 11:00:49 +0000">July 22, 2014:</span>&nbsp;
+          Added cJSON bindings.
+          [<a href="/luajit-wiki/FFI-Bindings/225ee5e2928654cd72bf6d1ab3c8f8e11e324f98" title="View commit">225ee5e</a>]
+        </td>
+      </tr>
+      <tr>
+        <td class="checkbox">
+          <input type="checkbox" name="versions[]" value="bb891beac7a2e2a9b6ab9f99174f34158ea24b51">
+        </td>
+        <td class="author">
+            <a href="javascript:void(0)">
+            <img src="https://secure.gravatar.com/avatar/6ed9c81f7dad91894ac41cc715e55b22?s=16"
+                alt="avatar: Cosmin Apreutesei (capr)" class="mini-gravatar"/>
+                <span class="username">Cosmin Apreutesei (capr)</span>
+            </a>
+        </td>
+        <td class="commit-name">
+          <span class="time-elapsed" title="2014-05-31 22:37:25 +0000">May 31, 2014:</span>&nbsp;
+          Updated FFI Bindings (markdown)
+          [<a href="/luajit-wiki/FFI-Bindings/bb891beac7a2e2a9b6ab9f99174f34158ea24b51" title="View commit">bb891be</a>]
+        </td>
+      </tr>
+      <tr>
+        <td class="checkbox">
+          <input type="checkbox" name="versions[]" value="362952d77c580922474d054234c496554c633ec6">
+        </td>
+        <td class="author">
+            <a href="javascript:void(0)">
+            <img src="https://secure.gravatar.com/avatar/6ed9c81f7dad91894ac41cc715e55b22?s=16"
+                alt="avatar: Cosmin Apreutesei (capr)" class="mini-gravatar"/>
+                <span class="username">Cosmin Apreutesei (capr)</span>
+            </a>
+        </td>
+        <td class="commit-name">
+          <span class="time-elapsed" title="2014-05-23 09:53:39 +0000">May 23, 2014:</span>&nbsp;
+          Updated FFI Bindings (markdown)
+          [<a href="/luajit-wiki/FFI-Bindings/362952d77c580922474d054234c496554c633ec6" title="View commit">362952d</a>]
+        </td>
+      </tr>
+      <tr>
+        <td class="checkbox">
+          <input type="checkbox" name="versions[]" value="c7192040486c771555a9f5bcf659f37609586421">
+        </td>
+        <td class="author">
+            <a href="javascript:void(0)">
+            <img src="https://secure.gravatar.com/avatar/6ed9c81f7dad91894ac41cc715e55b22?s=16"
+                alt="avatar: Cosmin Apreutesei (capr)" class="mini-gravatar"/>
+                <span class="username">Cosmin Apreutesei (capr)</span>
+            </a>
+        </td>
+        <td class="commit-name">
+          <span class="time-elapsed" title="2014-01-20 02:00:58 +0000">January 20, 2014:</span>&nbsp;
+          Updated FFI Bindings (markdown)
+          [<a href="/luajit-wiki/FFI-Bindings/c7192040486c771555a9f5bcf659f37609586421" title="View commit">c719204</a>]
+        </td>
+      </tr>
+      <tr>
+        <td class="checkbox">
+          <input type="checkbox" name="versions[]" value="cc11a93a5e5f0af2ad7fb3a5f244f043bbeb8cc0">
+        </td>
+        <td class="author">
+            <a href="javascript:void(0)">
+            <img src="https://secure.gravatar.com/avatar/d322d99d6695e86c2411aec79bcc855e?s=16"
+                alt="avatar: shu.chen (sirpengi)" class="mini-gravatar"/>
+                <span class="username">shu.chen (sirpengi)</span>
+            </a>
+        </td>
+        <td class="commit-name">
+          <span class="time-elapsed" title="2013-12-27 18:35:18 +0000">December 27, 2013:</span>&nbsp;
+          Updated FFI Bindings (markdown)
+          [<a href="/luajit-wiki/FFI-Bindings/cc11a93a5e5f0af2ad7fb3a5f244f043bbeb8cc0" title="View commit">cc11a93</a>]
+        </td>
+      </tr>
+      <tr>
+        <td class="checkbox">
+          <input type="checkbox" name="versions[]" value="a992c608c39a6ea2eee75de59734b2814c1bc73c">
+        </td>
+        <td class="author">
+            <a href="javascript:void(0)">
+            <img src="https://secure.gravatar.com/avatar/d93ea0b4b0286444eebf2502df274701?s=16"
+                alt="avatar: Alexey Melnichuk (moteus)" class="mini-gravatar"/>
+                <span class="username">Alexey Melnichuk (moteus)</span>
+            </a>
+        </td>
+        <td class="commit-name">
+          <span class="time-elapsed" title="2013-11-14 10:22:35 +0000">November 14, 2013:</span>&nbsp;
+          Add lzmq
+          [<a href="/luajit-wiki/FFI-Bindings/a992c608c39a6ea2eee75de59734b2814c1bc73c" title="View commit">a992c60</a>]
+        </td>
+      </tr>
+
+    </tbody>
+  </table>
+  </fieldset>
+  </form>
+</div>
+<div id="footer">
+  <ul class="actions">
+    <li class="minibutton"><a href="javascript:void(0);"
+       class="action-compare-revision">Compare Revisions</a></li>
+
+    <!-- only show this button if we have more than 20 revisions -->
+    <li class="minibutton"><a href="#"
+       class="action-back-to-top">Back to Top</a></li>
+  </ul>
+</div>
+</div>
+
+
+</body>
+</html>

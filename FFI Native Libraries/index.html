@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-type" content="text/html;charset=utf-8">
+  <link rel=”alternate” type=”application/rss+xml” title=”wiki.luajit.org edit/commit log” href=”http://wiki.luajit.org/feeds/global.xml” />
+ 
+  <link rel="stylesheet" type="text/css" href="/luajit-wiki/css/gollum.css" media="all">
+  <link rel="stylesheet" type="text/css" href="/luajit-wiki/css/editor.css" media="all">
+  <link rel="stylesheet" type="text/css" href="/luajit-wiki/css/dialog.css" media="all">
+  <link rel="stylesheet" type="text/css" href="/luajit-wiki/css/template.css" media="all">
+ 
+  <link rel="stylesheet" type="text/css" href="/luajit-wiki/css/custom.css" media="all">
+  <!--[if IE 7]>
+  <link rel="stylesheet" type="text/css" href="/luajit-wiki/css/ie7.css" media="all">
+  <![endif]-->
+  
+  <script type="text/javascript" src="/luajit-wiki/javascript/jquery.js"></script>
+  <script type="text/javascript" src="/luajit-wiki/javascript/gollum.js"></script>
+  <script type="text/javascript" src="/luajit-wiki/javascript/gollum.dialog.js"></script>
+  <script type="text/javascript" src="/luajit-wiki/javascript/gollum.placeholder.js"></script>
+  
+  <script type="text/javascript" src="/luajit-wiki/javascript/editor/gollum.editor.js"></script>
+  <script type="text/javascript" src="https://c328740.ssl.cf1.rackcdn.com/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  <title>FFI Native Libraries</title>
+</head>
+<body>
+<div id="cust-site">
+  <a href="http://luajit.org"><span>Lua<span id="cust-logo">JIT</span></span></a>
+</div>
+<div id="cust-header">
+  <h1>The LuaJIT Wiki</h1>
+</div>
+<div id="user">
+    <p>
+      not logged in | <strong><a href="/luajit-wiki/__omnigollum__/login">[Login]</a></strong>
+    <p>
+</div>
+
+<div id="wiki-wrapper" class="page">
+<div id="head">
+  <h1>FFI Native Libraries</h1>
+  <ul class="actions">
+    <li class="minibutton">
+      <div id="searchbar">
+        <form action="/search" method="get" id="search-form">
+        <div id="searchbar-fauxtext">
+          <input type="text" name="q" id="search-query" value="Search&hellip;" autocomplete="off">
+          <a href="#" id="search-submit" title="Search this wiki">
+            <span>Search</span>
+          </a>
+        </div>
+        </form>
+      </div>    </li>
+    <li class="minibutton"><a href="/luajit-wiki/pages"
+      class="action-all-pages">All Pages</a></li>
+    <li class="minibutton"><a href="/luajit-wiki/fileview"
+    class="action-all-pages">File View</a></li>
+    <li class="minibutton" class="jaws">
+      <a href="#" id="minibutton-new-page">New Page</a></li>
+    <li class="minibutton"><a href="/luajit-wiki/edit/FFI+Native+Libraries"
+       class="action-edit-page">Edit Page</a></li>
+    <li class="minibutton"><a href="/luajit-wiki/history/FFI+Native+Libraries"
+       class="action-page-history">Page History</a></li>
+  </ul>
+</div>
+<div id="wiki-content">
+<div class=" has-toc">
+  <div id="wiki-toc-main">
+    <div class="toc">
+  <div class="toc-title">Table of Contents</div>
+  <ul>
+    <li>
+      <a href="#List-of-Available-Packages">List of Available Packages</a>
+    </li>
+  </ul>
+  <ul>
+    <ul>
+      <li>
+        <a href="#Encoding-%26-Decoding">Encoding &amp; Decoding</a>
+      </li>
+    </ul>
+  </ul>
+  <ul>
+    <ul>
+      <li>
+        <a href="#Standard-Functions">Standard Functions</a>
+      </li>
+    </ul>
+  </ul>
+  <ul>
+    <ul>
+      <li>
+        <a href="#System-libraries">System libraries</a>
+      </li>
+    </ul>
+  </ul>
+  <ul>
+    <ul>
+      <li>
+        <a href="#Date-Time-libraries">Date Time libraries</a>
+      </li>
+    </ul>
+  </ul>
+  <ul>
+    <ul>
+      <li>
+        <a href="#Data-structures">Data structures</a>
+      </li>
+    </ul>
+  </ul>
+  <ul>
+    <ul>
+      <li>
+        <a href="#Bundles">Bundles</a>
+      </li>
+    </ul>
+  </ul>
+</div>
+  </div>
+  <div id="wiki-body" class="gollum-markdown-content">
+    <div class="markdown-body">
+      <h1>List of Available Packages<a class="anchor" id="List-of-Available-Packages" href="#List-of-Available-Packages"></a>
+</h1>
+
+<p>As Lua is a very succinct language, with a minimum of pre-installed libraries, much of the power available to a Lua programmer comes from performing interop calls to external libraries.  LuaJIT in particular, provides excellent support for calling external libraries.  If what you want is access to a pre-compiled library that is on your target system, then you want to use a <a class="internal present" href="/luajit-wiki/FFI-Bindings">FFI Bindings</a> library.</p>
+
+<p>If what you want instead is code that is written 100% in Lua, with no additional library dependencies, then you might want to grab one of the packages listed here.  </p>
+
+<p>The criteria are:</p>
+
+<ul>
+<li>100% LuaJIT code</li>
+<li>No dependencies on external libraries</li>
+</ul><p>Whether your use case is greatly improved through usage of a native package depends on what your criteria are.  One of the key benefits might simply be that you do not have to carry and maintain a separate library, written in a different language than Lua.</p>
+
+<h2>Encoding &amp; Decoding<a class="anchor" id="Encoding-%26-Decoding" href="#Encoding-%26-Decoding"></a>
+</h2>
+
+<ul>
+<li>
+<a href="https://github.com/catwell/luajit-msgpack-pure">luajit-msgpack-pure</a>: MessagePack.</li>
+</ul><h2>Standard Functions<a class="anchor" id="Standard-Functions" href="#Standard-Functions"></a>
+</h2>
+
+<ul>
+<li>
+<a href="https://github.com/Wiladams/LAPHLibs">LAPHLibs</a>: various functions, including utf-8, crc, md5, streams, xml</li>
+</ul><h2>System libraries<a class="anchor" id="System-libraries" href="#System-libraries"></a>
+</h2>
+
+<ul>
+<li>
+<a href="https://github.com/justincormack/ljsyscall">LJSyscall</a>: Linux system interfaces</li>
+</ul><h2>Date Time libraries<a class="anchor" id="Date-Time-libraries" href="#Date-Time-libraries"></a>
+</h2>
+
+<ul>
+<li>
+<a href="http://scilua.org/time.html">Time</a>: dates and periods according to the Gregorian calendar</li>
+</ul><h2>Data structures<a class="anchor" id="Data-structures" href="#Data-structures"></a>
+</h2>
+
+<ul>
+<li>
+<a href="https://github.com/justincormack/slice">slice</a>: array slices</li>
+<li>
+<a href="https://github.com/neomantra/lds">lds - LuaJIT Data Structures</a>: STL-like containers such as Vector and Queue  (hashes and trees planned)</li>
+</ul><h2>Bundles<a class="anchor" id="Bundles" href="#Bundles"></a>
+</h2>
+
+<ul>
+<li>
+<a href="https://github.com/malkia/ufo">UFO</a> - includes OpenGL and glu, OpenCL, SDL, ZeroMQ, GLFW</li>
+</ul>
+    </div>
+  </div>
+  </div>
+
+</div>
+<div id="footer">
+  <p id="last-edit">Last edited by <b>Evan Wies</b>, 2012-10-13 17:02:57</p>
+</div>
+</div>
+<div id="cust-footer">
+  <p>Sponsored by <a href="http://www.networkradius.com">Network RADIUS</a></p>
+</div>
+
+
+</body>
+</html>

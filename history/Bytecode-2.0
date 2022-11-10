@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-type" content="text/html;charset=utf-8">
+  <meta name="MobileOptimized" content="width">
+  <meta name="HandheldFriendly" content="true">
+  <meta name="viewport" content="width=device-width">
+  <link rel=”alternate” type=”application/rss+xml” title=”wiki.luajit.org edit and commit log” href=”http://wiki.luajit.org/feeds/global.xml” />
+  <link rel="stylesheet" type="text/css" href="/css/gollum.css" media="all">
+  <link rel="stylesheet" type="text/css" href="/css/editor.css" media="all">
+  <link rel="stylesheet" type="text/css" href="/css/dialog.css" media="all">
+  <link rel="stylesheet" type="text/css" href="/css/template.css" media="all">
+  <link rel="stylesheet" type="text/css" href="/css/print.css" media="print">
+  <link rel="stylesheet" type="text/css" href="/custom.css" media="all">
+  
+
+  <!--[if IE 7]>
+  <link rel="stylesheet" type="text/css" href="/css/ie7.css" media="all">
+  <![endif]-->
+
+  <script>
+      var baseUrl = '';
+      var uploadDest   = '';
+      var pageFullPath = 'Bytecode 2.0';
+  </script>
+  <script type="text/javascript" src="/javascript/jquery-1.7.2.min.js"></script>
+  <script type="text/javascript" src="/javascript/mousetrap.min.js"></script>
+  <script type="text/javascript" src="/javascript/gollum.js"></script>
+  <script type="text/javascript" src="/javascript/gollum.dialog.js"></script>
+  <script type="text/javascript" src="/javascript/gollum.placeholder.js"></script>
+  <script type="text/javascript" src="/javascript/editor/gollum.editor.js"></script>
+
+  
+
+  <title>Bytecode 2.0</title>
+</head>
+<body>
+
+<div id="cust-site">
+  <a href="http://luajit.org"><span>Lua<span id="cust-logo">JIT</span></span></a>
+</div>
+<div id="cust-header">
+  <h1>The LuaJIT Wiki</h1>
+</div>
+<div id="user">
+    <p>
+      not logged in | <strong><a href="/__omnigollum__/login">[Login]</a></strong>
+    <p>
+</div>
+
+<div id="wiki-wrapper" class="history">
+<div id="head">
+  <h1>History for <strong>Bytecode 2.0</strong></h1>
+  <ul class="actions">
+    <li class="minibutton">
+      <div id="searchbar">
+        <form action="/search" method="get" id="search-form">
+        <div id="searchbar-fauxtext">
+          <input type="text" name="q" id="search-query" value="Search&hellip;" autocomplete="off">
+          <a href="#" id="search-submit" title="Search this wiki">
+            <span>Search</span>
+          </a>
+        </div>
+        </form>
+      </div>    </li>
+    <li class="minibutton"><a href="/Bytecode-2.0"
+       class="action-view-page">View Page</a></li>
+      <li class="minibutton"><a href="/edit/Bytecode-2.0"
+         class="action-edit-page">Edit Page</a></li>
+  </ul>
+</div>
+<div id="wiki-history">
+
+  <ul class="actions">
+    <li class="minibutton"><a href="javascript:void(0);"
+       class="action-compare-revision">Compare Revisions</a></li>
+  </ul>
+
+  <form name="compare-versions" id="version-form" method="post"
+   action="/compare/Bytecode-2.0">
+  <fieldset>
+  <table>
+    <tbody>
+
+      <tr>
+        <td class="checkbox">
+          <input type="checkbox" name="versions[]" value="75f0f0a9b5691af68bf45fc12a898c870af65c1f">
+        </td>
+        <td class="author">
+            <a href="javascript:void(0)">
+            <img src="https://secure.gravatar.com/avatar/a1a9b6c263c0660682971c239d983280?s=16"
+                alt="avatar: Constantine (fst3a)" class="mini-gravatar"/>
+                <span class="username">Constantine (fst3a)</span>
+            </a>
+        </td>
+        <td class="commit-name">
+          <span class="time-elapsed" title="2017-04-02 23:09:41 +0000">April 02, 2017:</span>&nbsp;
+          Documented bytecode dump little extra
+          [<a href="/Bytecode-2.0/75f0f0a9b5691af68bf45fc12a898c870af65c1f" title="View commit">75f0f0a</a>]
+        </td>
+      </tr>
+      <tr>
+        <td class="checkbox">
+          <input type="checkbox" name="versions[]" value="5e2477a229a97d9cffa45cae2b93c00fdef42549">
+        </td>
+        <td class="author">
+            <a href="javascript:void(0)">
+            <img src="https://secure.gravatar.com/avatar/33e568baba35cd1512dcd8adacc393d7?s=16"
+                alt="avatar: Arran Cudbard-Bell (arr2036)" class="mini-gravatar"/>
+                <span class="username">Arran Cudbard-Bell (arr2036)</span>
+            </a>
+        </td>
+        <td class="commit-name">
+          <span class="time-elapsed" title="2014-03-29 23:38:28 +0000">March 29, 2014:</span>&nbsp;
+          Remove red bars in text
+          [<a href="/Bytecode-2.0/5e2477a229a97d9cffa45cae2b93c00fdef42549" title="View commit">5e2477a</a>]
+        </td>
+      </tr>
+      <tr>
+        <td class="checkbox">
+          <input type="checkbox" name="versions[]" value="542475a64ee0e366ebc88bbe51dc9cc43e8cf1bc">
+        </td>
+        <td class="author">
+            <a href="javascript:void(0)">
+            <img src="https://secure.gravatar.com/avatar/18126e7bd3f84b3f3e4df094def5b7de?s=16"
+                alt="avatar: Mike Pall" class="mini-gravatar"/>
+                <span class="username">Mike Pall</span>
+            </a>
+        </td>
+        <td class="commit-name">
+          <span class="time-elapsed" title="2013-02-12 22:42:20 +0000">February 12, 2013:</span>&nbsp;
+          Bytecode: copy bytecode dump format from the source code.
+          [<a href="/Bytecode-2.0/542475a64ee0e366ebc88bbe51dc9cc43e8cf1bc" title="View commit">542475a</a>]
+        </td>
+      </tr>
+      <tr>
+        <td class="checkbox">
+          <input type="checkbox" name="versions[]" value="3c4e665fb656dc268d1b27951960f51eaf6e7206">
+        </td>
+        <td class="author">
+            <a href="javascript:void(0)">
+            <img src="https://secure.gravatar.com/avatar/18126e7bd3f84b3f3e4df094def5b7de?s=16"
+                alt="avatar: Mike Pall" class="mini-gravatar"/>
+                <span class="username">Mike Pall</span>
+            </a>
+        </td>
+        <td class="commit-name">
+          <span class="time-elapsed" title="2013-02-12 22:42:04 +0000">February 12, 2013:</span>&nbsp;
+          Bytecode: explain UCLO and JMP.
+          [<a href="/Bytecode-2.0/3c4e665fb656dc268d1b27951960f51eaf6e7206" title="View commit">3c4e665</a>]
+        </td>
+      </tr>
+      <tr>
+        <td class="checkbox">
+          <input type="checkbox" name="versions[]" value="fc7ac2f91c2c8dc43b3100b6f4dc6c99049517ca">
+        </td>
+        <td class="author">
+            <a href="javascript:void(0)">
+            <img src="https://secure.gravatar.com/avatar/18126e7bd3f84b3f3e4df094def5b7de?s=16"
+                alt="avatar: Mike Pall" class="mini-gravatar"/>
+                <span class="username">Mike Pall</span>
+            </a>
+        </td>
+        <td class="commit-name">
+          <span class="time-elapsed" title="2013-02-12 20:17:51 +0000">February 12, 2013:</span>&nbsp;
+          Use version-specific pages for Bytecode and SSA IR.
+          [<a href="/Bytecode-2.0/fc7ac2f91c2c8dc43b3100b6f4dc6c99049517ca" title="View commit">fc7ac2f</a>]
+        </td>
+      </tr>
+
+    </tbody>
+  </table>
+  </fieldset>
+  </form>
+</div>
+<div id="footer">
+  <ul class="actions">
+    <li class="minibutton"><a href="javascript:void(0);"
+       class="action-compare-revision">Compare Revisions</a></li>
+
+    <!-- only show this button if we have more than 20 revisions -->
+    <li class="minibutton"><a href="#"
+       class="action-back-to-top">Back to Top</a></li>
+  </ul>
+</div>
+</div>
+
+
+</body>
+</html>

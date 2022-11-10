@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-type" content="text/html;charset=utf-8">
+  <link rel=”alternate” type=”application/rss+xml” title=”wiki.luajit.org edit/commit log” href=”http://wiki.luajit.org/feeds/global.xml” />
+ 
+  <link rel="stylesheet" type="text/css" href="/luajit-wiki/css/gollum.css" media="all">
+  <link rel="stylesheet" type="text/css" href="/luajit-wiki/css/editor.css" media="all">
+  <link rel="stylesheet" type="text/css" href="/luajit-wiki/css/dialog.css" media="all">
+  <link rel="stylesheet" type="text/css" href="/luajit-wiki/css/template.css" media="all">
+ 
+  <link rel="stylesheet" type="text/css" href="/luajit-wiki/css/custom.css" media="all">
+  <!--[if IE 7]>
+  <link rel="stylesheet" type="text/css" href="/luajit-wiki/css/ie7.css" media="all">
+  <![endif]-->
+  
+  <script type="text/javascript" src="/luajit-wiki/javascript/jquery.js"></script>
+  <script type="text/javascript" src="/luajit-wiki/javascript/gollum.js"></script>
+  <script type="text/javascript" src="/luajit-wiki/javascript/gollum.dialog.js"></script>
+  <script type="text/javascript" src="/luajit-wiki/javascript/gollum.placeholder.js"></script>
+  
+  <script type="text/javascript" src="/luajit-wiki/javascript/editor/gollum.editor.js"></script>
+  
+  <title>SSA IR</title>
+</head>
+<body>
+<div id="cust-site">
+  <a href="http://luajit.org"><span>Lua<span id="cust-logo">JIT</span></span></a>
+</div>
+<div id="cust-header">
+  <h1>The LuaJIT Wiki</h1>
+</div>
+<div id="user">
+    <p>
+      not logged in | <strong><a href="/luajit-wiki/__omnigollum__/login">[Login]</a></strong>
+    <p>
+</div>
+
+<div id="wiki-wrapper" class="history">
+<div id="head">
+  <h1>History for <strong>SSA IR</strong></h1>
+  <ul class="actions">
+    <li class="minibutton">
+      <div id="searchbar">
+        <form action="/search" method="get" id="search-form">
+        <div id="searchbar-fauxtext">
+          <input type="text" name="q" id="search-query" value="Search&hellip;" autocomplete="off">
+          <a href="#" id="search-submit" title="Search this wiki">
+            <span>Search</span>
+          </a>
+        </div>
+        </form>
+      </div>    </li>
+    <li class="minibutton"><a href="/luajit-wiki/SSA%2BIR"
+       class="action-view-page">View Page</a></li>
+    <li class="minibutton"><a href="/luajit-wiki/edit/SSA%2BIR"
+       class="action-edit-page">Edit Page</a></li>
+  </ul>
+</div>
+<div id="wiki-history">
+  
+  <ul class="actions">
+    <li class="minibutton"><a href="javascript:void(0);"
+       class="action-compare-revision">Compare Revisions</a></li>
+  </ul>
+
+  <form name="compare-versions" id="version-form" method="post"
+   action="/compare/SSA%2BIR">
+  <fieldset>
+  <table>
+    <tbody>
+      
+      <tr>
+        <td class="checkbox">
+          <input type="checkbox" name="versions[]" value="51caf79c423b0f795899ee58e36525fd799948a3">
+        </td>
+        <td class="author">
+          <a href="javascript:void(0)">
+            <img src="https://secure.gravatar.com/avatar/c510febb9bed68b5cc4a09f076701e0f?s=16"
+             alt="avatar: Jason" class="mini-gravatar">
+            <span class="username">Jason</span>
+          </a>
+        </td>
+        <td class="commit-name">
+          <span class="time-elapsed">July 10, 2012:</span>&nbsp;
+          ADDOV, SUBOV, MULOV
+          [<a href="/luajit-wiki/SSA%2BIR/51caf79c423b0f795899ee58e36525fd799948a3" title="View commit">51caf79</a>]
+        </td>
+      </tr>
+      <tr>
+        <td class="checkbox">
+          <input type="checkbox" name="versions[]" value="89c12f98b5a9adb81bdd6f41bda07bb99b013eae">
+        </td>
+        <td class="author">
+          <a href="javascript:void(0)">
+            <img src="https://secure.gravatar.com/avatar/c510febb9bed68b5cc4a09f076701e0f?s=16"
+             alt="avatar: Jason" class="mini-gravatar">
+            <span class="username">Jason</span>
+          </a>
+        </td>
+        <td class="commit-name">
+          <span class="time-elapsed">July 10, 2012:</span>&nbsp;
+          KPRI
+          [<a href="/luajit-wiki/SSA%2BIR/89c12f98b5a9adb81bdd6f41bda07bb99b013eae" title="View commit">89c12f9</a>]
+        </td>
+      </tr>
+      <tr>
+        <td class="checkbox">
+          <input type="checkbox" name="versions[]" value="63afd38eafafedab9dbe2f0df742572a3174d555">
+        </td>
+        <td class="author">
+          <a href="javascript:void(0)">
+            <img src="https://secure.gravatar.com/avatar/c510febb9bed68b5cc4a09f076701e0f?s=16"
+             alt="avatar: Jason" class="mini-gravatar">
+            <span class="username">Jason</span>
+          </a>
+        </td>
+        <td class="commit-name">
+          <span class="time-elapsed">July 10, 2012:</span>&nbsp;
+          RENAME
+          [<a href="/luajit-wiki/SSA%2BIR/63afd38eafafedab9dbe2f0df742572a3174d555" title="View commit">63afd38</a>]
+        </td>
+      </tr>
+      <tr>
+        <td class="checkbox">
+          <input type="checkbox" name="versions[]" value="83fd483db6af22a12212724212c6f5fd0e6f4ffe">
+        </td>
+        <td class="author">
+          <a href="javascript:void(0)">
+            <img src="https://secure.gravatar.com/avatar/c510febb9bed68b5cc4a09f076701e0f?s=16"
+             alt="avatar: Jason" class="mini-gravatar">
+            <span class="username">Jason</span>
+          </a>
+        </td>
+        <td class="commit-name">
+          <span class="time-elapsed">July 10, 2012:</span>&nbsp;
+          LOOP
+          [<a href="/luajit-wiki/SSA%2BIR/83fd483db6af22a12212724212c6f5fd0e6f4ffe" title="View commit">83fd483</a>]
+        </td>
+      </tr>
+      <tr>
+        <td class="checkbox">
+          <input type="checkbox" name="versions[]" value="42dcfdc6db69358905012c825f483f4dd3d20595">
+        </td>
+        <td class="author">
+          <a href="javascript:void(0)">
+            <img src="https://secure.gravatar.com/avatar/c510febb9bed68b5cc4a09f076701e0f?s=16"
+             alt="avatar: Jason" class="mini-gravatar">
+            <span class="username">Jason</span>
+          </a>
+        </td>
+        <td class="commit-name">
+          <span class="time-elapsed">July 10, 2012:</span>&nbsp;
+          HIOP
+          [<a href="/luajit-wiki/SSA%2BIR/42dcfdc6db69358905012c825f483f4dd3d20595" title="View commit">42dcfdc</a>]
+        </td>
+      </tr>
+      <tr>
+        <td class="checkbox">
+          <input type="checkbox" name="versions[]" value="9f90c590a564b7d02be372b999a238837907c911">
+        </td>
+        <td class="author">
+          <a href="javascript:void(0)">
+            <img src="https://secure.gravatar.com/avatar/c510febb9bed68b5cc4a09f076701e0f?s=16"
+             alt="avatar: Jason" class="mini-gravatar">
+            <span class="username">Jason</span>
+          </a>
+        </td>
+        <td class="commit-name">
+          <span class="time-elapsed">July 10, 2012:</span>&nbsp;
+          Fixes. Info on RETF &amp; GCSTEP
+          [<a href="/luajit-wiki/SSA%2BIR/9f90c590a564b7d02be372b999a238837907c911" title="View commit">9f90c59</a>]
+        </td>
+      </tr>
+      <tr>
+        <td class="checkbox">
+          <input type="checkbox" name="versions[]" value="91d31d03da8524a7af9eca47ca31b8d76c821225">
+        </td>
+        <td class="author">
+          <a href="javascript:void(0)">
+            <img src="https://secure.gravatar.com/avatar/c510febb9bed68b5cc4a09f076701e0f?s=16"
+             alt="avatar: Jason" class="mini-gravatar">
+            <span class="username">Jason</span>
+          </a>
+        </td>
+        <td class="commit-name">
+          <span class="time-elapsed">July 08, 2012:</span>&nbsp;
+          Remove accidental duplicate of KINT.
+          [<a href="/luajit-wiki/SSA%2BIR/91d31d03da8524a7af9eca47ca31b8d76c821225" title="View commit">91d31d0</a>]
+        </td>
+      </tr>
+      <tr>
+        <td class="checkbox">
+          <input type="checkbox" name="versions[]" value="0dce4fd55f60bd03cba076cd152ddf270ec2fe2e">
+        </td>
+        <td class="author">
+          <a href="javascript:void(0)">
+            <img src="https://secure.gravatar.com/avatar/c510febb9bed68b5cc4a09f076701e0f?s=16"
+             alt="avatar: Jason" class="mini-gravatar">
+            <span class="username">Jason</span>
+          </a>
+        </td>
+        <td class="commit-name">
+          <span class="time-elapsed">July 08, 2012:</span>&nbsp;
+          Update list of IR instructions. The fun of researching them comes next.
+          [<a href="/luajit-wiki/SSA%2BIR/0dce4fd55f60bd03cba076cd152ddf270ec2fe2e" title="View commit">0dce4fd</a>]
+        </td>
+      </tr>
+      <tr>
+        <td class="checkbox">
+          <input type="checkbox" name="versions[]" value="318e7fc40f100e6336a2f1709921f065b44270de">
+        </td>
+        <td class="author">
+          <a href="javascript:void(0)">
+            <img src="https://secure.gravatar.com/avatar/a3b7f21aeaa03477e852a891f480b26b?s=16"
+             alt="avatar: Arran Cudbard-Bell" class="mini-gravatar">
+            <span class="username">Arran Cudbard-Bell</span>
+          </a>
+        </td>
+        <td class="commit-name">
+          <span class="time-elapsed">May 11, 2012:</span>&nbsp;
+          linkify commit
+          [<a href="/luajit-wiki/SSA%2BIR/318e7fc40f100e6336a2f1709921f065b44270de" title="View commit">318e7fc</a>]
+        </td>
+      </tr>
+      <tr>
+        <td class="checkbox">
+          <input type="checkbox" name="versions[]" value="3f7569106c51de083f9160c542c29f9d87332c07">
+        </td>
+        <td class="author">
+          <a href="javascript:void(0)">
+            <img src="https://secure.gravatar.com/avatar/a3b7f21aeaa03477e852a891f480b26b?s=16"
+             alt="avatar: Arran Cudbard-Bell" class="mini-gravatar">
+            <span class="username">Arran Cudbard-Bell</span>
+          </a>
+        </td>
+        <td class="commit-name">
+          <span class="time-elapsed">May 11, 2012:</span>&nbsp;
+          Remove double parens
+          [<a href="/luajit-wiki/SSA%2BIR/3f7569106c51de083f9160c542c29f9d87332c07" title="View commit">3f75691</a>]
+        </td>
+      </tr>
+      <tr>
+        <td class="checkbox">
+          <input type="checkbox" name="versions[]" value="440fdbea1038c5847d7c2222a41142fbf7fbe407">
+        </td>
+        <td class="author">
+          <a href="javascript:void(0)">
+            <img src="https://secure.gravatar.com/avatar/a3b7f21aeaa03477e852a891f480b26b?s=16"
+             alt="avatar: Arran Cudbard-Bell" class="mini-gravatar">
+            <span class="username">Arran Cudbard-Bell</span>
+          </a>
+        </td>
+        <td class="commit-name">
+          <span class="time-elapsed">May 11, 2012:</span>&nbsp;
+          Missed one...
+          [<a href="/luajit-wiki/SSA%2BIR/440fdbea1038c5847d7c2222a41142fbf7fbe407" title="View commit">440fdbe</a>]
+        </td>
+      </tr>
+      <tr>
+        <td class="checkbox">
+          <input type="checkbox" name="versions[]" value="7ec0595766c7f17a4fba831087ad5fd499a7df45">
+        </td>
+        <td class="author">
+          <a href="javascript:void(0)">
+            <img src="https://secure.gravatar.com/avatar/a3b7f21aeaa03477e852a891f480b26b?s=16"
+             alt="avatar: Arran Cudbard-Bell" class="mini-gravatar">
+            <span class="username">Arran Cudbard-Bell</span>
+          </a>
+        </td>
+        <td class="commit-name">
+          <span class="time-elapsed">May 11, 2012:</span>&nbsp;
+          Convert ops to third level titles, so they're indented correctly in the TOC
+          [<a href="/luajit-wiki/SSA%2BIR/7ec0595766c7f17a4fba831087ad5fd499a7df45" title="View commit">7ec0595</a>]
+        </td>
+      </tr>
+      <tr>
+        <td class="checkbox">
+          <input type="checkbox" name="versions[]" value="288db8b93e2c65d5eb5b0428dbc1451310d88346">
+        </td>
+        <td class="author">
+          <a href="javascript:void(0)">
+            <img src="https://secure.gravatar.com/avatar/c510febb9bed68b5cc4a09f076701e0f?s=16"
+             alt="avatar: David Manura" class="mini-gravatar">
+            <span class="username">David Manura</span>
+          </a>
+        </td>
+        <td class="commit-name">
+          <span class="time-elapsed">May 11, 2012:</span>&nbsp;
+          moved my notes from lua-users.org
+          [<a href="/luajit-wiki/SSA%2BIR/288db8b93e2c65d5eb5b0428dbc1451310d88346" title="View commit">288db8b</a>]
+        </td>
+      </tr>
+      
+    </tbody>
+  </table>
+  </fieldset>
+  </form>
+</div>
+<div id="footer">
+  <ul class="actions">
+    <li class="minibutton"><a href="javascript:void(0);"
+       class="action-compare-revision">Compare Revisions</a></li>
+       
+    <!-- only show this button if we have more than 20 revisions -->
+    <li class="minibutton"><a href="#"
+       class="action-back-to-top">Back to Top</a></li>
+  </ul>
+</div>
+</div>
+
+
+</body>
+</html>

@@ -1,0 +1,1110 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-type" content="text/html;charset=utf-8">
+  <meta name="MobileOptimized" content="width">
+  <meta name="HandheldFriendly" content="true">
+  <meta name="viewport" content="width=device-width">
+  <link rel=”alternate” type=”application/rss+xml” title=”wiki.luajit.org edit and commit log” href=”http://wiki.luajit.org/feeds/global.xml” />
+  <link rel="stylesheet" type="text/css" href="/luajit-wiki/css/gollum.css" media="all">
+  <link rel="stylesheet" type="text/css" href="/luajit-wiki/css/editor.css" media="all">
+  <link rel="stylesheet" type="text/css" href="/luajit-wiki/css/dialog.css" media="all">
+  <link rel="stylesheet" type="text/css" href="/luajit-wiki/css/template.css" media="all">
+  <link rel="stylesheet" type="text/css" href="/luajit-wiki/css/print.css" media="print">
+  <link rel="stylesheet" type="text/css" href="/luajit-wiki/custom.css" media="all">
+  <meta name="robots" content="noindex, nofollow" />
+
+  <!--[if IE 7]>
+  <link rel="stylesheet" type="text/css" href="/luajit-wiki/css/ie7.css" media="all">
+  <![endif]-->
+
+  <script>
+      var baseUrl = '';
+      var uploadDest   = '';
+      var pageFullPath = 'SSA IR 2.0';
+  </script>
+  <script type="text/javascript" src="/luajit-wiki/javascript/jquery-1.7.2.min.js"></script>
+  <script type="text/javascript" src="/luajit-wiki/javascript/mousetrap.min.js"></script>
+  <script type="text/javascript" src="/luajit-wiki/javascript/gollum.js"></script>
+  <script type="text/javascript" src="/luajit-wiki/javascript/gollum.dialog.js"></script>
+  <script type="text/javascript" src="/luajit-wiki/javascript/gollum.placeholder.js"></script>
+  <script type="text/javascript" src="/luajit-wiki/javascript/editor/gollum.editor.js"></script>
+
+  
+
+  <title>SSA IR 2.0</title>
+</head>
+<body>
+
+<div id="cust-site">
+  <a href="http://luajit.org"><span>Lua<span id="cust-logo">JIT</span></span></a>
+</div>
+<div id="cust-header">
+  <h1>The LuaJIT Wiki</h1>
+</div>
+<div id="user">
+    <p>
+      not logged in | <strong><a href="/luajit-wiki/__omnigollum__/login">[Login]</a></strong>
+    <p>
+</div>
+
+<script>
+Mousetrap.bind(['e'], function( e ) {
+  e.preventDefault();
+  window.location = "/edit" + window.location.pathname;
+  return false;
+});
+</script>
+<div id="wiki-wrapper" class="page">
+<div id="head">
+  <h1>SSA IR 2.0</h1>
+  <ul class="actions">
+    <li class="minibutton">
+      <div id="searchbar">
+        <form action="/search" method="get" id="search-form">
+        <div id="searchbar-fauxtext">
+          <input type="text" name="q" id="search-query" value="Search&hellip;" autocomplete="off">
+          <a href="#" id="search-submit" title="Search this wiki">
+            <span>Search</span>
+          </a>
+        </div>
+        </form>
+      </div>    </li>
+    <li class="minibutton"><a href="/luajit-wiki/"
+       class="action-home-page">Home</a></li>
+    <li class="minibutton"><a href="/luajit-wiki/pages"
+      class="action-all-pages">All</a></li>
+    <li class="minibutton"><a href="/luajit-wiki/fileview"
+    class="action-fileview">Files</a></li>
+      <li class="minibutton jaws">
+        <a href="#" id="minibutton-new-page">New</a></li>
+  </ul>
+</div>
+<div id="wiki-content">
+<div class="">
+  <div id="wiki-body" class="gollum-markdown-content">
+    <div class="markdown-body">
+      <h1>LuaJIT 2.0 SSA IR</h1>
+
+<h2><a class="anchor" id="introduction" href="#introduction"><i class="fa fa-link"></i></a>Introduction</h2>
+
+<p>The following document describes the Intermediate Representation
+(<a href="http://en.wikipedia.org/wiki/Intermediate_representation" rel="nofollow">IR</a>) used by
+the JIT-compiler of LuaJIT 2.0. The trace-compiler records bytecode
+instructions, following the control-flow, and emits the corresponding IR
+instructions on-the-fly.</p>
+
+<p>The IR has the following characteristics:</p>
+
+<ul>
+<li><p>The IR is in SSA (<a href="http://en.wikipedia.org/wiki/Static_single_assignment_form" rel="nofollow">Static Single Assignment</a>) form. Every instruction (node) represents a single definition of a value. Multiple instructions form a partially connected data-flow graph. Data-flow for loops is represented using PHI-instructions. Control-flow is always implicit.</p></li>
+<li><p>The IR is linear, pointer-free and implicitly numbered: every instruction can be uniquely referenced (IRRef) by its position in a linear array. Specially crafted, biased IR references allow fast const vs. non-const decisions. No space is wasted on storing an explicit reference number, value number or similar.</p></li>
+<li><p>The IR is in 2-operand-normalized form: every instruction has an opcode and a maximum of two operands. A few instructions may need more operands (e.g. <code>CALL*</code>), which are composed using extension instructions (<code>CARG</code>).</p></li>
+<li><p>The IR is typed: every instruction has an output data type. The modeled types correspond to the basic Lua data types plus low-level data types. Higher-level data types are indirectly modeled as-needed with guarded assertions.</p></li>
+<li><p>The IR has segregated, per-opcode chaining: this allows fast searching for specific instructions in reverse order without a full traversal. This is used to speed up many optimizations, like CSE or alias analysis. Most searches stop after zero (no match), one or two dereferences in practice.</p></li>
+<li><p>The IR is very compact: it needs only 64 bits per instruction and all instructions are adjacent to each other. This layout is very cache-efficient and very fast to index or traverse.</p></li>
+<li><p>The IR is incrementally generated: the IR array is bi-directionally grown: constants grow downwards, all other instructions grow upwards. Most optimizations are perfomed on-the-fly and eliminated instructions are either simply not emitted, ignored during code generation or appropriately tagged. There's no general need to insert or delete instructions in the middle. This avoids the very cache-inefficient linked-sea-of-nodes data structure, presented in most compiler textbooks.</p></li>
+<li><p>The IR is unified: it carries both high-level semantics and low-level details. Different stages of the compiler use different aspects of the IR, but share a common IR format. Eliminating the classic HIR, MIR, LIR separation (high-, medium-, low-level IR) greatly reduces complexity and compiler overhead. It avoids semantic information loss due to abstraction mismatches and allows cheap and effective high-level semantic disambiguation for memory references.</p></li>
+<li><p>The IR uses auxiliary snapshots: a snapshot captures the IR references corresponding to modified slots and frames in the bytecode execution stack. Every snapshot saves a specific bytecode execution state, which can later be restored on trace exits. Snapshots are sparsely emitted and compressed. Snapshots provide the link between the IR and the bytecode domain (and transitively the source code domain, via the bytecode debug info).</p></li>
+</ul>
+
+<h2><a class="anchor" id="status" href="#status"><i class="fa fa-link"></i></a>Status</h2>
+
+<p><strong>COMPLETE REWRITE IN PROGRESS</strong></p>
+
+<p>See <code>src/lj_ir.h</code> and <code>src/lj_jit.h</code> in the LuaJIT source code for the full details. The generated IR can be listed with <code>luajit -jdump</code> (traced bytecode, IR and machine code) or <code>luajit -jdump=i</code> (IR only).</p>
+
+<h2><a class="anchor" id="overview" href="#overview"><i class="fa fa-link"></i></a>Overview</h2>
+
+<p>Basic example:</p>
+
+<pre class="highlight"><code>$ ./luajit -jdump=bitmsr
+LuaJIT 2.0.0-beta10 -- Copyright (C) 2005-2012 Mike Pall. http://luajit.org/
+JIT: ON CMOV SSE2 SSE3 AMD fold cse dce fwd dse narrow loop abc sink fuse
+&gt; local x = 1.2 for i=1,1e3 do x = x * -3 end
+---- TRACE 1 start stdin:1
+0006  MULVN    0   0   1  ; -3
+0007  FORL     1 =&gt; 0006
+---- TRACE 1 IR
+....              SNAP   #0   [ ---- ]
+0001 rbp      int SLOAD  #2    CI
+0002 xmm7  &gt;  num SLOAD  #1    T
+0003 xmm7   + num MUL    0002  -3  
+0004 rbp    + int ADD    0001  +1  
+....              SNAP   #1   [ ---- 0003 ]
+0005       &gt;  int LE     0004  +1000
+....              SNAP   #2   [ ---- 0003 0004 ---- ---- 0004 ]
+0006 ------------ LOOP ------------
+0007 xmm7   + num MUL    0003  -3  
+0008 rbp    + int ADD    0004  +1  
+....              SNAP   #3   [ ---- 0007 ]
+0009       &gt;  int LE     0008  +1000
+0010 rbp      int PHI    0004  0008
+0011 xmm7     num PHI    0003  0007
+---- TRACE 1 mcode 81
+394cffa3  mov dword [0x4183f4a0], 0x1
+394cffae  movsd xmm0, [0x4184f698]
+394cffb7  cvtsd2si ebp, [rdx+0x8]
+394cffbc  cmp dword [rdx+0x4], 0xfffeffff
+394cffc3  jnb 0x394c0010	-&gt;0
+394cffc9  movsd xmm7, [rdx]
+394cffcd  mulsd xmm7, xmm0
+394cffd1  add ebp, +0x01
+394cffd4  cmp ebp, 0x3e8
+394cffda  jg 0x394c0014	-&gt;1
+-&gt;LOOP:
+394cffe0  mulsd xmm7, xmm0
+394cffe4  add ebp, +0x01
+394cffe7  cmp ebp, 0x3e8
+394cffed  jle 0x394cffe0	-&gt;LOOP
+394cffef  jmp 0x394c001c	-&gt;3
+---- TRACE 1 stop -&gt; loop</code></pre>
+
+
+<p>The above prints the bytecode of the trace, the IR generated from that bytecode with snapshots, and the machine code generated from the IR.</p>
+
+<p>The columns of the IR are as follows:</p>
+
+<pre class="highlight"><code>1st column: IR instruction number (implicit SSA ref)
+2nd column: physical CPU register or physical CPU stack slot that
+  value is written to when converted to machine code.
+  '[%x+]' (rather than register name) indicates hexadecimal offset
+  from stack pointer.
+  (This column is only present if the 'r' flags is included in -jdump, which
+  augments the IR with register/stack slots.  It is not part of the IR itself.)
+3nd column: Instruction flags:
+  "&gt;" (IRT_GUARD = 0x80 instruction flag) are locations of
+    guards (leading to possible side exits from the trace).
+  "+" (IRT_ISPHI = 0x40 instruction flag) indicates
+    instruction is left or right PHI operand. (i.e referred
+    to in some PHI instruction).
+4rd column: IR type (see IR Types below)
+5th column: IR opcode (see opcode reference)
+6th/7th column: IR operands (SSA refs or literals)
+  '#' prefixes refer to slot numbers, used in SLOADS.
+     #0 is the base frame (modified only in tail calls).
+     #1 is the first slot in the first frame (register 0 in
+     the bytecode)
+  '[+-]' prefixes indicate positive or negative numeric literals.
+  '[0x%d+]' and NULL are memory addresses.
+  '"..."' are strings.
+  '@' prefixes indicate slots (what is this?).
+  Other possible values: "bias" (number 2^52+2^51 ?), "userdata:%p",
+     "userdata:%p" (table)--when do these occur?.</code></pre>
+
+
+<p>See also SSA dump format comments: <a href="http://lua-users.org/lists/lua-l/2008-06/msg00225.html" rel="nofollow">http://lua-users.org/lists/lua-l/2008-06/msg00225.html</a> (older version).
+See <code>formatk</code> in <a href="http://repo.or.cz/w/luajit-2.0.git/blob/HEAD:/lib/dump.lua" rel="nofollow">dump.lua</a>.</p>
+
+<p>Each snaphot (SNAP) lists the modified stack slots and their values.  The i-th value in the snapshot list represents the index of the IR that writes a value in slot number #i.  '---' indicates that the slot is not written.  Frames are separated by '|'.  For further comments on snapshots, see <a href="http://lua-users.org/lists/lua-l/2009-11/msg00089.html" rel="nofollow">http://lua-users.org/lists/lua-l/2009-11/msg00089.html</a>.</p>
+
+<p>IR types (see <code>irtype_text</code> in <a href="http://repo.or.cz/w/luajit-2.0.git/blob/HEAD:/lib/dump.lua" rel="nofollow">dump.lua</a> or
+<code>IRTDEF</code> in <a href="http://repo.or.cz/w/luajit-2.0.git/blob/HEAD:/src/lj_ir.h" rel="nofollow">lj_ir.h</a>:</p>
+
+<pre class="highlight"><code>"nil" 0
+"fal" 1
+"tru" 2
+"lud" 3
+"str" 4
+"p32" 5
+"thr" 6
+"pro" 7
+"fun" 8
+"p64" 9
+"cdt" 10
+"tab" 11
+"udt" 12
+"flt" 13
+"num" 14
+"i8 " 15
+"u8 " 16
+"i16" 17
+"u16" 18
+"int" 19
+"u32" 20
+"i64" 21
+"u64" 22</code></pre>
+
+
+<p>"Mode bits" (used in below opcode definitions, the second column): Commutative (C), {Normal/Ref (N), Alloc (A), Load (L), Store (S)}, Non-weak guard (W).</p>
+
+<h2><a class="anchor" id="allocations" href="#allocations"><i class="fa fa-link"></i></a>Allocations.</h2>
+
+<h3><a class="anchor" id="allocations_snew-n-ref-ref" href="#allocations_snew-n-ref-ref"><i class="fa fa-link"></i></a>SNEW,   N , ref, ref</h3>
+
+<p>Create new string.  (lj_str_new)</p>
+
+<ul>
+<li>op1: const char *str; op2: size_t len.</li>
+</ul>
+
+<h3><a class="anchor" id="allocations_xsnew-a-ref-ref" href="#allocations_xsnew-a-ref-ref"><i class="fa fa-link"></i></a>XSNEW,  A , ref, ref</h3>
+
+<h3><a class="anchor" id="allocations_tnew-aw-lit-lit" href="#allocations_tnew-aw-lit-lit"><i class="fa fa-link"></i></a>TNEW,   AW, lit, lit</h3>
+
+<p>Create new table.</p>
+
+<h3><a class="anchor" id="allocations_tdup-aw-ref-___" href="#allocations_tdup-aw-ref-___"><i class="fa fa-link"></i></a>TDUP,   AW, ref, ___</h3>
+
+<p>Duplicate a table.  (lj_tab_dup)</p>
+
+<ul>
+<li>op1: table to copy</li>
+</ul>
+
+<h3><a class="anchor" id="allocations_cnew-aw-ref-ref" href="#allocations_cnew-aw-ref-ref"><i class="fa fa-link"></i></a>CNEW,   AW, ref, ref</h3>
+
+<p>Allocate new FFI cdata.</p>
+
+<h3><a class="anchor" id="allocations_cnewi-nw-ref-ref" href="#allocations_cnewi-nw-ref-ref"><i class="fa fa-link"></i></a>CNEWI,  NW, ref, ref</h3>
+
+<p>Initialize new FFI cdata.</p>
+
+<h2><a class="anchor" id="write-barriers" href="#write-barriers"><i class="fa fa-link"></i></a>Write barriers</h2>
+
+<h3><a class="anchor" id="write-barriers_tbar-s-ref-___" href="#write-barriers_tbar-s-ref-___"><i class="fa fa-link"></i></a>TBAR,   S , ref, ___</h3>
+
+<p>(?)</p>
+
+<h3><a class="anchor" id="write-barriers_obar-s-ref-ref" href="#write-barriers_obar-s-ref-ref"><i class="fa fa-link"></i></a>OBAR,   S , ref, ref</h3>
+
+<p>Specialized barrier for closed upvalue?</p>
+
+<h3><a class="anchor" id="write-barriers_xbar-s-__-__" href="#write-barriers_xbar-s-__-__"><i class="fa fa-link"></i></a>XBAR,   S , <em>__, __</em>
+</h3>
+
+<p>Writer barrier for XLOAD/XSTORE. </p>
+
+<h2><a class="anchor" id="type-conversions" href="#type-conversions"><i class="fa fa-link"></i></a>Type conversions</h2>
+
+<h3><a class="anchor" id="type-conversions_conv-n-ref-lit" href="#type-conversions_conv-n-ref-lit"><i class="fa fa-link"></i></a>CONV,   N , ref, lit</h3>
+
+<p>Various int and float number conversions.</p>
+
+<ul>
+<li>op1: lref</li>
+<li>op2: type conversion.</li>
+</ul>
+
+<pre class="highlight"><code>Bits 0..4 (IRCONV_SRCMASK) are type converted from.
+Bits 5..9 (IRCONV_DSTMASK) are type converted to.  See "IR Types" above.
+Bit 10 (0x400, IRCONV_TRUNC) is "trunc" (Truncate number to integer).
+Bit 11 (0x800, IRCONV_SEXT) is "sext" (Sign-extend integer to integer).
+Bits 14..15 are 2 "index"  or 3 "check". (?? - dump.lua and IRCONV_* inconsistent?)</code></pre>
+
+
+<h3><a class="anchor" id="type-conversions_tobit-n-ref-ref" href="#type-conversions_tobit-n-ref-ref"><i class="fa fa-link"></i></a>TOBIT,  N , ref, ref</h3>
+
+<p>(see bit.tobit)</p>
+
+<ul>
+<li>op1: dest</li>
+<li>op1: source</li>
+</ul>
+
+<h3><a class="anchor" id="type-conversions_tostr-n-ref-___" href="#type-conversions_tostr-n-ref-___"><i class="fa fa-link"></i></a>TOSTR,  N , ref, ___</h3>
+
+<p>Convert to string.</p>
+
+<h3><a class="anchor" id="type-conversions_strto-n-ref-___" href="#type-conversions_strto-n-ref-___"><i class="fa fa-link"></i></a>STRTO,  N , ref, ___</h3>
+
+<p>Convert string to number.</p>
+
+<h2><a class="anchor" id="calls" href="#calls"><i class="fa fa-link"></i></a>Calls</h2>
+
+<h3><a class="anchor" id="calls_calln-n-ref-lit" href="#calls_calln-n-ref-lit"><i class="fa fa-link"></i></a>CALLN,  N , ref, lit</h3>
+
+<p>Call Normal/Ref (N)?</p>
+
+<h3><a class="anchor" id="calls_calll-l-ref-lit" href="#calls_calll-l-ref-lit"><i class="fa fa-link"></i></a>CALLL,  L , ref, lit</h3>
+
+<p>Call Load (L)?</p>
+
+<h3><a class="anchor" id="calls_calls-s-ref-lit" href="#calls_calls-s-ref-lit"><i class="fa fa-link"></i></a>CALLS,  S , ref, lit</h3>
+
+<p>Call Store (S)?</p>
+
+<h3><a class="anchor" id="calls_callxs-s-ref-ref" href="#calls_callxs-s-ref-ref"><i class="fa fa-link"></i></a>CALLXS, S , ref, ref</h3>
+
+<h3><a class="anchor" id="calls_carg-n-ref-ref" href="#calls_carg-n-ref-ref"><i class="fa fa-link"></i></a>CARG,   N , ref, ref</h3>
+
+<p>(?) something related to function call arguments</p>
+
+<h2><a class="anchor" id="constants" href="#constants"><i class="fa fa-link"></i></a>Constants</h2>
+
+<p>Constant instructions are only present in the constant part of the IR
+(growing upwards to lower refs). IR constants are interned
+(de-duplicated) and can be compared for equality only by looking at
+their references.</p>
+
+<p>Constant instructions never appear in dumps, since <code>-jdump</code> always shows
+the actual constant value inlined into the referencing instructions.</p>
+
+<table>
+<tr>
+<th width="80"><center>OP</center></th>
+<th width="35"><center>Left</center></th>
+<th width="35"><center>Right</center></th>
+<th>Description</th>
+</tr>
+<tr>
+<td>KPRI</td>
+<td> </td>
+<td> </td>
+<td>Primitive type: nil, false, true</td>
+</tr>
+<tr>
+<td>KINT</td>
+<td colspan="2">#int</td>
+<td>32 bit integer constant</td>
+</tr>
+<tr>
+<td>KGC</td>
+<td colspan="2">#ptr</td>
+<td>Garbage collected constant</td>
+</tr>
+<tr>
+<td>KPTR</td>
+<td colspan="2">#ptr</td>
+<td>Pointer constant</td>
+</tr>
+<tr>
+<td>KKPTR</td>
+<td colspan="2">#ptr</td>
+<td>Pointer constant to constant data</td>
+</tr>
+<tr>
+<td>KNULL</td>
+<td colspan="2">#ptr</td>
+<td>Typed NULL constant</td>
+</tr>
+<tr>
+<td>KNUM</td>
+<td colspan="2">#k64ptr</td>
+<td>Double-precision floating-point constant</td>
+</tr>
+<tr>
+<td>KINT64</td>
+<td colspan="2">#k64ptr</td>
+<td>64 bit integer constant</td>
+</tr>
+<tr>
+<td>KSLOT</td>
+<td>kref</td>
+<td>#slot</td>
+<td>Hash slot for constant</td>
+</tr>
+</table>
+
+<p>Every trace has three <code>KPRI</code> instructions at fixed references for the
+constants nil, false and true (REF_NIL, REF_FALSE, REF_TRUE).</p>
+
+<p>The 32 bit integer or pointer values occupy the space for both the left
+and the right 16 bit operand. 64 bit values are interned in a global
+constant table and indirectly referenced by 32 bit pointers.</p>
+
+<p><code>KPTR</code> is a constant pointer (absolute address) to possibly non-constant
+data. <code>KKPTR</code> points to definitely constant data. Only data <em>known</em> by
+the VM to be constant qualifies, e.g. an interned Lua string. Content
+tagged as 'const' by users (e.g. <code>const char *</code>) doesn't qualify.</p>
+
+<p><code>KSLOT</code> is used as a key for <code>HREFK</code> and holds the hash slot where the
+key is to be found and a reference to the constant key itself.</p>
+
+<h2><a class="anchor" id="guarded-assertions" href="#guarded-assertions"><i class="fa fa-link"></i></a>Guarded Assertions</h2>
+
+<p>Guarded assertions have a dual purpose:</p>
+
+<ul>
+<li>They provide an assertion about their operands that can be used by the compiler to optimize all following instructions in the same trace.</li>
+<li>They are emitted by the backend as branching comparisons, with the 'true' outcome in the fall-through path. A 'false' outcome exits the trace and restores the state to the most recent snapshot.</li>
+</ul>
+
+<table>
+<tr>
+<th width="80"><center>OP</center></th>
+<th width="35"><center>Left</center></th>
+<th width="35"><center>Right</center></th>
+<th>Description</th>
+</tr>
+<tr>
+<td>LT</td>
+<td>left</td>
+<td>right</td>
+<td>left &lt; right (signed)</td>
+</tr>
+<tr>
+<td>GE</td>
+<td>left</td>
+<td>right</td>
+<td>left ≥ right (signed)</td>
+</tr>
+<tr>
+<td>LE</td>
+<td>left</td>
+<td>right</td>
+<td>left ≤ right (signed)</td>
+</tr>
+<tr>
+<td>GT</td>
+<td>left</td>
+<td>right</td>
+<td>left &gt; right (signed)</td>
+</tr>
+<tr>
+<td>ULT</td>
+<td>left</td>
+<td>right</td>
+<td>left &lt; right (unsigned/unordered)</td>
+</tr>
+<tr>
+<td>UGE</td>
+<td>left</td>
+<td>right</td>
+<td>left ≥ right (unsigned/unordered)</td>
+</tr>
+<tr>
+<td>ULE</td>
+<td>left</td>
+<td>right</td>
+<td>left ≤ right (unsigned/unordered)</td>
+</tr>
+<tr>
+<td>UGT</td>
+<td>left</td>
+<td>right</td>
+<td>left &gt; right (unsigned/unordered)</td>
+</tr>
+<tr>
+<td>EQ</td>
+<td>left</td>
+<td>right</td>
+<td>left = right</td>
+</tr>
+<tr>
+<td>NE</td>
+<td>left</td>
+<td>right</td>
+<td>left ≠ right</td>
+</tr>
+<tr>
+<td>ABC</td>
+<td>bound</td>
+<td>index</td>
+<td>Array Bounds Check: bound &gt; index (unsigned)</td>
+</tr>
+<tr>
+<td>RETF</td>
+<td>proto</td>
+<td>pc</td>
+<td>Return to lower frame: check target PC, shift base</td>
+</tr>
+</table>
+
+<p>The <code>U..</code> opcodes provide unsigned comparison semantics for integer
+types and unordered comparison semantics for floating-point types. A
+<code>NaN</code> operand causes a 'false' outcome for <code>EQ</code> and ordered comparisons,
+and a 'true' outcome for <code>NE</code> and unordered comparisons.</p>
+
+<p><code>ABC</code> is treated just like <code>UGT</code> in the backend. But it follows
+different FOLD rules, which simplifies ABC elimination.</p>
+
+<p>The prototype returned to by <code>RETF</code> is below the call graph covered by
+the trace up to this point. Thus <code>RETF</code> needs to anchor the prototype to
+prevent recycling the PC after garbage collection.</p>
+
+<h2><a class="anchor" id="bit-ops" href="#bit-ops"><i class="fa fa-link"></i></a>Bit Ops</h2>
+
+<table>
+<tr>
+<th width="80"><center>OP</center></th>
+<th width="35"><center>Left</center></th>
+<th width="35"><center>Right</center></th>
+<th>Description</th>
+</tr>
+<tr>
+<td>BNOT</td>
+<td>ref</td>
+<td> </td>
+<td>Bitwise NOT of ref</td>
+</tr>
+<tr>
+<td>BSWAP</td>
+<td>ref</td>
+<td> </td>
+<td>Byte-swapped ref</td>
+</tr>
+<tr>
+<td>BAND</td>
+<td>left</td>
+<td>right</td>
+<td>Bitwise AND of left and right</td>
+</tr>
+<tr>
+<td>BOR</td>
+<td>left</td>
+<td>right</td>
+<td>Bitwise OR of left and right</td>
+</tr>
+<tr>
+<td>BXOR</td>
+<td>left</td>
+<td>right</td>
+<td>Bitwise XOR of left and right</td>
+</tr>
+<tr>
+<td>BSHL</td>
+<td>ref</td>
+<td>shift</td>
+<td>Bitwise left shift of ref</td>
+</tr>
+<tr>
+<td>BSHR</td>
+<td>ref</td>
+<td>shift</td>
+<td>Bitwise logical right shift of ref</td>
+</tr>
+<tr>
+<td>BSAR</td>
+<td>ref</td>
+<td>shift</td>
+<td>Bitwise arithmetic right shift of ref</td>
+</tr>
+<tr>
+<td>BROL</td>
+<td>ref</td>
+<td>shift</td>
+<td>Bitwise left rotate of ref</td>
+</tr>
+<tr>
+<td>BROR</td>
+<td>ref</td>
+<td>shift</td>
+<td>Bitwise right rotate of ref</td>
+</tr>
+</table>
+
+<p>The shift count for shift and rotate instructions is interpreted modulo
+the bit width of the shifted type, i.e. only the lowest N bits are
+significant. Appropriate bit masking instructions (<code>BAND</code>) are inserted
+for backends where the underlying machine instructions don't perform the
+masking themselves. Similarly, rotates are unified to one direction, in
+case the architecture doesn't provide machine instructions for both.</p>
+
+<h2><a class="anchor" id="arithmetic-ops" href="#arithmetic-ops"><i class="fa fa-link"></i></a>Arithmetic Ops</h2>
+
+<table>
+<tr>
+<th width="80"><center>OP</center></th>
+<th width="35"><center>Left</center></th>
+<th width="35"><center>Right</center></th>
+<th>Description</th>
+</tr>
+<tr>
+<td>ADD</td>
+<td>left</td>
+<td>right</td>
+<td>left + right</td>
+</tr>
+<tr>
+<td>SUB</td>
+<td>left</td>
+<td>right</td>
+<td>left - right</td>
+</tr>
+<tr>
+<td>MUL</td>
+<td>left</td>
+<td>right</td>
+<td>left * right</td>
+</tr>
+<tr>
+<td>DIV</td>
+<td>left</td>
+<td>right</td>
+<td>left / right</td>
+</tr>
+<tr>
+<td>MOD</td>
+<td>left</td>
+<td>right</td>
+<td>left % right</td>
+</tr>
+<tr>
+<td>POW</td>
+<td>left</td>
+<td>right</td>
+<td>left ^ right</td>
+</tr>
+<tr>
+<td>NEG</td>
+<td>ref</td>
+<td>kneg</td>
+<td>-ref</td>
+</tr>
+<tr>
+<td>ABS</td>
+<td>ref</td>
+<td>kabs</td>
+<td>abs(ref)</td>
+</tr>
+<tr>
+<td>ATAN2</td>
+<td>left</td>
+<td>right</td>
+<td>atan2(left, right)</td>
+</tr>
+<tr>
+<td>LDEXP</td>
+<td>left</td>
+<td>right</td>
+<td>ldexp(left, right)</td>
+</tr>
+<tr>
+<td>MIN</td>
+<td>left</td>
+<td>right</td>
+<td>min(left, right)</td>
+</tr>
+<tr>
+<td>MAX</td>
+<td>left</td>
+<td>right</td>
+<td>max(left, right)</td>
+</tr>
+<tr>
+<td>FPMATH</td>
+<td>ref</td>
+<td>#fpm</td>
+<td>fpmath(ref), see below</td>
+</tr>
+<tr>
+<td>ADDOV</td>
+<td>left</td>
+<td>right</td>
+<td>left + right, overflow-checked</td>
+</tr>
+<tr>
+<td>SUBOV</td>
+<td>left</td>
+<td>right</td>
+<td>left - right, overflow-checked</td>
+</tr>
+<tr>
+<td>MULOV</td>
+<td>left</td>
+<td>right</td>
+<td>left * right, overflow-checked</td>
+</tr>
+</table>
+
+<p>All arithmetic ops operate within the domain of their types: integers,
+pointers or floating-point numbers. Not all ops are defined for all
+possible types. Both signed and unsigned integers wrap around on
+overflow.</p>
+
+<p>Overflow-checking operations exit the trace upon signed integer
+arithmetic overflow.</p>
+
+<p><code>MOD</code> is decomposed into left-floor(left/right)<em>right for floating-point
+numbers. <code>POW</code> is either turned into <code>POW</code> with an integer as the right
+operand, or into sqrt(left) if right is 0.5, or into
+exp2(log2(left)</em>right) otherwise (the backend may later merge this into
+a call to pow()).</p>
+
+<p>The undefined cases for the integer variants of <code>DIV</code>, <code>MOD</code> and <code>POW</code>
+return the integer value with only the highest bit set.</p>
+
+<p><code>NEG</code> and <code>ABS</code> for floating-point numbers reference a SIMD-aligned
+constant in the right operand. Some backends implement these as a
+bitwise XOR or AND of the number and the constant.</p>
+
+<p>The right operand of <code>LDEXP</code> is a floating-point number on x86 and x64
+platforms and a 32 bit integer on all others.</p>
+
+<p>All floating-point arithmetic operations obey the standard definitions
+from IEEE 754 wrt. +-0, +-Inf, NaN and denormals. <code>MIN</code> and <code>MAX</code> have
+no defined behavior for NaN operands.</p>
+
+<p><code>FPMATH</code> is used for unary floating-point arithmetic operations. The
+right operand specifies the actual operation:</p>
+
+<table>
+<tr>
+<th width="80"><center>OP</center></th>
+<th>Description</th>
+</tr>
+<tr>
+<td>FPM_FLOOR</td>
+<td>floor(ref)</td>
+</tr>
+<tr>
+<td>FPM_CEIL</td>
+<td>ceil(ref)</td>
+</tr>
+<tr>
+<td>FPM_TRUNC</td>
+<td>trunc(ref)</td>
+</tr>
+<tr>
+<td>FPM_SQRT</td>
+<td>sqrt(ref)</td>
+</tr>
+<tr>
+<td>FPM_EXP</td>
+<td>exp(ref)</td>
+</tr>
+<tr>
+<td>FPM_EXP2</td>
+<td>exp2(ref)</td>
+</tr>
+<tr>
+<td>FPM_LOG</td>
+<td>log(ref)</td>
+</tr>
+<tr>
+<td>FPM_LOG2</td>
+<td>log2(ref)</td>
+</tr>
+<tr>
+<td>FPM_LOG10</td>
+<td>log10(ref)</td>
+</tr>
+<tr>
+<td>FPM_SIN</td>
+<td>sin(ref)</td>
+</tr>
+<tr>
+<td>FPM_COS</td>
+<td>cos(ref)</td>
+</tr>
+<tr>
+<td>FPM_TAN</td>
+<td>tan(ref)</td>
+</tr>
+</table>
+
+<h2><a class="anchor" id="memory-references" href="#memory-references"><i class="fa fa-link"></i></a>Memory References</h2>
+
+<p>Memory references generate a pointer value to be used by the respective
+loads or stores. To preserve higher-level semantics and to simplify
+alias analysis they are not decomposed into lower-level operations (like
+for <code>XLOAD</code> references). Some of them can be (partially) fused into the
+operands of load or store instructions by most backends.</p>
+
+<table>
+<tr>
+<th width="80"><center>OP</center></th>
+<th width="35"><center>Left</center></th>
+<th width="35"><center>Right</center></th>
+<th>Description</th>
+</tr>
+<tr>
+<td>AREF</td>
+<td>array</td>
+<td>index</td>
+<td>Array reference</td>
+</tr>
+<tr>
+<td>HREFK</td>
+<td>hash</td>
+<td>kslot</td>
+<td>Constant hash reference</td>
+</tr>
+<tr>
+<td>HREF</td>
+<td>tab</td>
+<td>key</td>
+<td>Hash reference</td>
+</tr>
+<tr>
+<td>NEWREF</td>
+<td>tab</td>
+<td>key</td>
+<td>Create new reference</td>
+</tr>
+<tr>
+<td>UREFO</td>
+<td>func</td>
+<td>#uv</td>
+<td>Open upvalue reference</td>
+</tr>
+<tr>
+<td>UREFC</td>
+<td>func</td>
+<td>#uv</td>
+<td>Closed upvalue reference</td>
+</tr>
+<tr>
+<td>FREF</td>
+<td>obj</td>
+<td>#field</td>
+<td>Object field reference</td>
+</tr>
+<tr>
+<td>STRREF</td>
+<td>str</td>
+<td>index</td>
+<td>String reference</td>
+</tr>
+</table>
+
+<p><code>AREF</code> and <code>HREFK</code> reference an <code>FLOAD</code> of the array part or hash part
+of a Lua table with their left operand. <code>HREF</code> and <code>NEWREF</code> directly
+reference a Lua table, since they need to search or extend the table.
+<code>HREFK</code> is specialized to the hash slot where the constant key is
+expected -- see <code>KSLOT</code> above for its right operand. <code>NEWREF</code> assumes
+the key does <em>not</em> exist in the Lua table, yet.</p>
+
+<p>The left operand of <code>UREFO</code> and <code>UREFC</code> reference the current function
+(closure). The right operand holds an upvalue disambiguation hash in the
+lowest 8 bits and the upvalue index in the higher bits.</p>
+
+<p>For the possible values of the field ID in <code>FREF</code>, see IRFLDEF in
+<code>src/lj_ir.h</code>.</p>
+
+<h2><a class="anchor" id="loads-and-stores" href="#loads-and-stores"><i class="fa fa-link"></i></a>Loads and Stores</h2>
+
+<p>Loads and stores operate on memory references and either load a value
+(result of the instruction) or store a value (the right operand). To
+preserve higher-level semantics and to simplify alias analysis they
+are not unified or decomposed into lower-level operations.</p>
+
+<table>
+<tr>
+<th width="80"><center>OP</center></th>
+<th width="35"><center>Left</center></th>
+<th width="35"><center>Right</center></th>
+<th>Description</th>
+</tr>
+<tr>
+<td>ALOAD</td>
+<td>aref</td>
+<td> </td>
+<td>Array load</td>
+</tr>
+<tr>
+<td>HLOAD</td>
+<td>href</td>
+<td> </td>
+<td>Hash load</td>
+</tr>
+<tr>
+<td>ULOAD</td>
+<td>uref</td>
+<td> </td>
+<td>Upvalue load</td>
+</tr>
+<tr>
+<td>FLOAD</td>
+<td>obj</td>
+<td>#field</td>
+<td>Object field load</td>
+</tr>
+<tr>
+<td>XLOAD</td>
+<td>xref</td>
+<td>#flags</td>
+<td>Extended load</td>
+</tr>
+<tr>
+<td>SLOAD</td>
+<td>#slot</td>
+<td>#flags</td>
+<td>Stack slot load</td>
+</tr>
+<tr>
+<td>VLOAD</td>
+<td>aref</td>
+<td> </td>
+<td>Vararg slot load</td>
+</tr>
+<tr>
+<td>ASTORE</td>
+<td>aref</td>
+<td>val</td>
+<td>Array store</td>
+</tr>
+<tr>
+<td>HSTORE</td>
+<td>href</td>
+<td>val</td>
+<td>Hash store</td>
+</tr>
+<tr>
+<td>USTORE</td>
+<td>uref</td>
+<td>val</td>
+<td>Upvalue store</td>
+</tr>
+<tr>
+<td>FSTORE</td>
+<td>fref</td>
+<td>val</td>
+<td>Object field store</td>
+</tr>
+<tr>
+<td>XSTORE</td>
+<td>xref</td>
+<td>val</td>
+<td>Extended store</td>
+</tr>
+</table>
+
+<p><code>FLOAD</code> and <code>SLOAD</code> inline their memory references, all other loads and
+all stores have a memory reference as their left operand. All loads
+except <code>FLOAD</code> and <code>XLOAD</code> work on tagged values and simultaneously
+function as a guarded assertion that checks the loaded type.</p>
+
+<p><code>FLOAD</code> and <code>FSTORE</code> access specific fields inside objects, identified
+by the field ID of their reference (e.g. the metatable field in table or
+userdata objects).</p>
+
+<p><code>XLOAD</code> works on lower-level types and the memory reference is either a
+<code>STRREF</code> or decomposed into lower-level operations, a combination of
+<code>ADD</code>, <code>MUL</code> or <code>BSHL</code> of pointers, offsets or indexes.</p>
+
+<p>The slot number of <code>SLOAD</code> is relative to the starting frame of a trace,
+where #0 indicates the closure/frame slot and #1 the first variable slot
+(corresponding to slot 0 of the bytecode). Note that <code>RETF</code> shifts down
+BASE and subsequent <code>SLOAD</code> instructions refer to slots of the lower
+frame(s).</p>
+
+<p>Note there are no store operations for stack slots or vararg slots. All
+stores to stack slots are effectively sunk into exits or side traces.
+Snapshots efficiently manage the references that are to be stored.
+Vararg slots are read-only from the perspective of the called vararg
+function.</p>
+
+<p>For the possible values of the field ID in <code>FLOAD</code> and the flags in
+<code>SLOAD</code> and <code>XLOAD</code>, see IRFLDEF, IRSLOAD_* and IRXLOAD_* in
+<code>src/lj_ir.h</code>.</p>
+
+<h2><a class="anchor" id="1-allocations" href="#1-allocations"><i class="fa fa-link"></i></a>Allocations</h2>
+
+<h2><a class="anchor" id="barriers" href="#barriers"><i class="fa fa-link"></i></a>Barriers</h2>
+
+<h2><a class="anchor" id="1-type-conversions" href="#1-type-conversions"><i class="fa fa-link"></i></a>Type Conversions</h2>
+
+<h2><a class="anchor" id="1-calls" href="#1-calls"><i class="fa fa-link"></i></a>Calls</h2>
+
+<h2><a class="anchor" id="miscellaneous-ops" href="#miscellaneous-ops"><i class="fa fa-link"></i></a>Miscellaneous Ops</h2>
+
+<table>
+<tr>
+<th width="80"><center>OP</center></th>
+<th width="35"><center>Left</center></th>
+<th width="35"><center>Right</center></th>
+<th>Description</th>
+</tr>
+<tr>
+<td>NOP</td>
+<td> </td>
+<td> </td>
+<td>No operation</td>
+</tr>
+<tr>
+<td>BASE</td>
+<td>#parent</td>
+<td>#exit</td>
+<td>BASE reference, link to parent side exit</td>
+</tr>
+<tr>
+<td>PVAL</td>
+<td>#pref</td>
+<td> </td>
+<td>Parent value reference</td>
+</tr>
+<tr>
+<td>GCSTEP</td>
+<td> </td>
+<td> </td>
+<td>Explicit GC step</td>
+</tr>
+<tr>
+<td>HIOP</td>
+<td>left</td>
+<td>right</td>
+<td>Hold hi-word operands of split instructions</td>
+</tr>
+<tr>
+<td>LOOP</td>
+<td> </td>
+<td> </td>
+<td>Separator before loop-part of a trace</td>
+</tr>
+<tr>
+<td>USE</td>
+<td>ref</td>
+<td> </td>
+<td>Explicit use of a reference</td>
+</tr>
+<tr>
+<td>PHI</td>
+<td>left</td>
+<td>right</td>
+<td>PHI node for loops</td>
+</tr>
+<tr>
+<td>RENAME</td>
+<td>ref</td>
+<td>#snap</td>
+<td>Renamed reference below snapshot</td>
+</tr>
+</table>
+
+<p><code>NOP</code> is used to patch previously emitted IR instructions, in case they
+cannot eliminated or ignored on-the-fly.</p>
+
+<p><code>BASE</code> is a fixed instruction at REF_BASE, used to hold the BASE
+pointer. It's implicitly referenced by e.g. <code>SLOAD</code>.</p>
+
+<p><code>PVAL</code> provides an alternate way to reference specific values of the
+parent trace, which cannot be referenced with a parent <code>SLOAD</code> (since
+they are not stored in the stack at the snapshot).</p>
+
+<p><code>GCSTEP</code> provides an explicit GC step for certain cases where it needs
+to be done <em>after</em> the initial snapshot.</p>
+
+<p><code>HIOP</code> must immediately follow a split instruction (split 64 bit op or
+soft-fp op).</p>
+
+<p><code>USE</code> is needed to keep instructions for their side-effects that would
+otherwise be eliminated: e.g. an <code>ADDOV</code> that's used to check for
+potential integer overflow of loop bounds.</p>
+
+<p><code>PHI</code> instructions are positioned at the end of a looping trace. The
+left operand holds a reference to the initial value, the right operand
+holds a reference to the value after each loop iteration.</p>
+
+<p><code>RENAME</code> is generated by the register allocator, when it renames a
+register for a value (for efficiency or to preserve PHI registers). A
+<code>RENAME</code> instruction holds the register used for the reference below the
+given snapshot. Multiple instances of this may be present for the same
+reference. The originally referenced instruction holds the register used
+above of the highest such snapshot (if any).</p>
+
+    </div>
+  </div>
+  </div>
+
+</div>
+<div id="footer">
+  <p id="last-edit">Last edited by <b>Garth Gillespie (garthmz)</b>, 2018-02-22 03:03:44</p>
+    <p>
+      <a id="delete-link" href="/luajit-wiki/SSA-IR-2.0" data-confirm="Are you sure you want to delete this page?"><span>Delete this Page</span></a>
+    </p>
+</div>
+</div>
+
+<form name="rename" method="POST" action="/rename/SSA-IR-2.0">
+  <input type="hidden" name="rename"/>
+  <input type="hidden" name="message"/>
+</form>
+<div id="cust-footer">
+  <p>Sponsored by <a href="http://www.networkradius.com">Network RADIUS</a></p>
+</div>
+
+
+</body>
+</html>

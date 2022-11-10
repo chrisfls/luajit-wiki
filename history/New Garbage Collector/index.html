@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-type" content="text/html;charset=utf-8">
+  <link rel=”alternate” type=”application/rss+xml” title=”wiki.luajit.org edit/commit log” href=”http://wiki.luajit.org/feeds/global.xml” />
+ 
+  <link rel="stylesheet" type="text/css" href="/luajit-wiki/css/gollum.css" media="all">
+  <link rel="stylesheet" type="text/css" href="/luajit-wiki/css/editor.css" media="all">
+  <link rel="stylesheet" type="text/css" href="/luajit-wiki/css/dialog.css" media="all">
+  <link rel="stylesheet" type="text/css" href="/luajit-wiki/css/template.css" media="all">
+ 
+  <link rel="stylesheet" type="text/css" href="/luajit-wiki/css/custom.css" media="all">
+  <!--[if IE 7]>
+  <link rel="stylesheet" type="text/css" href="/luajit-wiki/css/ie7.css" media="all">
+  <![endif]-->
+  
+  <script type="text/javascript" src="/luajit-wiki/javascript/jquery.js"></script>
+  <script type="text/javascript" src="/luajit-wiki/javascript/gollum.js"></script>
+  <script type="text/javascript" src="/luajit-wiki/javascript/gollum.dialog.js"></script>
+  <script type="text/javascript" src="/luajit-wiki/javascript/gollum.placeholder.js"></script>
+  
+  <script type="text/javascript" 
+    src="/luajit-wiki/javascript/editor/gollum.editor.js"></script>
+  <title>New Garbage Collector</title>
+</head>
+<body>
+<div id="cust-site">
+  <a href="http://luajit.org"><span>Lua<span id="cust-logo">JIT</span></span></a>
+</div>
+<div id="cust-header">
+  <h1>The LuaJIT Wiki</h1>
+</div>
+<div id="user">
+    <p>
+      not logged in | <strong><a href="/luajit-wiki/__omnigollum__/login">[Login]</a></strong>
+    <p>
+</div>
+
+<div id="wiki-wrapper" class="history">
+<div id="head">
+  <h1>History for <strong>New Garbage Collector</strong></h1>
+  <ul class="actions">
+    <li class="minibutton">
+      <div id="searchbar">
+        <form action="/search" method="get" id="search-form">
+        <div id="searchbar-fauxtext">
+          <input type="text" name="q" id="search-query" value="Search&hellip;" autocomplete="off">
+          <a href="#" id="search-submit" title="Search this wiki">
+            <span>Search</span>
+          </a>
+        </div>
+        </form>
+      </div>    </li>
+    <li class="minibutton"><a href="/luajit-wiki/New%2BGarbage%2BCollector"
+       class="action-view-page">View Page</a></li>
+    <li class="minibutton"><a href="/luajit-wiki/edit/New%2BGarbage%2BCollector"
+       class="action-edit-page">Edit Page</a></li>
+  </ul>
+</div>
+<div id="wiki-history">
+  
+  <ul class="actions">
+    <li class="minibutton"><a href="javascript:void(0);"
+       class="action-compare-revision">Compare Revisions</a></li>
+  </ul>
+
+  <form name="compare-versions" id="version-form" method="post"
+   action="/compare/New%2BGarbage%2BCollector">
+  <fieldset>
+  <table>
+    <tbody>
+      
+      <tr>
+        <td class="checkbox">
+          <input type="checkbox" name="versions[]" value="28becbd8c04abc13bc8ccdf47b77182b7d9d74ce">
+        </td>
+        <td class="author">
+          <a href="javascript:void(0)">
+            <img src="https://secure.gravatar.com/avatar/18126e7bd3f84b3f3e4df094def5b7de?s=16"
+             alt="avatar: Mike Pall" class="mini-gravatar">
+            <span class="username">Mike Pall</span>
+          </a>
+        </td>
+        <td class="commit-name">
+          <span class="time-elapsed">June 01, 2012:</span>&nbsp;
+          NEWGC: Fix spelling and wording.
+          [<a href="/luajit-wiki/New%2BGarbage%2BCollector/28becbd8c04abc13bc8ccdf47b77182b7d9d74ce" title="View commit">28becbd</a>]
+        </td>
+      </tr>
+      <tr>
+        <td class="checkbox">
+          <input type="checkbox" name="versions[]" value="a42444af4f0faad17b395ce92ea94e185f60087e">
+        </td>
+        <td class="author">
+          <a href="javascript:void(0)">
+            <img src="https://secure.gravatar.com/avatar/e2b783689a83a2187923729774f6db19?s=16"
+             alt="avatar: Geoff Leyland" class="mini-gravatar">
+            <span class="username">Geoff Leyland</span>
+          </a>
+        </td>
+        <td class="commit-name">
+          <span class="time-elapsed">June 01, 2012:</span>&nbsp;
+          sweeped -&gt; swept in NEWGC
+          [<a href="/luajit-wiki/New%2BGarbage%2BCollector/a42444af4f0faad17b395ce92ea94e185f60087e" title="View commit">a42444a</a>]
+        </td>
+      </tr>
+      <tr>
+        <td class="checkbox">
+          <input type="checkbox" name="versions[]" value="54d315be276bad353d65f97ad89c674d91242d03">
+        </td>
+        <td class="author">
+          <a href="javascript:void(0)">
+            <img src="https://secure.gravatar.com/avatar/18126e7bd3f84b3f3e4df094def5b7de?s=16"
+             alt="avatar: Mike Pall" class="mini-gravatar">
+            <span class="username">Mike Pall</span>
+          </a>
+        </td>
+        <td class="commit-name">
+          <span class="time-elapsed">May 31, 2012:</span>&nbsp;
+          NEWGC: Minor additions to intro and rationale.
+          [<a href="/luajit-wiki/New%2BGarbage%2BCollector/54d315be276bad353d65f97ad89c674d91242d03" title="View commit">54d315b</a>]
+        </td>
+      </tr>
+      <tr>
+        <td class="checkbox">
+          <input type="checkbox" name="versions[]" value="6bfdfb5e223685b257ada9f98d2543bbf31a76fb">
+        </td>
+        <td class="author">
+          <a href="javascript:void(0)">
+            <img src="https://secure.gravatar.com/avatar/18126e7bd3f84b3f3e4df094def5b7de?s=16"
+             alt="avatar: Mike Pall" class="mini-gravatar">
+            <span class="username">Mike Pall</span>
+          </a>
+        </td>
+        <td class="commit-name">
+          <span class="time-elapsed">May 31, 2012:</span>&nbsp;
+          NEWGC: Minor changes. Link to home page.
+          [<a href="/luajit-wiki/New%2BGarbage%2BCollector/6bfdfb5e223685b257ada9f98d2543bbf31a76fb" title="View commit">6bfdfb5</a>]
+        </td>
+      </tr>
+      <tr>
+        <td class="checkbox">
+          <input type="checkbox" name="versions[]" value="fdc847777caacc1f4ecec0fe1af944c91b90cc59">
+        </td>
+        <td class="author">
+          <a href="javascript:void(0)">
+            <img src="https://secure.gravatar.com/avatar/18126e7bd3f84b3f3e4df094def5b7de?s=16"
+             alt="avatar: Mike Pall" class="mini-gravatar">
+            <span class="username">Mike Pall</span>
+          </a>
+        </td>
+        <td class="commit-name">
+          <span class="time-elapsed">May 31, 2012:</span>&nbsp;
+          NEWGC: Add note to sponsors.
+          [<a href="/luajit-wiki/New%2BGarbage%2BCollector/fdc847777caacc1f4ecec0fe1af944c91b90cc59" title="View commit">fdc8477</a>]
+        </td>
+      </tr>
+      <tr>
+        <td class="checkbox">
+          <input type="checkbox" name="versions[]" value="12231c69b1687f58544dff9a61ad11b3b9087c82">
+        </td>
+        <td class="author">
+          <a href="javascript:void(0)">
+            <img src="https://secure.gravatar.com/avatar/18126e7bd3f84b3f3e4df094def5b7de?s=16"
+             alt="avatar: Mike Pall" class="mini-gravatar">
+            <span class="username">Mike Pall</span>
+          </a>
+        </td>
+        <td class="commit-name">
+          <span class="time-elapsed">May 31, 2012:</span>&nbsp;
+          NEWGC: Describe sweep phase.
+          [<a href="/luajit-wiki/New%2BGarbage%2BCollector/12231c69b1687f58544dff9a61ad11b3b9087c82" title="View commit">12231c6</a>]
+        </td>
+      </tr>
+      <tr>
+        <td class="checkbox">
+          <input type="checkbox" name="versions[]" value="e5563aa0e87e534fbadf5e71ae116db2d78af2ec">
+        </td>
+        <td class="author">
+          <a href="javascript:void(0)">
+            <img src="https://secure.gravatar.com/avatar/18126e7bd3f84b3f3e4df094def5b7de?s=16"
+             alt="avatar: Mike Pall" class="mini-gravatar">
+            <span class="username">Mike Pall</span>
+          </a>
+        </td>
+        <td class="commit-name">
+          <span class="time-elapsed">May 31, 2012:</span>&nbsp;
+          NEWGC: Describe allocators.
+          [<a href="/luajit-wiki/New%2BGarbage%2BCollector/e5563aa0e87e534fbadf5e71ae116db2d78af2ec" title="View commit">e5563aa</a>]
+        </td>
+      </tr>
+      <tr>
+        <td class="checkbox">
+          <input type="checkbox" name="versions[]" value="391fdcdd0623e5512da2920be24687964d858f87">
+        </td>
+        <td class="author">
+          <a href="javascript:void(0)">
+            <img src="https://secure.gravatar.com/avatar/18126e7bd3f84b3f3e4df094def5b7de?s=16"
+             alt="avatar: Mike Pall" class="mini-gravatar">
+            <span class="username">Mike Pall</span>
+          </a>
+        </td>
+        <td class="commit-name">
+          <span class="time-elapsed">May 30, 2012:</span>&nbsp;
+          NEWGC: Minor changes.
+          [<a href="/luajit-wiki/New%2BGarbage%2BCollector/391fdcdd0623e5512da2920be24687964d858f87" title="View commit">391fdcd</a>]
+        </td>
+      </tr>
+      <tr>
+        <td class="checkbox">
+          <input type="checkbox" name="versions[]" value="d4492a770efb74a68a612bcf965aea4f0912e95e">
+        </td>
+        <td class="author">
+          <a href="javascript:void(0)">
+            <img src="https://secure.gravatar.com/avatar/18126e7bd3f84b3f3e4df094def5b7de?s=16"
+             alt="avatar: Mike Pall" class="mini-gravatar">
+            <span class="username">Mike Pall</span>
+          </a>
+        </td>
+        <td class="commit-name">
+          <span class="time-elapsed">May 30, 2012:</span>&nbsp;
+          NEWGC: Describe mark phase.
+          [<a href="/luajit-wiki/New%2BGarbage%2BCollector/d4492a770efb74a68a612bcf965aea4f0912e95e" title="View commit">d4492a7</a>]
+        </td>
+      </tr>
+      <tr>
+        <td class="checkbox">
+          <input type="checkbox" name="versions[]" value="9d9240b837576dadfd34ef4e5acc9c2de4d20c69">
+        </td>
+        <td class="author">
+          <a href="javascript:void(0)">
+            <img src="https://secure.gravatar.com/avatar/18126e7bd3f84b3f3e4df094def5b7de?s=16"
+             alt="avatar: Mike Pall" class="mini-gravatar">
+            <span class="username">Mike Pall</span>
+          </a>
+        </td>
+        <td class="commit-name">
+          <span class="time-elapsed">May 30, 2012:</span>&nbsp;
+          NEWGC: Describe arenas.
+          [<a href="/luajit-wiki/New%2BGarbage%2BCollector/9d9240b837576dadfd34ef4e5acc9c2de4d20c69" title="View commit">9d9240b</a>]
+        </td>
+      </tr>
+      <tr>
+        <td class="checkbox">
+          <input type="checkbox" name="versions[]" value="f52aeaed6701dfb3426de5b6f1fbf35ea5a09175">
+        </td>
+        <td class="author">
+          <a href="javascript:void(0)">
+            <img src="https://secure.gravatar.com/avatar/18126e7bd3f84b3f3e4df094def5b7de?s=16"
+             alt="avatar: Mike Pall" class="mini-gravatar">
+            <span class="username">Mike Pall</span>
+          </a>
+        </td>
+        <td class="commit-name">
+          <span class="time-elapsed">May 30, 2012:</span>&nbsp;
+          NEWGC: Minor changes to wording.
+          [<a href="/luajit-wiki/New%2BGarbage%2BCollector/f52aeaed6701dfb3426de5b6f1fbf35ea5a09175" title="View commit">f52aeae</a>]
+        </td>
+      </tr>
+      <tr>
+        <td class="checkbox">
+          <input type="checkbox" name="versions[]" value="58e318fac4a8ddb2244ae0b70d901bdf19030f0c">
+        </td>
+        <td class="author">
+          <a href="javascript:void(0)">
+            <img src="https://secure.gravatar.com/avatar/18126e7bd3f84b3f3e4df094def5b7de?s=16"
+             alt="avatar: Mike Pall" class="mini-gravatar">
+            <span class="username">Mike Pall</span>
+          </a>
+        </td>
+        <td class="commit-name">
+          <span class="time-elapsed">May 30, 2012:</span>&nbsp;
+          NEWGC: Describe generational GC.
+          [<a href="/luajit-wiki/New%2BGarbage%2BCollector/58e318fac4a8ddb2244ae0b70d901bdf19030f0c" title="View commit">58e318f</a>]
+        </td>
+      </tr>
+      <tr>
+        <td class="checkbox">
+          <input type="checkbox" name="versions[]" value="1e910a8fe8c6192fbff79734796a1c1b4735c5de">
+        </td>
+        <td class="author">
+          <a href="javascript:void(0)">
+            <img src="https://secure.gravatar.com/avatar/18126e7bd3f84b3f3e4df094def5b7de?s=16"
+             alt="avatar: Mike Pall" class="mini-gravatar">
+            <span class="username">Mike Pall</span>
+          </a>
+        </td>
+        <td class="commit-name">
+          <span class="time-elapsed">May 29, 2012:</span>&nbsp;
+          NEWGC: More on GC algorithms.
+          [<a href="/luajit-wiki/New%2BGarbage%2BCollector/1e910a8fe8c6192fbff79734796a1c1b4735c5de" title="View commit">1e910a8</a>]
+        </td>
+      </tr>
+      <tr>
+        <td class="checkbox">
+          <input type="checkbox" name="versions[]" value="4a42b6c75287a3f96dfa2c74982ddf49561ddf01">
+        </td>
+        <td class="author">
+          <a href="javascript:void(0)">
+            <img src="https://secure.gravatar.com/avatar/e2b783689a83a2187923729774f6db19?s=16"
+             alt="avatar: Geoff Leyland" class="mini-gravatar">
+            <span class="username">Geoff Leyland</span>
+          </a>
+        </td>
+        <td class="commit-name">
+          <span class="time-elapsed">May 29, 2012:</span>&nbsp;
+          NEWGC: minor grammar. I'm guessing Mike means '16-byte sized cells' (cells of 16 bytes) as opposed to '16 byte-sized cells' (cells of 1 byte)
+          [<a href="/luajit-wiki/New%2BGarbage%2BCollector/4a42b6c75287a3f96dfa2c74982ddf49561ddf01" title="View commit">4a42b6c</a>]
+        </td>
+      </tr>
+      <tr>
+        <td class="checkbox">
+          <input type="checkbox" name="versions[]" value="6b6b7bf5b64fb425105ad6e1b01a3ed66069f980">
+        </td>
+        <td class="author">
+          <a href="javascript:void(0)">
+            <img src="https://secure.gravatar.com/avatar/18126e7bd3f84b3f3e4df094def5b7de?s=16"
+             alt="avatar: Mike Pall" class="mini-gravatar">
+            <span class="username">Mike Pall</span>
+          </a>
+        </td>
+        <td class="commit-name">
+          <span class="time-elapsed">May 26, 2012:</span>&nbsp;
+          NEWGC: Reorder text and images.
+          [<a href="/luajit-wiki/New%2BGarbage%2BCollector/6b6b7bf5b64fb425105ad6e1b01a3ed66069f980" title="View commit">6b6b7bf</a>]
+        </td>
+      </tr>
+      <tr>
+        <td class="checkbox">
+          <input type="checkbox" name="versions[]" value="01fd5e5ca4f95d45e0c4b8a98b49f2b656cc23dd">
+        </td>
+        <td class="author">
+          <a href="javascript:void(0)">
+            <img src="https://secure.gravatar.com/avatar/18126e7bd3f84b3f3e4df094def5b7de?s=16"
+             alt="avatar: Mike Pall" class="mini-gravatar">
+            <span class="username">Mike Pall</span>
+          </a>
+        </td>
+        <td class="commit-name">
+          <span class="time-elapsed">May 26, 2012:</span>&nbsp;
+          NEWGC: Describe two-, three- and quad-color GC algorithms.
+          [<a href="/luajit-wiki/New%2BGarbage%2BCollector/01fd5e5ca4f95d45e0c4b8a98b49f2b656cc23dd" title="View commit">01fd5e5</a>]
+        </td>
+      </tr>
+      <tr>
+        <td class="checkbox">
+          <input type="checkbox" name="versions[]" value="180044f711b45c3830a728ad4f276a3f0faa7d66">
+        </td>
+        <td class="author">
+          <a href="javascript:void(0)">
+            <img src="https://secure.gravatar.com/avatar/18126e7bd3f84b3f3e4df094def5b7de?s=16"
+             alt="avatar: Mike Pall" class="mini-gravatar">
+            <span class="username">Mike Pall</span>
+          </a>
+        </td>
+        <td class="commit-name">
+          <span class="time-elapsed">May 25, 2012:</span>&nbsp;
+          NEWGC: Reformatting.
+          [<a href="/luajit-wiki/New%2BGarbage%2BCollector/180044f711b45c3830a728ad4f276a3f0faa7d66" title="View commit">180044f</a>]
+        </td>
+      </tr>
+      <tr>
+        <td class="checkbox">
+          <input type="checkbox" name="versions[]" value="a6304496356f1a3bf02ea8cc7cd46757e52612f2">
+        </td>
+        <td class="author">
+          <a href="javascript:void(0)">
+            <img src="https://secure.gravatar.com/avatar/18126e7bd3f84b3f3e4df094def5b7de?s=16"
+             alt="avatar: Mike Pall" class="mini-gravatar">
+            <span class="username">Mike Pall</span>
+          </a>
+        </td>
+        <td class="commit-name">
+          <span class="time-elapsed">May 25, 2012:</span>&nbsp;
+          NEWGC: Reorganize sections.
+          [<a href="/luajit-wiki/New%2BGarbage%2BCollector/a6304496356f1a3bf02ea8cc7cd46757e52612f2" title="View commit">a630449</a>]
+        </td>
+      </tr>
+      <tr>
+        <td class="checkbox">
+          <input type="checkbox" name="versions[]" value="0ea12f2d3ddec49e423dfbd6f384eaf49a74fb0a">
+        </td>
+        <td class="author">
+          <a href="javascript:void(0)">
+            <img src="https://secure.gravatar.com/avatar/18126e7bd3f84b3f3e4df094def5b7de?s=16"
+             alt="avatar: Mike Pall" class="mini-gravatar">
+            <span class="username">Mike Pall</span>
+          </a>
+        </td>
+        <td class="commit-name">
+          <span class="time-elapsed">May 25, 2012:</span>&nbsp;
+          NEWGC: Add rationale, goals and overview.
+          [<a href="/luajit-wiki/New%2BGarbage%2BCollector/0ea12f2d3ddec49e423dfbd6f384eaf49a74fb0a" title="View commit">0ea12f2</a>]
+        </td>
+      </tr>
+      <tr>
+        <td class="checkbox">
+          <input type="checkbox" name="versions[]" value="91c7ba60af52dad0925ffdf5d44c85b11bddfa11">
+        </td>
+        <td class="author">
+          <a href="javascript:void(0)">
+            <img src="https://secure.gravatar.com/avatar/18126e7bd3f84b3f3e4df094def5b7de?s=16"
+             alt="avatar: Mike Pall" class="mini-gravatar">
+            <span class="username">Mike Pall</span>
+          </a>
+        </td>
+        <td class="commit-name">
+          <span class="time-elapsed">May 24, 2012:</span>&nbsp;
+          Next try to get images to display.
+          [<a href="/luajit-wiki/New%2BGarbage%2BCollector/91c7ba60af52dad0925ffdf5d44c85b11bddfa11" title="View commit">91c7ba6</a>]
+        </td>
+      </tr>
+      <tr>
+        <td class="checkbox">
+          <input type="checkbox" name="versions[]" value="93ab615bdb63248b2fbd65023edb98ad5e82aafb">
+        </td>
+        <td class="author">
+          <a href="javascript:void(0)">
+            <img src="https://secure.gravatar.com/avatar/18126e7bd3f84b3f3e4df094def5b7de?s=16"
+             alt="avatar: Mike Pall" class="mini-gravatar">
+            <span class="username">Mike Pall</span>
+          </a>
+        </td>
+        <td class="commit-name">
+          <span class="time-elapsed">May 24, 2012:</span>&nbsp;
+          Start of new GC design document.
+          [<a href="/luajit-wiki/New%2BGarbage%2BCollector/93ab615bdb63248b2fbd65023edb98ad5e82aafb" title="View commit">93ab615</a>]
+        </td>
+      </tr>
+      
+    </tbody>
+  </table>
+  </fieldset>
+  </form>
+</div>
+<div id="footer">
+  <ul class="actions">
+    <li class="minibutton"><a href="javascript:void(0);"
+       class="action-compare-revision">Compare Revisions</a></li>
+       
+    <!-- only show this button if we have more than 20 revisions -->
+    <li class="minibutton"><a href="#"
+       class="action-back-to-top">Back to Top</a></li>
+  </ul>
+</div>
+</div>
+
+
+</body>
+</html>

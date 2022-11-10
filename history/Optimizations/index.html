@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-type" content="text/html;charset=utf-8">
+  <meta name="MobileOptimized" content="width">
+  <meta name="HandheldFriendly" content="true">
+  <meta name="viewport" content="width=device-width">
+  <link rel=”alternate” type=”application/rss+xml” title=”wiki.luajit.org edit and commit log” href=”http://wiki.luajit.org/feeds/global.xml” />
+  <link rel="stylesheet" type="text/css" href="/luajit-wiki/css/gollum.css" media="all">
+  <link rel="stylesheet" type="text/css" href="/luajit-wiki/css/editor.css" media="all">
+  <link rel="stylesheet" type="text/css" href="/luajit-wiki/css/dialog.css" media="all">
+  <link rel="stylesheet" type="text/css" href="/luajit-wiki/css/template.css" media="all">
+  <link rel="stylesheet" type="text/css" href="/luajit-wiki/css/print.css" media="print">
+  <link rel="stylesheet" type="text/css" href="/luajit-wiki/custom.css" media="all">
+  
+
+  <!--[if IE 7]>
+  <link rel="stylesheet" type="text/css" href="/luajit-wiki/css/ie7.css" media="all">
+  <![endif]-->
+
+  <script>
+      var baseUrl = '';
+      var uploadDest   = '';
+      var pageFullPath = 'Optimizations';
+  </script>
+  <script type="text/javascript" src="/luajit-wiki/javascript/jquery-1.7.2.min.js"></script>
+  <script type="text/javascript" src="/luajit-wiki/javascript/mousetrap.min.js"></script>
+  <script type="text/javascript" src="/luajit-wiki/javascript/gollum.js"></script>
+  <script type="text/javascript" src="/luajit-wiki/javascript/gollum.dialog.js"></script>
+  <script type="text/javascript" src="/luajit-wiki/javascript/gollum.placeholder.js"></script>
+  <script type="text/javascript" src="/luajit-wiki/javascript/editor/gollum.editor.js"></script>
+
+  
+
+  <title>Optimizations</title>
+</head>
+<body>
+
+<div id="cust-site">
+  <a href="http://luajit.org"><span>Lua<span id="cust-logo">JIT</span></span></a>
+</div>
+<div id="cust-header">
+  <h1>The LuaJIT Wiki</h1>
+</div>
+<div id="user">
+    <p>
+      not logged in | <strong><a href="/luajit-wiki/__omnigollum__/login">[Login]</a></strong>
+    <p>
+</div>
+
+<div id="wiki-wrapper" class="history">
+<div id="head">
+  <h1>History for <strong>Optimizations</strong></h1>
+  <ul class="actions">
+    <li class="minibutton">
+      <div id="searchbar">
+        <form action="/search" method="get" id="search-form">
+        <div id="searchbar-fauxtext">
+          <input type="text" name="q" id="search-query" value="Search&hellip;" autocomplete="off">
+          <a href="#" id="search-submit" title="Search this wiki">
+            <span>Search</span>
+          </a>
+        </div>
+        </form>
+      </div>    </li>
+    <li class="minibutton"><a href="/luajit-wiki/Optimizations"
+       class="action-view-page">View Page</a></li>
+      <li class="minibutton"><a href="/luajit-wiki/edit/Optimizations"
+         class="action-edit-page">Edit Page</a></li>
+  </ul>
+</div>
+<div id="wiki-history">
+
+  <ul class="actions">
+    <li class="minibutton"><a href="javascript:void(0);"
+       class="action-compare-revision">Compare Revisions</a></li>
+  </ul>
+
+  <form name="compare-versions" id="version-form" method="post"
+   action="/compare/Optimizations">
+  <fieldset>
+  <table>
+    <tbody>
+
+      <tr>
+        <td class="checkbox">
+          <input type="checkbox" name="versions[]" value="06a83cca9b2390efaf5f4ca12f896d38eb307022">
+        </td>
+        <td class="author">
+            <a href="javascript:void(0)">
+            <img src="https://secure.gravatar.com/avatar/33e568baba35cd1512dcd8adacc393d7?s=16"
+                alt="avatar: Arran Cudbard-Bell (arr2036)" class="mini-gravatar"/>
+                <span class="username">Arran Cudbard-Bell (arr2036)</span>
+            </a>
+        </td>
+        <td class="commit-name">
+          <span class="time-elapsed" title="2014-03-29 23:39:57 +0000">March 29, 2014:</span>&nbsp;
+          Remove red bars in text
+          [<a href="/luajit-wiki/Optimizations/06a83cca9b2390efaf5f4ca12f896d38eb307022" title="View commit">06a83cc</a>]
+        </td>
+      </tr>
+      <tr>
+        <td class="checkbox">
+          <input type="checkbox" name="versions[]" value="ba5680a1772d79a7ed3e176ed32dd225e0f1f13f">
+        </td>
+        <td class="author">
+            <a href="javascript:void(0)">
+            <img src="https://secure.gravatar.com/avatar/18126e7bd3f84b3f3e4df094def5b7de?s=16"
+                alt="avatar: Mike Pall" class="mini-gravatar"/>
+                <span class="username">Mike Pall</span>
+            </a>
+        </td>
+        <td class="commit-name">
+          <span class="time-elapsed" title="2012-08-16 21:35:21 +0000">August 16, 2012:</span>&nbsp;
+          Optimizations: Minor additions.
+          [<a href="/luajit-wiki/Optimizations/ba5680a1772d79a7ed3e176ed32dd225e0f1f13f" title="View commit">ba5680a</a>]
+        </td>
+      </tr>
+      <tr>
+        <td class="checkbox">
+          <input type="checkbox" name="versions[]" value="632dd81d4c0cc12400aa71dfec0c8274f5e132b6">
+        </td>
+        <td class="author">
+            <a href="javascript:void(0)">
+            <img src="https://secure.gravatar.com/avatar/18126e7bd3f84b3f3e4df094def5b7de?s=16"
+                alt="avatar: Mike Pall" class="mini-gravatar"/>
+                <span class="username">Mike Pall</span>
+            </a>
+        </td>
+        <td class="commit-name">
+          <span class="time-elapsed" title="2012-07-10 21:23:25 +0000">July 10, 2012:</span>&nbsp;
+          Add Allocation Sinking Optimization page.
+          [<a href="/luajit-wiki/Optimizations/632dd81d4c0cc12400aa71dfec0c8274f5e132b6" title="View commit">632dd81</a>]
+        </td>
+      </tr>
+      <tr>
+        <td class="checkbox">
+          <input type="checkbox" name="versions[]" value="8a08a65a6cc6c1faf68fd9104dcf48dc7e30aa06">
+        </td>
+        <td class="author">
+            <a href="javascript:void(0)">
+            <img src="https://secure.gravatar.com/avatar/18126e7bd3f84b3f3e4df094def5b7de?s=16"
+                alt="avatar: Mike Pall" class="mini-gravatar"/>
+                <span class="username">Mike Pall</span>
+            </a>
+        </td>
+        <td class="commit-name">
+          <span class="time-elapsed" title="2012-06-22 15:33:35 +0000">June 22, 2012:</span>&nbsp;
+          Optimizations: Add topics for SSA IR optimizations.
+          [<a href="/luajit-wiki/Optimizations/8a08a65a6cc6c1faf68fd9104dcf48dc7e30aa06" title="View commit">8a08a65</a>]
+        </td>
+      </tr>
+      <tr>
+        <td class="checkbox">
+          <input type="checkbox" name="versions[]" value="c2d5f472d3ee0634d40dab5d655b54d8e48e6b80">
+        </td>
+        <td class="author">
+            <a href="javascript:void(0)">
+            <img src="https://secure.gravatar.com/avatar/18126e7bd3f84b3f3e4df094def5b7de?s=16"
+                alt="avatar: Mike Pall" class="mini-gravatar"/>
+                <span class="username">Mike Pall</span>
+            </a>
+        </td>
+        <td class="commit-name">
+          <span class="time-elapsed" title="2012-06-22 14:02:59 +0000">June 22, 2012:</span>&nbsp;
+          Optimizations: Minor changes.
+          [<a href="/luajit-wiki/Optimizations/c2d5f472d3ee0634d40dab5d655b54d8e48e6b80" title="View commit">c2d5f47</a>]
+        </td>
+      </tr>
+      <tr>
+        <td class="checkbox">
+          <input type="checkbox" name="versions[]" value="2dcf49b59627f4d87c967131a6a401a87a458332">
+        </td>
+        <td class="author">
+            <a href="javascript:void(0)">
+            <img src="https://secure.gravatar.com/avatar/18126e7bd3f84b3f3e4df094def5b7de?s=16"
+                alt="avatar: Mike Pall" class="mini-gravatar"/>
+                <span class="username">Mike Pall</span>
+            </a>
+        </td>
+        <td class="commit-name">
+          <span class="time-elapsed" title="2012-06-22 13:55:33 +0000">June 22, 2012:</span>&nbsp;
+          Optimizations: Bytecode optimizations.
+          [<a href="/luajit-wiki/Optimizations/2dcf49b59627f4d87c967131a6a401a87a458332" title="View commit">2dcf49b</a>]
+        </td>
+      </tr>
+
+    </tbody>
+  </table>
+  </fieldset>
+  </form>
+</div>
+<div id="footer">
+  <ul class="actions">
+    <li class="minibutton"><a href="javascript:void(0);"
+       class="action-compare-revision">Compare Revisions</a></li>
+
+    <!-- only show this button if we have more than 20 revisions -->
+    <li class="minibutton"><a href="#"
+       class="action-back-to-top">Back to Top</a></li>
+  </ul>
+</div>
+</div>
+
+
+</body>
+</html>

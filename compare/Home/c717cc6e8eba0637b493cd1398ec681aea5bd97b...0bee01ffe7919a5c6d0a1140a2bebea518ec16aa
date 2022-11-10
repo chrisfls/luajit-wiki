@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-type" content="text/html;charset=utf-8">
+  <link rel=”alternate” type=”application/rss+xml” title=”wiki.luajit.org edit/commit log” href=”http://wiki.luajit.org/feeds/global.xml” />
+ 
+  <link rel="stylesheet" type="text/css" href="/css/gollum.css" media="all">
+  <link rel="stylesheet" type="text/css" href="/css/editor.css" media="all">
+  <link rel="stylesheet" type="text/css" href="/css/dialog.css" media="all">
+  <link rel="stylesheet" type="text/css" href="/css/template.css" media="all">
+ 
+  <link rel="stylesheet" type="text/css" href="/css/custom.css" media="all">
+  <!--[if IE 7]>
+  <link rel="stylesheet" type="text/css" href="/css/ie7.css" media="all">
+  <![endif]-->
+  
+  <script type="text/javascript" src="/javascript/jquery.js"></script>
+  <script type="text/javascript" src="/javascript/gollum.js"></script>
+  <script type="text/javascript" src="/javascript/gollum.dialog.js"></script>
+  <script type="text/javascript" src="/javascript/gollum.placeholder.js"></script>
+  
+  <script type="text/javascript" src="/javascript/editor/gollum.editor.js"></script>
+  
+  <title>Comparison of Home</title>
+</head>
+<body>
+<div id="cust-site">
+  <a href="http://luajit.org"><span>Lua<span id="cust-logo">JIT</span></span></a>
+</div>
+<div id="cust-header">
+  <h1>The LuaJIT Wiki</h1>
+</div>
+<div id="user">
+    <p>
+      not logged in | <strong><a href="/__omnigollum__/login">[Login]</a></strong>
+    <p>
+</div>
+
+<div id="wiki-wrapper" class="compare">
+<div id="head">
+  <h1>History for <strong>Home.md</strong></h1>
+  
+  <ul class="actions">
+    <li class="minibutton">
+      <div id="searchbar">
+        <form action="/search" method="get" id="search-form">
+        <div id="searchbar-fauxtext">
+          <input type="text" name="q" id="search-query" value="Search&hellip;" autocomplete="off">
+          <a href="#" id="search-submit" title="Search this wiki">
+            <span>Search</span>
+          </a>
+        </div>
+        </form>
+      </div>    </li>
+    <li class="minibutton"><a href="/Home"
+       class="action-view-page">View Page</a></li>
+    <li class="minibutton"><a href="/edit/Home"
+       class="action-edit-page">Edit Page</a></li>
+    <li class="minibutton"><a href="/history/Home"
+       class="action-page-history">Page History</a></li>
+  </ul>
+</div>
+
+
+<div id="compare-content">
+  
+  <ul class="actions">
+    <li class="minibutton"><a href="/history/Home"
+       class="action-page-history">Back to Page History</a></li>
+    <li class="minibutton">
+      <form name="gollum-revert" action="/revert/Home/c717cc6/0bee01f" method="post" id="gollum-revert-form">
+      <a href="#" class="gollum-revert-button">Revert Changes</a>
+      </form>
+    </li>
+  </ul>
+  
+  <div class="data highlight">
+    <table cellpadding="0" cellspacing="0">
+        <tr>
+          <td class="line_numbers">...</td>
+          <td class="line_numbers">...</td>
+          <td>
+            <pre><div class="gc">@@ -26,7 +26,7 @@ relevant material -- please refer to the [[Wiki FAQ]] for details.</div></pre>
+          </td>
+        </tr>
+        <tr>
+          <td class="line_numbers">26</td>
+          <td class="line_numbers">26</td>
+          <td>
+            <pre><div class=""> - [[New Garbage Collector]] - Design of the new garbage collector for LuaJIT 2.1</div></pre>
+          </td>
+        </tr>
+        <tr>
+          <td class="line_numbers">27</td>
+          <td class="line_numbers">27</td>
+          <td>
+            <pre><div class=""> </div></pre>
+          </td>
+        </tr>
+        <tr>
+          <td class="line_numbers">28</td>
+          <td class="line_numbers">28</td>
+          <td>
+            <pre><div class=""> ## System Integration</div></pre>
+          </td>
+        </tr>
+        <tr>
+          <td class="line_numbers">29</td>
+          <td class="line_numbers"> </td>
+          <td>
+            <pre><div class="gd">-- [[Linux binfmt_misc]] - Runnig LuaJIT compiled bytecode &quot;directly&quot; using binfmt_misc kernel feature</div></pre>
+          </td>
+        </tr>
+        <tr>
+          <td class="line_numbers"> </td>
+          <td class="line_numbers">29</td>
+          <td>
+            <pre><div class="gi">+- [[Linux binfmt_misc]] - Running LuaJIT compiled bytecode &quot;directly&quot; using binfmt_misc kernel feature</div></pre>
+          </td>
+        </tr>
+        <tr>
+          <td class="line_numbers">30</td>
+          <td class="line_numbers">30</td>
+          <td>
+            <pre><div class=""> </div></pre>
+          </td>
+        </tr>
+        <tr>
+          <td class="line_numbers">31</td>
+          <td class="line_numbers">31</td>
+          <td>
+            <pre><div class=""> ## About the LuaJIT Wiki</div></pre>
+          </td>
+        </tr>
+        <tr>
+          <td class="line_numbers">32</td>
+          <td class="line_numbers">32</td>
+          <td>
+            <pre><div class=""> - [[Wiki FAQ]] - Frequently Asked Questions about the wiki</div></pre>
+          </td>
+        </tr>
+    </table>
+  </div>
+</div>
+<div id="footer">
+  <ul class="actions">
+    <li class="minibutton"><a href="/history/Home"
+       class="action-page-history">Back to Page History</a></li>
+    <li class="minibutton">
+      <a href="#" class="gollum-revert-button">Revert Changes</a>
+    </li>
+    <li class="minibutton"><a href="#">Back to Top</a></li>
+  </ul>
+</div>
+</div>
+</div>
+
+
+</body>
+</html>

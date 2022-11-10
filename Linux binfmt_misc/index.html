@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-type" content="text/html;charset=utf-8">
+  <link rel=”alternate” type=”application/rss+xml” title=”wiki.luajit.org edit/commit log” href=”http://wiki.luajit.org/feeds/global.xml” />
+ 
+  <link rel="stylesheet" type="text/css" href="/luajit-wiki/css/gollum.css" media="all">
+  <link rel="stylesheet" type="text/css" href="/luajit-wiki/css/editor.css" media="all">
+  <link rel="stylesheet" type="text/css" href="/luajit-wiki/css/dialog.css" media="all">
+  <link rel="stylesheet" type="text/css" href="/luajit-wiki/css/template.css" media="all">
+ 
+  <link rel="stylesheet" type="text/css" href="/luajit-wiki/css/custom.css" media="all">
+  <!--[if IE 7]>
+  <link rel="stylesheet" type="text/css" href="/luajit-wiki/css/ie7.css" media="all">
+  <![endif]-->
+  
+  <script type="text/javascript" src="/luajit-wiki/javascript/jquery.js"></script>
+  <script type="text/javascript" src="/luajit-wiki/javascript/gollum.js"></script>
+  <script type="text/javascript" src="/luajit-wiki/javascript/gollum.dialog.js"></script>
+  <script type="text/javascript" src="/luajit-wiki/javascript/gollum.placeholder.js"></script>
+  
+  <script type="text/javascript" src="/luajit-wiki/javascript/editor/gollum.editor.js"></script>
+  <script type="text/javascript" src="https://c328740.ssl.cf1.rackcdn.com/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  <title>Linux binfmt_misc</title>
+</head>
+<body>
+<div id="cust-site">
+  <a href="http://luajit.org"><span>Lua<span id="cust-logo">JIT</span></span></a>
+</div>
+<div id="cust-header">
+  <h1>The LuaJIT Wiki</h1>
+</div>
+<div id="user">
+    <p>
+      not logged in | <strong><a href="/luajit-wiki/__omnigollum__/login">[Login]</a></strong>
+    <p>
+</div>
+
+<div id="wiki-wrapper" class="page">
+<div id="head">
+  <h1>Linux binfmt_misc</h1>
+  <ul class="actions">
+    <li class="minibutton">
+      <div id="searchbar">
+        <form action="/search" method="get" id="search-form">
+        <div id="searchbar-fauxtext">
+          <input type="text" name="q" id="search-query" value="Search&hellip;" autocomplete="off">
+          <a href="#" id="search-submit" title="Search this wiki">
+            <span>Search</span>
+          </a>
+        </div>
+        </form>
+      </div>    </li>
+    <li class="minibutton"><a href="/luajit-wiki/pages"
+      class="action-all-pages">All Pages</a></li>
+    <li class="minibutton"><a href="/luajit-wiki/fileview"
+    class="action-all-pages">File View</a></li>
+    <li class="minibutton" class="jaws">
+      <a href="#" id="minibutton-new-page">New Page</a></li>
+    <li class="minibutton"><a href="/luajit-wiki/edit/Linux+binfmt_misc"
+       class="action-edit-page">Edit Page</a></li>
+    <li class="minibutton"><a href="/luajit-wiki/history/Linux+binfmt_misc"
+       class="action-page-history">Page History</a></li>
+  </ul>
+</div>
+<div id="wiki-content">
+<div class=" has-toc">
+  <div id="wiki-toc-main">
+    <div class="toc">
+  <div class="toc-title">Table of Contents</div>
+  <ul>
+    <li>
+      <a href="#Linux-binfmt_misc">Linux binfmt_misc</a>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div id="wiki-body" class="gollum-markdown-content">
+    <div class="markdown-body">
+      <h1>Linux binfmt_misc<a class="anchor" id="Linux-binfmt_misc" href="#Linux-binfmt_misc"></a>
+</h1>
+
+<p>Thanks to special feature of Linux kernel, it is possible to register custom binary formats as executable.
+If specific binary format was registered though binfmt_misc interface and containing file has executable atribute set, 
+kernel will execute such file using specified interpreter/emulator.</p>
+
+<p>To learn more about this feature you can visit following pages:</p>
+
+<ul>
+<li>
+<a href="http://en.wikipedia.org/wiki/Binfmt_misc">http://en.wikipedia.org/wiki/Binfmt_misc</a> - short informative article with some examples</li>
+<li>
+<a href="http://www.kernel.org/doc/Documentation/binfmt_misc.txt">http://www.kernel.org/doc/Documentation/binfmt_misc.txt</a> - more in-depth documentation</li>
+</ul><p>Support for this has to be compiled into the kernel and can be verified following way:</p>
+
+<div class="highlight">
+<pre><span class="c"># check whether there is support for this feature</span>
+zcat /proc/config.gz | grep -i binfmt_misc
+
+<span class="c"># should output:</span>
+<span class="nv">CONFIG_BINFMT_MISC</span><span class="o">=</span>y
+</pre>
+</div>
+
+
+<p>If enabled, place where in the root directory tree this interface is exposed, is distribution and init system specific. 
+You can use <strong>findmnt</strong> tool to locate mount point in question:</p>
+
+<div class="highlight">
+<pre><span class="c"># locate the binfmt_misc control interface</span>
+findmnt binfmt_misc
+
+<span class="c"># sample output:</span>
+TARGET                   SOURCE      FSTYPE      OPTIONS
+/proc/sys/fs/binfmt_misc binfmt_misc binfmt_misc rw,relatime
+</pre>
+</div>
+
+
+<p>According to <a href="http://repo.or.cz/w/luajit-2.0.git/blob/HEAD:/src/lj_bcdump.h">http://repo.or.cz/w/luajit-2.0.git/blob/HEAD:/src/lj_bcdump.h</a> LuaJIT bytecode magic bytes are 0x1b, 0x4cx, 0x4a and fourth byte designates LuaJIT version. Header starts at offset 0 and default LuaJIT runtime should handle version checking itself.</p>
+
+<div class="highlight">
+<pre><span class="cm">/* Bytecode dump header. */</span>
+<span class="cp">#define BCDUMP_HEAD1            0x1b</span>
+<span class="cp">#define BCDUMP_HEAD2            0x4c</span>
+<span class="cp">#define BCDUMP_HEAD3            0x4a</span>
+</pre>
+</div>
+
+
+<p>In our example, we can thus register LuaJIT bytecode as executable format following way:</p>
+
+<div class="highlight">
+<pre><span class="c"># as root, we write following string to control file</span>
+<span class="c"># don't forget paths may be different on your distribution!</span>
+<span class="nb">echo</span> <span class="s2">":luajit:M::\x1b\x4c\x4a::/usr/bin/luajit:"</span> &gt; /proc/sys/fs/binfmt_misc/register
+
+<span class="c">#we can verify that registration was sucessful with ls command:</span>
+ls -al /proc/sys/fs/binfmt_misc
+
+<span class="c"># sample output:</span>
+luajit	register  status
+</pre>
+</div>
+
+
+<p>With this setup, we can now run bytecode directly as normal binaries:</p>
+
+<div class="highlight">
+<pre><span class="c">#  Create some bytecode</span>
+luajit -be <span class="s2">"print('hello world through binfmt_misc interface')"</span> binfmt_test
+<span class="c"># mark file as executable</span>
+chmod +x binfmt_test     
+<span class="c"># testing run:</span>
+./binfmt_test
+
+<span class="c"># final output:</span>
+hello world through binfmt_misc interface
+</pre>
+</div>
+
+
+<p>As we can see, this specific Linux feature allows it to treat LuaJIT compiled bytecode as first class executable format. Number of possible applications is endless.</p>
+
+<p>For example, as bytecode can load faster than pure lua code, often or early invoked scripts can be precompiled into bytecode and even stored on initial system ramdisk, along with luajit and other required dependencies. This allows us to achieve maximum efficiency and speed of invocation even without the need of shell, which might be important in constrained environments like live CDs and bootable USB keys or even embedded systems. </p>
+
+<p>One could also create utility programs and scripts which can seem indistinguishable from compiled applications to normal user, without giving up benefits of fast development turnaroud and flexibility of lua.</p>
+    </div>
+  </div>
+  </div>
+
+</div>
+<div id="footer">
+  <p id="last-edit">Last edited by <b>Martin Misuth</b>, 2012-07-22 07:40:34</p>
+</div>
+</div>
+<div id="cust-footer">
+  <p>Sponsored by <a href="http://www.networkradius.com">Network RADIUS</a></p>
+</div>
+
+
+</body>
+</html>

@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-type" content="text/html;charset=utf-8">
+  <meta name="MobileOptimized" content="width">
+  <meta name="HandheldFriendly" content="true">
+  <meta name="viewport" content="width=device-width">
+  <link rel=”alternate” type=”application/rss+xml” title=”wiki.luajit.org edit and commit log” href=”http://wiki.luajit.org/feeds/global.xml” />
+  <link rel="stylesheet" type="text/css" href="/luajit-wiki/css/gollum.css" media="all">
+  <link rel="stylesheet" type="text/css" href="/luajit-wiki/css/editor.css" media="all">
+  <link rel="stylesheet" type="text/css" href="/luajit-wiki/css/dialog.css" media="all">
+  <link rel="stylesheet" type="text/css" href="/luajit-wiki/css/template.css" media="all">
+  <link rel="stylesheet" type="text/css" href="/luajit-wiki/css/print.css" media="print">
+  <link rel="stylesheet" type="text/css" href="/luajit-wiki/custom.css" media="all">
+  <meta name="robots" content="noindex, nofollow" />
+
+  <!--[if IE 7]>
+  <link rel="stylesheet" type="text/css" href="/luajit-wiki/css/ie7.css" media="all">
+  <![endif]-->
+
+  <script>
+      var baseUrl = '';
+      var uploadDest   = '';
+      var pageFullPath = 'New Garbage Collector';
+  </script>
+  <script type="text/javascript" src="/luajit-wiki/javascript/jquery-1.7.2.min.js"></script>
+  <script type="text/javascript" src="/luajit-wiki/javascript/mousetrap.min.js"></script>
+  <script type="text/javascript" src="/luajit-wiki/javascript/gollum.js"></script>
+  <script type="text/javascript" src="/luajit-wiki/javascript/gollum.dialog.js"></script>
+  <script type="text/javascript" src="/luajit-wiki/javascript/gollum.placeholder.js"></script>
+  <script type="text/javascript" src="/luajit-wiki/javascript/editor/gollum.editor.js"></script>
+
+  
+
+  <title>New Garbage Collector</title>
+</head>
+<body>
+
+<div id="cust-site">
+  <a href="http://luajit.org"><span>Lua<span id="cust-logo">JIT</span></span></a>
+</div>
+<div id="cust-header">
+  <h1>The LuaJIT Wiki</h1>
+</div>
+<div id="user">
+    <p>
+      not logged in | <strong><a href="/luajit-wiki/__omnigollum__/login">[Login]</a></strong>
+    <p>
+</div>
+
+<script>
+Mousetrap.bind(['e'], function( e ) {
+  e.preventDefault();
+  window.location = "/edit" + window.location.pathname;
+  return false;
+});
+</script>
+<div id="wiki-wrapper" class="page">
+<div id="head">
+  <h1>New Garbage Collector</h1>
+  <ul class="actions">
+    <li class="minibutton">
+      <div id="searchbar">
+        <form action="/search" method="get" id="search-form">
+        <div id="searchbar-fauxtext">
+          <input type="text" name="q" id="search-query" value="Search&hellip;" autocomplete="off">
+          <a href="#" id="search-submit" title="Search this wiki">
+            <span>Search</span>
+          </a>
+        </div>
+        </form>
+      </div>    </li>
+    <li class="minibutton"><a href="/luajit-wiki/"
+       class="action-home-page">Home</a></li>
+    <li class="minibutton"><a href="/luajit-wiki/pages"
+      class="action-all-pages">All</a></li>
+    <li class="minibutton"><a href="/luajit-wiki/fileview"
+    class="action-fileview">Files</a></li>
+      <li class="minibutton jaws">
+        <a href="#" id="minibutton-new-page">New</a></li>
+  </ul>
+</div>
+<div id="wiki-content">
+<div class="">
+  <div id="wiki-body" class="gollum-markdown-content">
+    <div class="markdown-body">
+      <h1>Introduction</h1>
+
+<p>The following design document describes the the new garbage collector
+(GC) to be introduced with LuaJIT 2.1. This document is very much a work
+in progress right now. Anything may change for the actual
+implementation. No code is available, yet.</p>
+
+<h2><a class="anchor" id="rationale" href="#rationale"><i class="fa fa-link"></i></a>Rationale</h2>
+
+<p>The garbage collector used by LuaJIT 2.0 is essentially the same as the
+Lua 5.1 GC. There are some minor refinements for write barriers and a
+couple of speed optimizations. But the basic algorithms and data
+structures are unchanged.</p>
+
+<p>The current garbage collector is relatively slow compared to
+implementations in other languages. It's not competitive with
+top-of-the-line GCs, especially for large workloads. The main causes for
+this are the independent memory allocator, cache-inefficient data
+structures and a high number of branch mispredictions. The current GC
+design is a dead end when it comes to further performance tuning.</p>
+
+<p>What's needed is a complete redesign from scratch with the following <strong>goals</strong>:</p>
+
+<ul>
+<li>It must be a very fast, top-of-the-line, highly competitive garbage collector.</li>
+<li>It must be able to sustain high throughput and large workloads.</li>
+<li>It needs to be incremental (but not realtime) with very low latencies.</li>
+<li>It must be non-copying, due to various constraints in the Lua/C API.</li>
+<li>But it needs to tightly control fragmentation.</li>
+<li>It doesn't need to be concurrent, since Lua states are completely independent.</li>
+<li>It would be nice to have an (automatic) generational mode for certain workloads.</li>
+<li>It should be optimized for operation with the combination of an interpreter and a JIT compiler.</li>
+</ul>
+
+<p>This leads to the following <strong>implementation constraints</strong>:</p>
+
+<ul>
+<li>The memory allocator and the garbage collector must be tightly integrated.</li>
+<li>Plain linked lists should be avoided as far as possible.</li>
+<li>Data structures should be optimized for high-speed allocation, traversal, marking and sweeping.</li>
+<li>Object metadata, such as mark &amp; block info should be segregated.</li>
+<li>Huge objects should be segregated.</li>
+<li>Traversable and non-traversable objects should be segregated.</li>
+<li>Traversals should be linear or at least have strong locality.</li>
+<li>Memory should be requested and returned from or to the operating system in big blocks only.</li>
+</ul>
+
+<h2><a class="anchor" id="overview" href="#overview"><i class="fa fa-link"></i></a>Overview</h2>
+
+<p><strong>The new garbage collector is an arena-based, quad-color incremental,
+generational, non-copying, high-speed, cache-optimized garbage
+collector.</strong></p>
+
+<p>Memory is requested from the operating system in <strong>big aligned memory
+blocks</strong>, called arenas. <strong>Arenas</strong> are split into tiles. Each tile is
+split into 16 byte sized cells. One or more <strong>cells</strong> make up a
+<strong>block</strong>, which is the basic memory unit used to store objects and
+related object data. All objects inside a tile are either traversable or
+not. The <strong>mark and block bitmaps</strong> are stored in the metadata area of
+each arena, with a metadata overhead of 1.5%. <strong>Huge blocks</strong> are
+located in separate memory areas.</p>
+
+<p>Pointers to arenas, huge blocks, interned strings, weak tables,
+finalizers, etc. are held in <strong>dedicated, cache-efficient data
+structures</strong> which minimize branch mispredictions. E.g. hashes, unrolled
+linked lists or trees with high fan-out.</p>
+
+<p>The allocator switches on-the-fly from a <strong>bump allocator</strong> to a
+<strong>segregated-fit, best-fit allocator with bounded search</strong>, depending on
+fragmentation pressure.</p>
+
+<p>The collector is a <strong>quad-color, incremental mark &amp; sweep collector</strong>
+with very low latency. Traversals are local to a tile and exhibit high
+cache locality. Tiles with non-traversable objects don't even need to be
+considered. Object marking and the ultra-fast sweep phase only work on
+metadata to reduce cache pressure. The sweep phase brings neither live
+nor dead object data back into the cache.</p>
+
+<p>The <strong>write barrier</strong> of the incremental GC is very cheap and rarely
+triggers. A sequential store buffer (SSB) helps to further reduce
+overhead. The write barrier check can be done with only 2 or 3 machine
+instructions. The JIT compiler can eliminate most write barriers.</p>
+
+<p>The <strong>generational mode</strong> of the collector is automatically triggered by
+workloads with a high death rate for young allocations. The mark bits
+are simply not cleared after a major collection. A minor collection only
+needs to traverse tiles with newly allocated blocks and objects written
+to (marked gray).</p>
+
+<h1><a class="anchor" id="gc-algorithm" href="#gc-algorithm"><i class="fa fa-link"></i></a>GC Algorithm</h1>
+
+<h2><a class="anchor" id="gc-algorithm_two-color-mark-sweep" href="#gc-algorithm_two-color-mark-sweep"><i class="fa fa-link"></i></a>Two-Color Mark &amp; Sweep</h2>
+
+<p><img src="gc_color2.png" /></p>
+
+<h2><a class="anchor" id="gc-algorithm_tri-color-incremental-mark-sweep" href="#gc-algorithm_tri-color-incremental-mark-sweep"><i class="fa fa-link"></i></a>Tri-Color Incremental Mark &amp; Sweep</h2>
+
+<p><img src="gc_color3.png" /></p>
+
+<h2><a class="anchor" id="gc-algorithm_quad-color-optimized-incremental-mark-sweep" href="#gc-algorithm_quad-color-optimized-incremental-mark-sweep"><i class="fa fa-link"></i></a>Quad-Color Optimized Incremental Mark &amp; Sweep</h2>
+
+<p><img src="gc_color4.png" /></p>
+
+<h2><a class="anchor" id="gc-algorithm_gc-phases" href="#gc-algorithm_gc-phases"><i class="fa fa-link"></i></a>GC Phases</h2>
+
+<h2><a class="anchor" id="gc-algorithm_generational-gc" href="#gc-algorithm_generational-gc"><i class="fa fa-link"></i></a>Generational GC</h2>
+
+<h1><a class="anchor" id="arenas" href="#arenas"><i class="fa fa-link"></i></a>Arenas</h1>
+
+<h2><a class="anchor" id="arenas_tiles" href="#arenas_tiles"><i class="fa fa-link"></i></a>Tiles</h2>
+
+<h2><a class="anchor" id="arenas_cells" href="#arenas_cells"><i class="fa fa-link"></i></a>Cells</h2>
+
+<h2><a class="anchor" id="arenas_blocks" href="#arenas_blocks"><i class="fa fa-link"></i></a>Blocks</h2>
+
+<h2><a class="anchor" id="arenas_mark-block-bitmaps" href="#arenas_mark-block-bitmaps"><i class="fa fa-link"></i></a>Mark &amp; Block Bitmaps</h2>
+
+<h2><a class="anchor" id="arenas_gray-stack" href="#arenas_gray-stack"><i class="fa fa-link"></i></a>Gray Stack</h2>
+
+<h2><a class="anchor" id="arenas_huge-objects" href="#arenas_huge-objects"><i class="fa fa-link"></i></a>Huge Objects</h2>
+
+<h1><a class="anchor" id="block-allocator" href="#block-allocator"><i class="fa fa-link"></i></a>Block Allocator</h1>
+
+<h2><a class="anchor" id="block-allocator_bump-allocator" href="#block-allocator_bump-allocator"><i class="fa fa-link"></i></a>Bump Allocator</h2>
+
+<h2><a class="anchor" id="block-allocator_fit-allocator" href="#block-allocator_fit-allocator"><i class="fa fa-link"></i></a>Fit Allocator</h2>
+
+<h1><a class="anchor" id="write-barrier" href="#write-barrier"><i class="fa fa-link"></i></a>Write Barrier</h1>
+
+<h2><a class="anchor" id="write-barrier_sequential-store-buffer" href="#write-barrier_sequential-store-buffer"><i class="fa fa-link"></i></a>Sequential Store Buffer</h2>
+
+<h1><a class="anchor" id="special-considerations" href="#special-considerations"><i class="fa fa-link"></i></a>Special Considerations</h1>
+
+<h2><a class="anchor" id="special-considerations_stacks" href="#special-considerations_stacks"><i class="fa fa-link"></i></a>Stacks</h2>
+
+<h2><a class="anchor" id="special-considerations_strings" href="#special-considerations_strings"><i class="fa fa-link"></i></a>Strings</h2>
+
+<h2><a class="anchor" id="special-considerations_weak-tables" href="#special-considerations_weak-tables"><i class="fa fa-link"></i></a>Weak Tables</h2>
+
+<h2><a class="anchor" id="special-considerations_finalizers" href="#special-considerations_finalizers"><i class="fa fa-link"></i></a>Finalizers</h2>
+
+<h1><a class="anchor" id="object-layout" href="#object-layout"><i class="fa fa-link"></i></a>Object Layout</h1>
+
+<h2><a class="anchor" id="object-layout_object-tags" href="#object-layout_object-tags"><i class="fa fa-link"></i></a>Object Tags</h2>
+
+<h1><a class="anchor" id="performance-optimizations" href="#performance-optimizations"><i class="fa fa-link"></i></a>Performance Optimizations</h1>
+
+<h2><a class="anchor" id="performance-optimizations_cache-effects" href="#performance-optimizations_cache-effects"><i class="fa fa-link"></i></a>Cache Effects</h2>
+
+<h2><a class="anchor" id="performance-optimizations_branch-prediction" href="#performance-optimizations_branch-prediction"><i class="fa fa-link"></i></a>Branch Prediction</h2>
+
+<h2><a class="anchor" id="performance-optimizations_data-structures" href="#performance-optimizations_data-structures"><i class="fa fa-link"></i></a>Data Structures</h2>
+
+<h2><a class="anchor" id="performance-optimizations_bitmap-tricks" href="#performance-optimizations_bitmap-tricks"><i class="fa fa-link"></i></a>Bitmap Tricks</h2>
+
+<h2><a class="anchor" id="performance-optimizations_bump-frontier" href="#performance-optimizations_bump-frontier"><i class="fa fa-link"></i></a>Bump Frontier</h2>
+
+<h2><a class="anchor" id="performance-optimizations_segregated-traversal" href="#performance-optimizations_segregated-traversal"><i class="fa fa-link"></i></a>Segregated Traversal</h2>
+
+<h1><a class="anchor" id="questions" href="#questions"><i class="fa fa-link"></i></a>Questions?</h1>
+
+<p>Add your questions here and I'll try to clarify the docs. --Mike</p>
+
+<p><em>Q</em>:</p>
+
+    </div>
+  </div>
+  </div>
+
+</div>
+<div id="footer">
+  <p id="last-edit">Last edited by <b>Mike Pall (MikePall)</b>, 2015-12-12 14:20:37</p>
+    <p>
+      <a id="delete-link" href="/luajit-wiki/New-Garbage-Collector" data-confirm="Are you sure you want to delete this page?"><span>Delete this Page</span></a>
+    </p>
+</div>
+</div>
+
+<form name="rename" method="POST" action="/rename/New-Garbage-Collector">
+  <input type="hidden" name="rename"/>
+  <input type="hidden" name="message"/>
+</form>
+<div id="cust-footer">
+  <p>Sponsored by <a href="http://www.networkradius.com">Network RADIUS</a></p>
+</div>
+
+
+</body>
+</html>

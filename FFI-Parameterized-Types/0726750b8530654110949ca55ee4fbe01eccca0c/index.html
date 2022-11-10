@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-type" content="text/html;charset=utf-8">
+  <meta name="MobileOptimized" content="width">
+  <meta name="HandheldFriendly" content="true">
+  <meta name="viewport" content="width=device-width">
+  <link rel=”alternate” type=”application/rss+xml” title=”wiki.luajit.org edit and commit log” href=”http://wiki.luajit.org/feeds/global.xml” />
+  <link rel="stylesheet" type="text/css" href="/luajit-wiki/css/gollum.css" media="all">
+  <link rel="stylesheet" type="text/css" href="/luajit-wiki/css/editor.css" media="all">
+  <link rel="stylesheet" type="text/css" href="/luajit-wiki/css/dialog.css" media="all">
+  <link rel="stylesheet" type="text/css" href="/luajit-wiki/css/template.css" media="all">
+  <link rel="stylesheet" type="text/css" href="/luajit-wiki/css/print.css" media="print">
+  <link rel="stylesheet" type="text/css" href="/luajit-wiki/custom.css" media="all">
+  <meta name="robots" content="noindex, nofollow" />
+
+  <!--[if IE 7]>
+  <link rel="stylesheet" type="text/css" href="/luajit-wiki/css/ie7.css" media="all">
+  <![endif]-->
+
+  <script>
+      var baseUrl = '';
+      var uploadDest   = '';
+      var pageFullPath = 'FFI Parameterized Types';
+  </script>
+  <script type="text/javascript" src="/luajit-wiki/javascript/jquery-1.7.2.min.js"></script>
+  <script type="text/javascript" src="/luajit-wiki/javascript/mousetrap.min.js"></script>
+  <script type="text/javascript" src="/luajit-wiki/javascript/gollum.js"></script>
+  <script type="text/javascript" src="/luajit-wiki/javascript/gollum.dialog.js"></script>
+  <script type="text/javascript" src="/luajit-wiki/javascript/gollum.placeholder.js"></script>
+  <script type="text/javascript" src="/luajit-wiki/javascript/editor/gollum.editor.js"></script>
+
+  
+
+  <title>FFI Parameterized Types</title>
+</head>
+<body>
+
+<div id="cust-site">
+  <a href="http://luajit.org"><span>Lua<span id="cust-logo">JIT</span></span></a>
+</div>
+<div id="cust-header">
+  <h1>The LuaJIT Wiki</h1>
+</div>
+<div id="user">
+    <p>
+      not logged in | <strong><a href="/luajit-wiki/__omnigollum__/login">[Login]</a></strong>
+    <p>
+</div>
+
+<script>
+Mousetrap.bind(['e'], function( e ) {
+  e.preventDefault();
+  window.location = "/edit" + window.location.pathname;
+  return false;
+});
+</script>
+<div id="wiki-wrapper" class="page">
+<div id="head">
+  <h1>FFI Parameterized Types</h1>
+  <ul class="actions">
+    <li class="minibutton">
+      <div id="searchbar">
+        <form action="/search" method="get" id="search-form">
+        <div id="searchbar-fauxtext">
+          <input type="text" name="q" id="search-query" value="Search&hellip;" autocomplete="off">
+          <a href="#" id="search-submit" title="Search this wiki">
+            <span>Search</span>
+          </a>
+        </div>
+        </form>
+      </div>    </li>
+    <li class="minibutton"><a href="/luajit-wiki/"
+       class="action-home-page">Home</a></li>
+    <li class="minibutton"><a href="/luajit-wiki/pages"
+      class="action-all-pages">All</a></li>
+    <li class="minibutton"><a href="/luajit-wiki/fileview"
+    class="action-fileview">Files</a></li>
+      <li class="minibutton jaws">
+        <a href="#" id="minibutton-new-page">New</a></li>
+  </ul>
+</div>
+<div id="wiki-content">
+<div class="">
+  <div id="wiki-body" class="gollum-markdown-content">
+    <div class="markdown-body">
+      <h1>Parameterized Types</h1>
+
+<p>Parameterized types is a feature of the LuaJIT FFI.   It enables one to specify FFI C declarations dynamically.  It is useful for <a href="http://en.wikipedia.org/wiki/Generic_programming" rel="nofollow">generic programming</a>, similar to why one might use <a href="http://en.wikipedia.org/wiki/Template_%28C%2B%2B%29" rel="nofollow">C++ templates</a> or <a href="http://en.wikipedia.org/wiki/Generics_in_Java" rel="nofollow">Java generics</a>.</p>
+
+<p>This feature was introduced in June 2012 and is not available in any release (as of beta10); you must clone the git repo to use them.</p>
+
+<p>To use this feature, you can place the <code>$</code> character in a C type declaration, used by <code>ffi.cdef</code> and <code>ffi.type</code>.  When you use this declaration, you pass arguments along with it.  These arguments can be a <em>ctype</em>/<em>cdata</em>, a <em>string</em> or a <em>number</em>.</p>
+
+<p>Here are some examples (which in isolation are not very interesting):</p>
+
+<pre class="highlight"><code><span class="n">ffi</span><span class="p">.</span><span class="n">typeof</span><span class="p">(</span><span class="s2">"$ *"</span><span class="p">,</span> <span class="n">foo_t</span><span class="p">)</span>
+<span class="n">ffi</span><span class="p">.</span><span class="n">typeof</span><span class="p">(</span><span class="s2">"struct { $ k; $ v; }[?]"</span><span class="p">,</span> <span class="n">foo_t</span><span class="p">,</span> <span class="n">bar_t</span><span class="p">)</span>
+<span class="n">ffi</span><span class="p">.</span><span class="n">typeof</span><span class="p">(</span><span class="s2">"uint8_t[$][$]"</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">)</span></code></pre>
+
+
+<h2><a class="anchor" id="documentation-from-mailing-list" href="#documentation-from-mailing-list"><i class="fa fa-link"></i></a>Documentation from mailing list</h2>
+
+<p>The following was <a href="http://www.freelists.org/post/luajit/ffi-type-of-pointer-to,4" rel="nofollow">posted</a> on the LuaJIT mailing list.</p>
+
+<p>The <code>$</code> character is the marker to be replaced with parameters in a C type declaration:</p>
+
+<ul>
+<li><p>A <em>ctype</em> or a <em>cdata</em> parameter is interpreted like an anonymous
+typedef. You can use that to construct derived types, e.g.
+<code>ffi.typeof("$*", ct)</code> is a pointer to <code>ct</code>, or <code>"$[10]"</code> is a 10
+element array. Unlike simplistic string concatenation, this
+works for all cases (e.g. pointers to function pointers).</p></li>
+<li>
+<p>A string parameter is treated like an identifier or keyword,
+except the string is <em>not</em> parsed again or split into words
+(this isn't simple textual substitution). You can use that for
+field names, function names, argument names etc.</p>
+
+<p>[I'm pondering whether I should drop the keyword and type lookup
+on the string. That would allow you to use arbitrary names for
+fields, even when they collide with keywords or typedefs. I may
+change that before writing the docs.]</p>
+</li>
+<li><p>A number parameter is treated as an integer. You can use that
+to construct fixed size arrays. In some contexts you may prefer
+this over VLAs. It works for multi-dimensional types, too. E.g.:</p></li>
+</ul>
+
+<pre class="highlight"><code>  <span class="kd">local</span> <span class="n">matrix_t</span> <span class="o">=</span> <span class="n">ffi</span><span class="p">.</span><span class="n">typeof</span><span class="p">(</span><span class="s2">"uint8_t[$][$]"</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">)</span>
+  <span class="o">...</span>
+  <span class="kd">local</span> <span class="n">m</span> <span class="o">=</span> <span class="n">matrix_t</span><span class="p">()</span></code></pre>
+
+
+<p>Only <code>ffi.typeof()</code> and <code>ffi.cdef()</code> parse parameterized types. The
+other functions, e.g. <code>ffi.new()</code>, don't do that, because they
+already take other arguments (e.g. initializers). I guess it would
+be too confusing to mix two kinds of arguments.</p>
+
+<p>Anyway, parameterized types are a nice tool, but you'll want to
+use it sparingly!</p>
+
+<p>The typical scenarios where you'd use templates in C++ come to
+mind: e.g. construct a stack or a queue of an arbitrary type.
+These need to create an array of the element type, which is now
+really easy to do. [Justin's use case]</p>
+
+<p>Another example are derived types of anonymous structs. This
+avoids pollution of the struct namespace. [Henk's use case]</p>
+
+<h2><a class="anchor" id="stack-example" href="#stack-example"><i class="fa fa-link"></i></a>Stack Example</h2>
+
+<p>Mike <a href="http://www.freelists.org/post/luajit/ffi-type-of-pointer-to,8" rel="nofollow">posted this example</a> on the LuaJIT mailing list:</p>
+
+<pre class="highlight"><code><span class="kd">local</span> <span class="n">ffi</span> <span class="o">=</span> <span class="nb">require</span><span class="p">(</span><span class="s2">"ffi"</span><span class="p">)</span>
+
+<span class="kd">local</span> <span class="k">function</span> <span class="nf">stack_iter</span><span class="p">(</span><span class="n">stack</span><span class="p">)</span>
+  <span class="kd">local</span> <span class="n">top</span> <span class="o">=</span> <span class="n">stack</span><span class="p">.</span><span class="n">top</span>
+  <span class="k">if</span> <span class="n">top</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">then</span>
+    <span class="n">stack</span><span class="p">.</span><span class="n">top</span> <span class="o">=</span> <span class="n">top</span><span class="o">-</span><span class="mi">1</span>
+    <span class="k">return</span> <span class="n">stack</span><span class="p">.</span><span class="n">slot</span><span class="p">[</span><span class="n">top</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="kd">local</span> <span class="n">stack_mt</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="n">__new</span> <span class="o">=</span> <span class="k">function</span><span class="p">(</span><span class="n">tp</span><span class="p">,</span> <span class="n">max</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">ffi</span><span class="p">.</span><span class="n">new</span><span class="p">(</span><span class="n">tp</span><span class="p">,</span> <span class="n">max</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">max</span><span class="p">)</span>
+  <span class="k">end</span><span class="p">,</span>
+  <span class="n">__index</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="n">push</span> <span class="o">=</span> <span class="k">function</span><span class="p">(</span><span class="n">stack</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span>
+      <span class="kd">local</span> <span class="n">top</span> <span class="o">=</span> <span class="n">stack</span><span class="p">.</span><span class="n">top</span>
+      <span class="k">if</span> <span class="n">top</span> <span class="o">&gt;=</span> <span class="n">stack</span><span class="p">.</span><span class="n">max</span> <span class="k">then</span> <span class="nb">error</span><span class="p">(</span><span class="s2">"stack overflow"</span><span class="p">)</span> <span class="k">end</span>
+      <span class="n">stack</span><span class="p">.</span><span class="n">top</span> <span class="o">=</span> <span class="n">top</span> <span class="o">+</span> <span class="mi">1</span>
+      <span class="n">stack</span><span class="p">.</span><span class="n">slot</span><span class="p">[</span><span class="n">top</span><span class="p">]</span> <span class="o">=</span> <span class="n">val</span>
+    <span class="k">end</span><span class="p">,</span>
+    <span class="n">pop</span> <span class="o">=</span> <span class="k">function</span><span class="p">(</span><span class="n">stack</span><span class="p">)</span>
+      <span class="kd">local</span> <span class="n">top</span> <span class="o">=</span> <span class="n">stack</span><span class="p">.</span><span class="n">top</span>
+      <span class="k">if</span> <span class="n">top</span> <span class="o">&lt;=</span> <span class="mi">0</span> <span class="k">then</span> <span class="nb">error</span><span class="p">(</span><span class="s2">"stack underflow"</span><span class="p">)</span> <span class="k">end</span>
+      <span class="n">stack</span><span class="p">.</span><span class="n">top</span> <span class="o">=</span> <span class="n">top</span><span class="o">-</span><span class="mi">1</span>
+      <span class="k">return</span> <span class="n">stack</span><span class="p">.</span><span class="n">slot</span><span class="p">[</span><span class="n">top</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="k">end</span><span class="p">,</span>
+    <span class="n">iter</span> <span class="o">=</span> <span class="k">function</span><span class="p">(</span><span class="n">stack</span><span class="p">)</span>
+      <span class="k">return</span> <span class="n">stack_iter</span><span class="p">,</span> <span class="n">stack</span>
+    <span class="k">end</span><span class="p">,</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kd">local</span> <span class="k">function</span> <span class="nf">makestack</span><span class="p">(</span><span class="n">ct</span><span class="p">)</span>
+  <span class="kd">local</span> <span class="n">tp</span> <span class="o">=</span> <span class="n">ffi</span><span class="p">.</span><span class="n">typeof</span><span class="p">(</span><span class="s2">"struct { int top, max; $ slot[?]; }"</span><span class="p">,</span> <span class="n">ct</span><span class="p">)</span>
+  <span class="k">return</span> <span class="n">ffi</span><span class="p">.</span><span class="n">metatype</span><span class="p">(</span><span class="n">tp</span><span class="p">,</span> <span class="n">stack_mt</span><span class="p">)</span>
+<span class="k">end</span>
+
+<span class="kd">local</span> <span class="n">stack_t</span> <span class="o">=</span> <span class="n">makestack</span><span class="p">(</span><span class="n">ffi</span><span class="p">.</span><span class="n">typeof</span><span class="p">(</span><span class="s2">"double"</span><span class="p">))</span>
+
+<span class="kd">local</span> <span class="n">stack</span> <span class="o">=</span> <span class="n">stack_t</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">i</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="mi">100</span> <span class="k">do</span> <span class="n">stack</span><span class="p">:</span><span class="n">push</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">end</span>
+<span class="k">for</span> <span class="n">x</span> <span class="k">in</span> <span class="n">stack</span><span class="p">:</span><span class="n">iter</span><span class="p">()</span> <span class="k">do</span> <span class="nb">io.write</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="s2">" "</span><span class="p">)</span> <span class="k">end</span>
+<span class="nb">io.write</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+</code></pre>
+
+
+<h2><a class="anchor" id="libraries" href="#libraries"><i class="fa fa-link"></i></a>Libraries</h2>
+
+<p>The following libraries use Parameterized Types:</p>
+
+<ul>
+<li><p><a href="https://github.com/justincormack/slice" rel="nofollow">slice</a>: array slices</p></li>
+<li><p><a href="https://github.com/neomantra/lds" rel="nofollow">lds - LuaJIT Data Structures</a>: STL-like containers such as Vector and Queue  (hashes and trees planned)</p></li>
+</ul>
+
+    </div>
+  </div>
+  </div>
+
+</div>
+<div id="footer">
+  <p id="last-edit">Last edited by <b>Finn Wilcox</b>, 2013-11-02 16:17:08</p>
+    <p>
+      <a id="delete-link" href="/luajit-wiki/FFI-Parameterized-Types" data-confirm="Are you sure you want to delete this page?"><span>Delete this Page</span></a>
+    </p>
+</div>
+</div>
+
+<form name="rename" method="POST" action="/rename/FFI-Parameterized-Types">
+  <input type="hidden" name="rename"/>
+  <input type="hidden" name="message"/>
+</form>
+<div id="cust-footer">
+  <p>Sponsored by <a href="http://www.networkradius.com">Network RADIUS</a></p>
+</div>
+
+
+</body>
+</html>

@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-type" content="text/html;charset=utf-8">
+  <meta name="MobileOptimized" content="width">
+  <meta name="HandheldFriendly" content="true">
+  <meta name="viewport" content="width=device-width">
+  <link rel=”alternate” type=”application/rss+xml” title=”wiki.luajit.org edit and commit log” href=”http://wiki.luajit.org/feeds/global.xml” />
+  <link rel="stylesheet" type="text/css" href="/luajit-wiki/css/gollum.css" media="all">
+  <link rel="stylesheet" type="text/css" href="/luajit-wiki/css/editor.css" media="all">
+  <link rel="stylesheet" type="text/css" href="/luajit-wiki/css/dialog.css" media="all">
+  <link rel="stylesheet" type="text/css" href="/luajit-wiki/css/template.css" media="all">
+  <link rel="stylesheet" type="text/css" href="/luajit-wiki/css/print.css" media="print">
+  <link rel="stylesheet" type="text/css" href="/luajit-wiki/custom.css" media="all">
+  <meta name="robots" content="noindex, nofollow" />
+
+  <!--[if IE 7]>
+  <link rel="stylesheet" type="text/css" href="/luajit-wiki/css/ie7.css" media="all">
+  <![endif]-->
+
+  <script>
+      var baseUrl = '';
+      var uploadDest   = '';
+      var pageFullPath = 'JIT Compiler API';
+  </script>
+  <script type="text/javascript" src="/luajit-wiki/javascript/jquery-1.7.2.min.js"></script>
+  <script type="text/javascript" src="/luajit-wiki/javascript/mousetrap.min.js"></script>
+  <script type="text/javascript" src="/luajit-wiki/javascript/gollum.js"></script>
+  <script type="text/javascript" src="/luajit-wiki/javascript/gollum.dialog.js"></script>
+  <script type="text/javascript" src="/luajit-wiki/javascript/gollum.placeholder.js"></script>
+  <script type="text/javascript" src="/luajit-wiki/javascript/editor/gollum.editor.js"></script>
+
+  
+
+  <title>JIT Compiler API</title>
+</head>
+<body>
+
+<div id="cust-site">
+  <a href="http://luajit.org"><span>Lua<span id="cust-logo">JIT</span></span></a>
+</div>
+<div id="cust-header">
+  <h1>The LuaJIT Wiki</h1>
+</div>
+<div id="user">
+    <p>
+      not logged in | <strong><a href="/luajit-wiki/__omnigollum__/login">[Login]</a></strong>
+    <p>
+</div>
+
+<script>
+Mousetrap.bind(['e'], function( e ) {
+  e.preventDefault();
+  window.location = "/edit" + window.location.pathname;
+  return false;
+});
+</script>
+<div id="wiki-wrapper" class="page">
+<div id="head">
+  <h1>JIT Compiler API</h1>
+  <ul class="actions">
+    <li class="minibutton">
+      <div id="searchbar">
+        <form action="/search" method="get" id="search-form">
+        <div id="searchbar-fauxtext">
+          <input type="text" name="q" id="search-query" value="Search&hellip;" autocomplete="off">
+          <a href="#" id="search-submit" title="Search this wiki">
+            <span>Search</span>
+          </a>
+        </div>
+        </form>
+      </div>    </li>
+    <li class="minibutton"><a href="/luajit-wiki/"
+       class="action-home-page">Home</a></li>
+    <li class="minibutton"><a href="/luajit-wiki/pages"
+      class="action-all-pages">All</a></li>
+    <li class="minibutton"><a href="/luajit-wiki/fileview"
+    class="action-fileview">Files</a></li>
+      <li class="minibutton jaws">
+        <a href="#" id="minibutton-new-page">New</a></li>
+  </ul>
+</div>
+<div id="wiki-content">
+<div class="">
+  <div id="wiki-body" class="gollum-markdown-content">
+    <div class="markdown-body">
+      <h1>Non-public jit.* API</h1>
+
+<p>LuaJIT has some undocumented facilities for tracing program execution and what
+the trace compiler is doing.
+What follows is a bit rough, inaccurate, subject to change and very incomplete.
+There's probably a good reason this is undocumented.</p>
+
+<p>These functions are used in several of the -j library files.
+<code>dump.lua</code> is probably a good place to start.</p>
+
+<h2><a class="anchor" id="jit-attach" href="#jit-attach"><i class="fa fa-link"></i></a>jit.attach</h2>
+
+<p>You can attach callbacks to a number of compiler events with <code>jit.attach</code>.  The callback can be called:</p>
+
+<ul>
+<li>when a function has been compiled to bytecode ("bc");</li>
+<li>when trace recording starts or stops ("trace");</li>
+<li>as a trace is being recorded ("record");</li>
+<li>or when a trace exits through a side exit ("texit").</li>
+</ul>
+
+<p>Set a callback with <code>jit.attach(callback, "event")</code> and clear the same callback with <code>jit.attach(callback)</code></p>
+
+<p>The arguments passed to the callback depend on the event being reported:</p>
+
+<ul>
+<li>"bc": <code>callback(func)</code>. <code>func</code> is the function that's just been recorded.</li>
+<li>"trace": <code>callback(what, tr, func, pc, otr, oex)</code>
+
+<ul>
+<li>
+<code>what</code> is a description of the trace event: "flush", "start", "stop", "abort".  Available for all events.</li>
+<li>
+<code>tr</code> is the trace number.  Not available for flush.</li>
+<li>
+<code>func</code> is the function being traced.  Available for start and abort.</li>
+<li>
+<code>pc</code> is the program counter - the bytecode number of the function being recorded (if this a Lua function).  Available for start and abort.</li>
+<li>
+<code>otr</code> start: the parent trace number if this is a side trace, abort: abort code (integer)?</li>
+<li>
+<code>oex</code> start: the exit number for the parent trace, abort: abort reason (string) </li>
+</ul>
+</li>
+<li>"record": <code>callback(tr, func, pc, depth)</code>. The first arguments are the same as for trace start. <code>depth</code> is the depth of the inlining of the current bytecode.</li>
+<li>"texit": <code>callback(tr, ex, ngpr, nfpr)</code>.
+
+<ul>
+<li>
+<code>tr</code> is the trace number as before</li>
+<li>
+<code>ex</code> is the exit number</li>
+<li>
+<code>ngpr</code> and <code>nfpr</code> are the number of general-purpose and floating point registers that are active at the exit.</li>
+</ul>
+</li>
+</ul>
+
+<h2><a class="anchor" id="jit-util-funcinfo-func-pc" href="#jit-util-funcinfo-func-pc"><i class="fa fa-link"></i></a>jit.util.funcinfo(func, pc)</h2>
+
+<p>When passed <code>func</code> and <code>pc</code> from a <code>jit.attach</code> callback,
+<code>jit.util.funcinfo</code> returns a table of information about the function,
+much like <code>debug.getinfo</code>.</p>
+
+<p>The fields of the table are:</p>
+
+<ul>
+<li>
+<code>linedefined</code>: as for <code>debug.getinfo</code>
+</li>
+<li>
+<code>lastlinedefined</code>: as for <code>debug.getinfo</code>
+</li>
+<li>
+<code>params</code>: the number of parameters the function takes</li>
+<li>
+<code>stackslots</code>: the number of stack slots the function's local variable use</li>
+<li>
+<code>upvalues</code>: the number of upvalues the function uses</li>
+<li>
+<code>bytecodes</code>: the number of bytecodes it the compiled function</li>
+<li>
+<code>gcconsts</code>: ??</li>
+<li>
+<code>nconsts</code>: ??</li>
+<li>
+<code>currentline</code>: as for <code>debug.getinfo</code>
+</li>
+<li>
+<code>isvararg</code>: if the function is a vararg function`</li>
+<li>
+<code>source</code>: as for <code>debug.getinfo</code>
+</li>
+<li>
+<code>loc</code>: a string describing the source and currentline, like "&lt;source&gt;:&lt;line&gt;"</li>
+<li>
+<code>ffid</code>: the fast function id of the function (if it is one).  In this case only <code>upvalues</code> above and <code>addr</code> below are valid</li>
+<li>
+<code>addr</code>: the address of the function (if it is not a Lua function).  If it's a C function rather than a fast function, only <code>upvalues</code> above is valid</li>
+</ul>
+
+    </div>
+  </div>
+  </div>
+
+</div>
+<div id="footer">
+  <p id="last-edit">Last edited by <b>Mike Pall</b>, 2012-05-31 14:41:13</p>
+    <p>
+      <a id="delete-link" href="/luajit-wiki/JIT-Compiler-API" data-confirm="Are you sure you want to delete this page?"><span>Delete this Page</span></a>
+    </p>
+</div>
+</div>
+
+<form name="rename" method="POST" action="/rename/JIT-Compiler-API">
+  <input type="hidden" name="rename"/>
+  <input type="hidden" name="message"/>
+</form>
+<div id="cust-footer">
+  <p>Sponsored by <a href="http://www.networkradius.com">Network RADIUS</a></p>
+</div>
+
+
+</body>
+</html>

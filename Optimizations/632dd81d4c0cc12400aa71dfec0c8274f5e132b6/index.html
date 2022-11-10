@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-type" content="text/html;charset=utf-8">
+  <meta name="MobileOptimized" content="width">
+  <meta name="HandheldFriendly" content="true">
+  <meta name="viewport" content="width=device-width">
+  <link rel=”alternate” type=”application/rss+xml” title=”wiki.luajit.org edit and commit log” href=”http://wiki.luajit.org/feeds/global.xml” />
+  <link rel="stylesheet" type="text/css" href="/luajit-wiki/css/gollum.css" media="all">
+  <link rel="stylesheet" type="text/css" href="/luajit-wiki/css/editor.css" media="all">
+  <link rel="stylesheet" type="text/css" href="/luajit-wiki/css/dialog.css" media="all">
+  <link rel="stylesheet" type="text/css" href="/luajit-wiki/css/template.css" media="all">
+  <link rel="stylesheet" type="text/css" href="/luajit-wiki/css/print.css" media="print">
+  <link rel="stylesheet" type="text/css" href="/luajit-wiki/custom.css" media="all">
+  <meta name="robots" content="noindex, nofollow" />
+
+  <!--[if IE 7]>
+  <link rel="stylesheet" type="text/css" href="/luajit-wiki/css/ie7.css" media="all">
+  <![endif]-->
+
+  <script>
+      var baseUrl = '';
+      var uploadDest   = '';
+      var pageFullPath = 'Optimizations';
+  </script>
+  <script type="text/javascript" src="/luajit-wiki/javascript/jquery-1.7.2.min.js"></script>
+  <script type="text/javascript" src="/luajit-wiki/javascript/mousetrap.min.js"></script>
+  <script type="text/javascript" src="/luajit-wiki/javascript/gollum.js"></script>
+  <script type="text/javascript" src="/luajit-wiki/javascript/gollum.dialog.js"></script>
+  <script type="text/javascript" src="/luajit-wiki/javascript/gollum.placeholder.js"></script>
+  <script type="text/javascript" src="/luajit-wiki/javascript/editor/gollum.editor.js"></script>
+
+  
+
+  <title>Optimizations</title>
+</head>
+<body>
+
+<div id="cust-site">
+  <a href="http://luajit.org"><span>Lua<span id="cust-logo">JIT</span></span></a>
+</div>
+<div id="cust-header">
+  <h1>The LuaJIT Wiki</h1>
+</div>
+<div id="user">
+    <p>
+      not logged in | <strong><a href="/luajit-wiki/__omnigollum__/login">[Login]</a></strong>
+    <p>
+</div>
+
+<script>
+Mousetrap.bind(['e'], function( e ) {
+  e.preventDefault();
+  window.location = "/edit" + window.location.pathname;
+  return false;
+});
+</script>
+<div id="wiki-wrapper" class="page">
+<div id="head">
+  <h1>Optimizations</h1>
+  <ul class="actions">
+    <li class="minibutton">
+      <div id="searchbar">
+        <form action="/search" method="get" id="search-form">
+        <div id="searchbar-fauxtext">
+          <input type="text" name="q" id="search-query" value="Search&hellip;" autocomplete="off">
+          <a href="#" id="search-submit" title="Search this wiki">
+            <span>Search</span>
+          </a>
+        </div>
+        </form>
+      </div>    </li>
+    <li class="minibutton"><a href="/luajit-wiki/"
+       class="action-home-page">Home</a></li>
+    <li class="minibutton"><a href="/luajit-wiki/pages"
+      class="action-all-pages">All</a></li>
+    <li class="minibutton"><a href="/luajit-wiki/fileview"
+    class="action-fileview">Files</a></li>
+      <li class="minibutton jaws">
+        <a href="#" id="minibutton-new-page">New</a></li>
+  </ul>
+</div>
+<div id="wiki-content">
+<div class="">
+  <div id="wiki-body" class="gollum-markdown-content">
+    <div class="markdown-body">
+      <h1>Bytecode Optimizations</h1>
+
+<p>A single-pass parser transforms Lua source code into LuaJIT <a class="internal absent" href="/luajit-wiki/Bytecode" rel="nofollow">Bytecode</a>.
+The bytecode operates on dynamically-typed values and has semantics very
+close to the source code. This is the reason why relatively few
+optimizations can be performed on the bytecode itself -- most of them
+wouldn't be valid transforms in a dynamic language.</p>
+
+<p>Similarly, virtual register allocation for the bytecode closely follows
+scoping of local variables in the Lua source code. No attempt is made to
+minimize or overlap the lifetimes of local variables (virtual registers
+are cheap and plenty).</p>
+
+<h2><a class="anchor" id="constant-folding" href="#constant-folding"><i class="fa fa-link"></i></a>Constant Folding</h2>
+
+<p>Constant folding is performed for all arithmetic operators (+ - * / % ^
+and unary minus) and the logical <code>not</code> operator. If the input consists
+solely of constants, the output is turned into a constant, too. E.g.
+this is the bytecode for <code>return 1.5 * 3</code>:</p>
+
+<pre class="highlight"><code>0001    KNUM     0   0      ; 4.5
+0002    RET1     0   2</code></pre>
+
+
+<p>The multiplication has been eliminated and only its result is returned.</p>
+
+<h2><a class="anchor" id="optimizing-composite-conditionals" href="#optimizing-composite-conditionals"><i class="fa fa-link"></i></a>Optimizing Composite Conditionals</h2>
+
+<p>Composite conditional expressions like <code>x &lt; 10 and x or 10</code> are turned
+into a series of branches, instead of evaluating the intermediate
+expressions into booleans. The logical operators <code>and</code> and <code>or</code> never
+appear in the bytecode. <code>not</code> only appears when the result is used
+outside of a logical result context. E.g. this is the bytecode for
+<code>return a &lt; b and x or y</code>:</p>
+
+<pre class="highlight"><code>0001    GGET     0   0      ; "a"
+0002    GGET     1   1      ; "b"
+0003    ISGE     0   1
+0004    JMP      0 =&gt; 0008
+0005    GGET     0   2      ; "x"
+0006    IST          0
+0007    JMP      1 =&gt; 0009
+0008 =&gt; GGET     0   3      ; "y"
+0009 =&gt; RET1     0   2</code></pre>
+
+
+<h2><a class="anchor" id="elimination-of-conditionals" href="#elimination-of-conditionals"><i class="fa fa-link"></i></a>Elimination of Conditionals</h2>
+
+<p>Conditionals can be eliminated if their input is a constant. This is
+only done for 'truthness' tests. E.g. this is the bytecode for
+<code>return "a" and 99</code>:</p>
+
+<pre class="highlight"><code>0001    KSHORT   0  99
+0002    RET1     0   2</code></pre>
+
+
+<p>The check for the truthness of <code>"a"</code> has been eliminated.</p>
+
+<p>A more common idiom is <code>cond and x or y</code>, which is useful as a ternary
+conditional. But the behavior is not the same, since <code>x</code> is evaluated
+and must not be <code>false</code> or <code>nil</code> (or the idiom would fail). However <code>x</code>
+is very often a constant. E.g. this is the bytecode for
+<code>return a and 10 or 20</code>:</p>
+
+<pre class="highlight"><code>0001    GGET     0   0      ; "a"
+0002    ISF          0
+0003    JMP      1 =&gt; 0006
+0004    KSHORT   0  10
+0005    JMP      1 =&gt; 0007
+0006 =&gt; KSHORT   0  20
+0007 =&gt; RET1     0   2</code></pre>
+
+
+<p>The test for the truthness of <code>10</code> has been eliminated.</p>
+
+<h2><a class="anchor" id="elimination-of-unneeded-results" href="#elimination-of-unneeded-results"><i class="fa fa-link"></i></a>Elimination of Unneeded Results</h2>
+
+<p>Logical operators compute an actual result, e.g. <code>print("a" and 99)</code>
+prints <code>99</code>. But this result is not needed in a logical result context,
+such as an <code>if</code> statement. E.g. this is the bytecode for
+<code>if "a" and 99 then end</code>:</p>
+
+<pre class="highlight"><code>0001    RET0     0   1</code></pre>
+
+
+<p>The conditional as well as its result has been eliminated.</p>
+
+<p>Unneeded results of calls are eliminated, too: e.g. the <code>CALL*</code>
+instructions are patched to not return any results.</p>
+
+<h2><a class="anchor" id="jump-folding" href="#jump-folding"><i class="fa fa-link"></i></a>Jump Folding</h2>
+
+<p>Unconditional jumps that lead to other jumps are folded into a jump to
+the final target. Similarly, closing upvalues at the end of a scope is
+often followed by a jump. The jump is then folded into the <code>UCLO</code>, which
+takes a branch target.</p>
+
+<h2><a class="anchor" id="template-tables" href="#template-tables"><i class="fa fa-link"></i></a>Template Tables</h2>
+
+<p>Lua can be used as data description language, which often involves
+creating tables that are initialized with many constants. Instead of
+allocating an empty table and generating lots of explicit stores, a
+template table is generated by the parser. The template table can be
+duplicated very fast with the <code>TDUP</code> instruction (duplication is
+necessary, because the resulting table may be modified).</p>
+
+<p>Mixed constant and variable initializers are allowed, too. The template
+table is only created, if at least one constant initializer (constant
+key and constant value) is present in the table constructor expression.
+E.g. this is the bytecode for <code>return { foo=1, bar=2, 1,2,x,4 }</code>:</p>
+
+<pre class="highlight"><code>0001    TDUP     0   0
+0002    GGET     1   1      ; "x"
+0003    TSETB    1   0   3
+0004    RET1     0   2</code></pre>
+
+
+<p>All of the constant initializers are merged into the template table.
+Only the store operation <code>t[3] = x</code> remains in the bytecode.</p>
+
+<h2><a class="anchor" id="instruction-and-operand-specialization" href="#instruction-and-operand-specialization"><i class="fa fa-link"></i></a>Instruction and Operand Specialization</h2>
+
+<p>Many bytecode instructions have specialized forms for commonly used
+operand types or number of operands. This reduces dispatch costs, since
+it eliminates (often unpredictable) branches inside of their
+implementation:</p>
+
+<ul>
+<li>There are specialized loads of constants for each constant type (and range). E.g. <code>KSTR</code> loads string constants. Or <code>KSHORT</code> loads 16 bit signed integer constants, whereas <code>KNUM</code> loads all other numeric constants.</li>
+<li>Comparison and test operators are specialized to the direction of their tests. E.g. there's both <code>IST</code> and <code>ISF</code>, which jump either on truthness or falseness. This saves a dispatch compared to using a single instruction plus an operand for the same purpose.</li>
+<li>Comparisons for equality are specialized to the operand type, if one of the operands is a constant. E.g. <code>ISEQN</code> is an equality comparison with a numeric constant.</li>
+<li>Arithmetic instructions are specialized for the common cases of having a numeric constant on the left-hand side or the right-hand side. E.g. <code>ADDVN</code> is an addition with a numeric constant on the right.</li>
+<li>Setting an upvalue is specialized on the operand type. E.g. <code>USETN</code> is used to store a number constant.</li>
+<li>Indexing operations are specialized into getters and setters and on the index operand type and range. E.g. <code>TGETB</code> is for loads with constant integer indices 0 to 255 or <code>TSETS</code> is for stores with a constant string key.</li>
+<li>Calls are specialized into regular calls <code>CALL</code> and tailcalls <code>CALLT</code>.</li>
+<li>Returns with 0 or 1 result use <code>RET0</code> or <code>RET1</code> instead of the generic <code>RET</code>.</li>
+<li>Calls, returns and table initializers which consume multiple results are specialized. E.g. <code>CALLM</code> is a call that passes on multiple results as arguments.</li>
+<li>Every type of loop uses their own specialized bytecode instructions. E.g. the <code>*FOR*</code> instructions are used for numeric 'for' loops.</li>
+<li>Loops using <code>pairs()</code> use the specialized <code>ISNEXT</code> and <code>ITERN</code> instructions.</li>
+<li>Function headers are specialized for fixed-arg vs. vararg functions and for Lua functions vs. C functions vs. fast functions. E.g. <code>FUNCV</code> is the function header for a vararg Lua function.</li>
+</ul>
+
+<p>For more details see the description of the <a class="internal absent" href="/luajit-wiki/Bytecode" rel="nofollow">Bytecode</a> instructions.</p>
+
+<h1><a class="anchor" id="ssa-ir-optimizations" href="#ssa-ir-optimizations"><i class="fa fa-link"></i></a>SSA IR Optimizations</h1>
+
+<p><strong>TODO</strong></p>
+
+<h2><a class="anchor" id="ssa-ir-optimizations_trace-region-selection" href="#ssa-ir-optimizations_trace-region-selection"><i class="fa fa-link"></i></a>TRACE: Region Selection</h2>
+
+<h3><a class="anchor" id="ssa-ir-optimizations_trace-region-selection_nlf-natural-loop-first" href="#ssa-ir-optimizations_trace-region-selection_nlf-natural-loop-first"><i class="fa fa-link"></i></a>NLF: Natural Loop First</h3>
+
+<h3><a class="anchor" id="ssa-ir-optimizations_trace-region-selection_hotspot-detection" href="#ssa-ir-optimizations_trace-region-selection_hotspot-detection"><i class="fa fa-link"></i></a>Hotspot Detection</h3>
+
+<h3><a class="anchor" id="ssa-ir-optimizations_trace-region-selection_penalties-and-blacklisting" href="#ssa-ir-optimizations_trace-region-selection_penalties-and-blacklisting"><i class="fa fa-link"></i></a>Penalties and Blacklisting</h3>
+
+<h3><a class="anchor" id="ssa-ir-optimizations_trace-region-selection_function-inlining" href="#ssa-ir-optimizations_trace-region-selection_function-inlining"><i class="fa fa-link"></i></a>Function Inlining</h3>
+
+<h3><a class="anchor" id="ssa-ir-optimizations_trace-region-selection_tailcall-elimination" href="#ssa-ir-optimizations_trace-region-selection_tailcall-elimination"><i class="fa fa-link"></i></a>Tailcall Elimination</h3>
+
+<h3><a class="anchor" id="ssa-ir-optimizations_trace-region-selection_recursive-unrolling" href="#ssa-ir-optimizations_trace-region-selection_recursive-unrolling"><i class="fa fa-link"></i></a>Recursive Unrolling</h3>
+
+<h3><a class="anchor" id="ssa-ir-optimizations_trace-region-selection_control-flow-optimizations" href="#ssa-ir-optimizations_trace-region-selection_control-flow-optimizations"><i class="fa fa-link"></i></a>Control-Flow Optimizations</h3>
+
+<h2><a class="anchor" id="ssa-ir-optimizations_record-trace-recording" href="#ssa-ir-optimizations_record-trace-recording"><i class="fa fa-link"></i></a>RECORD: Trace Recording</h2>
+
+<h3><a class="anchor" id="ssa-ir-optimizations_record-trace-recording_on-the-fly-ssa-transform" href="#ssa-ir-optimizations_record-trace-recording_on-the-fly-ssa-transform"><i class="fa fa-link"></i></a>On-The-Fly SSA Transform</h3>
+
+<h3><a class="anchor" id="ssa-ir-optimizations_record-trace-recording_upvalue-alias-analysis" href="#ssa-ir-optimizations_record-trace-recording_upvalue-alias-analysis"><i class="fa fa-link"></i></a>Upvalue Alias Analysis</h3>
+
+<h3><a class="anchor" id="ssa-ir-optimizations_record-trace-recording_data-flow-analysis" href="#ssa-ir-optimizations_record-trace-recording_data-flow-analysis"><i class="fa fa-link"></i></a>Data-Flow Analysis</h3>
+
+<h3><a class="anchor" id="ssa-ir-optimizations_record-trace-recording_sparse-snapshotting" href="#ssa-ir-optimizations_record-trace-recording_sparse-snapshotting"><i class="fa fa-link"></i></a>Sparse Snapshotting</h3>
+
+<h3><a class="anchor" id="ssa-ir-optimizations_record-trace-recording_control-flow-specialization" href="#ssa-ir-optimizations_record-trace-recording_control-flow-specialization"><i class="fa fa-link"></i></a>Control-Flow Specialization</h3>
+
+<h3><a class="anchor" id="ssa-ir-optimizations_record-trace-recording_hash-key-specialization" href="#ssa-ir-optimizations_record-trace-recording_hash-key-specialization"><i class="fa fa-link"></i></a>Hash Key Specialization</h3>
+
+<h3><a class="anchor" id="ssa-ir-optimizations_record-trace-recording_fast-function-inlining" href="#ssa-ir-optimizations_record-trace-recording_fast-function-inlining"><i class="fa fa-link"></i></a>Fast Function Inlining</h3>
+
+<h3><a class="anchor" id="ssa-ir-optimizations_record-trace-recording_bytecode-patching" href="#ssa-ir-optimizations_record-trace-recording_bytecode-patching"><i class="fa fa-link"></i></a>Bytecode Patching</h3>
+
+<h2><a class="anchor" id="ssa-ir-optimizations_fold-fold-engine" href="#ssa-ir-optimizations_fold-fold-engine"><i class="fa fa-link"></i></a>FOLD: Fold Engine</h2>
+
+<h3><a class="anchor" id="ssa-ir-optimizations_fold-fold-engine_constant-folding" href="#ssa-ir-optimizations_fold-fold-engine_constant-folding"><i class="fa fa-link"></i></a>Constant Folding</h3>
+
+<h3><a class="anchor" id="ssa-ir-optimizations_fold-fold-engine_algebraic-simplifications" href="#ssa-ir-optimizations_fold-fold-engine_algebraic-simplifications"><i class="fa fa-link"></i></a>Algebraic Simplifications</h3>
+
+<h3><a class="anchor" id="ssa-ir-optimizations_fold-fold-engine_strength-reduction" href="#ssa-ir-optimizations_fold-fold-engine_strength-reduction"><i class="fa fa-link"></i></a>Strength Reduction</h3>
+
+<h3><a class="anchor" id="ssa-ir-optimizations_fold-fold-engine_reassociation" href="#ssa-ir-optimizations_fold-fold-engine_reassociation"><i class="fa fa-link"></i></a>Reassociation</h3>
+
+<h2><a class="anchor" id="ssa-ir-optimizations_cse-common-subexpression-elimination" href="#ssa-ir-optimizations_cse-common-subexpression-elimination"><i class="fa fa-link"></i></a>CSE: Common Subexpression Elimination</h2>
+
+<h2><a class="anchor" id="ssa-ir-optimizations_abc-array-bounds-check-elimination" href="#ssa-ir-optimizations_abc-array-bounds-check-elimination"><i class="fa fa-link"></i></a>ABC: Array Bounds Check Elimination</h2>
+
+<h3><a class="anchor" id="ssa-ir-optimizations_abc-array-bounds-check-elimination_scalar-evolution-analysis" href="#ssa-ir-optimizations_abc-array-bounds-check-elimination_scalar-evolution-analysis"><i class="fa fa-link"></i></a>Scalar Evolution Analysis</h3>
+
+<h2><a class="anchor" id="ssa-ir-optimizations_narrow-narrowing" href="#ssa-ir-optimizations_narrow-narrowing"><i class="fa fa-link"></i></a>NARROW: Narrowing</h2>
+
+<h3><a class="anchor" id="ssa-ir-optimizations_narrow-narrowing_narrowing-of-integer-conversions" href="#ssa-ir-optimizations_narrow-narrowing_narrowing-of-integer-conversions"><i class="fa fa-link"></i></a>Narrowing of Integer Conversions</h3>
+
+<h3><a class="anchor" id="ssa-ir-optimizations_narrow-narrowing_narrowing-of-arithmetic-operators" href="#ssa-ir-optimizations_narrow-narrowing_narrowing-of-arithmetic-operators"><i class="fa fa-link"></i></a>Narrowing of Arithmetic Operators</h3>
+
+<h3><a class="anchor" id="ssa-ir-optimizations_narrow-narrowing_predictive-narrowing-of-induction-variables" href="#ssa-ir-optimizations_narrow-narrowing_predictive-narrowing-of-induction-variables"><i class="fa fa-link"></i></a>Predictive Narrowing of Induction Variables</h3>
+
+<h3><a class="anchor" id="ssa-ir-optimizations_narrow-narrowing_elimination-of-overflow-checks" href="#ssa-ir-optimizations_narrow-narrowing_elimination-of-overflow-checks"><i class="fa fa-link"></i></a>Elimination of Overflow Checks</h3>
+
+<h2><a class="anchor" id="ssa-ir-optimizations_mem-memory-access-optimizations" href="#ssa-ir-optimizations_mem-memory-access-optimizations"><i class="fa fa-link"></i></a>MEM: Memory Access Optimizations</h2>
+
+<h3><a class="anchor" id="ssa-ir-optimizations_mem-memory-access-optimizations_aa-alias-analysis" href="#ssa-ir-optimizations_mem-memory-access-optimizations_aa-alias-analysis"><i class="fa fa-link"></i></a>AA: Alias Analysis</h3>
+
+<h3><a class="anchor" id="ssa-ir-optimizations_mem-memory-access-optimizations_esc-escape-analysis" href="#ssa-ir-optimizations_mem-memory-access-optimizations_esc-escape-analysis"><i class="fa fa-link"></i></a>ESC: Escape Analysis</h3>
+
+<h3><a class="anchor" id="ssa-ir-optimizations_mem-memory-access-optimizations_index-reassociation" href="#ssa-ir-optimizations_mem-memory-access-optimizations_index-reassociation"><i class="fa fa-link"></i></a>Index Reassociation</h3>
+
+<h3><a class="anchor" id="ssa-ir-optimizations_mem-memory-access-optimizations_fwd-load-forwarding-store-forwarding" href="#ssa-ir-optimizations_mem-memory-access-optimizations_fwd-load-forwarding-store-forwarding"><i class="fa fa-link"></i></a>FWD: Load Forwarding, Store Forwarding</h3>
+
+<h3><a class="anchor" id="ssa-ir-optimizations_mem-memory-access-optimizations_dse-dead-store-elimination" href="#ssa-ir-optimizations_mem-memory-access-optimizations_dse-dead-store-elimination"><i class="fa fa-link"></i></a>DSE: Dead-Store Elimination</h3>
+
+<h3><a class="anchor" id="ssa-ir-optimizations_mem-memory-access-optimizations_read-modify-write-simplifications" href="#ssa-ir-optimizations_mem-memory-access-optimizations_read-modify-write-simplifications"><i class="fa fa-link"></i></a>Read-Modify-Write Simplifications</h3>
+
+<h2><a class="anchor" id="ssa-ir-optimizations_loop-loop-optimizations" href="#ssa-ir-optimizations_loop-loop-optimizations"><i class="fa fa-link"></i></a>LOOP: Loop Optimizations</h2>
+
+<h3><a class="anchor" id="ssa-ir-optimizations_loop-loop-optimizations_dce-dead-code-elimination" href="#ssa-ir-optimizations_loop-loop-optimizations_dce-dead-code-elimination"><i class="fa fa-link"></i></a>DCE: Dead-Code Elimination</h3>
+
+<h3><a class="anchor" id="ssa-ir-optimizations_loop-loop-optimizations_loop-invariant-hoisting-via-synthetic-unrolling" href="#ssa-ir-optimizations_loop-loop-optimizations_loop-invariant-hoisting-via-synthetic-unrolling"><i class="fa fa-link"></i></a>Loop-Invariant Hoisting via Synthetic Unrolling</h3>
+
+<h3><a class="anchor" id="ssa-ir-optimizations_loop-loop-optimizations_phi-elimination" href="#ssa-ir-optimizations_loop-loop-optimizations_phi-elimination"><i class="fa fa-link"></i></a>PHI Elimination</h3>
+
+<h3><a class="anchor" id="ssa-ir-optimizations_loop-loop-optimizations_instable-loop-unrolling" href="#ssa-ir-optimizations_loop-loop-optimizations_instable-loop-unrolling"><i class="fa fa-link"></i></a>Instable Loop Unrolling</h3>
+
+<h2><a class="anchor" id="ssa-ir-optimizations_split-instruction-splitting" href="#ssa-ir-optimizations_split-instruction-splitting"><i class="fa fa-link"></i></a>SPLIT: Instruction Splitting</h2>
+
+<h3><a class="anchor" id="ssa-ir-optimizations_split-instruction-splitting_ffi64-64-bit-instruction-splitting" href="#ssa-ir-optimizations_split-instruction-splitting_ffi64-64-bit-instruction-splitting"><i class="fa fa-link"></i></a>FFI64: 64 bit Instruction Splitting</h3>
+
+<h3><a class="anchor" id="ssa-ir-optimizations_split-instruction-splitting_softfp-fp-value-splitting-and-soft-float-calls" href="#ssa-ir-optimizations_split-instruction-splitting_softfp-fp-value-splitting-and-soft-float-calls"><i class="fa fa-link"></i></a>SOFTFP: FP Value Splitting and Soft-Float Calls</h3>
+
+<h2><a class="anchor" id="ssa-ir-optimizations_sink-allocation-sinking-and-store-sinking" href="#ssa-ir-optimizations_sink-allocation-sinking-and-store-sinking"><i class="fa fa-link"></i></a>SINK: Allocation Sinking and Store Sinking</h2>
+
+<p>Allocation sinking and store sinking try to eliminate temporary
+allocations in the fast paths of the code, if possible.</p>
+
+<p>Details can be found here: <a class="internal present" href="/luajit-wiki/Allocation-Sinking-Optimization" rel="nofollow">Allocation Sinking Optimization</a></p>
+
+<h2><a class="anchor" id="ssa-ir-optimizations_asm-assembler-backend" href="#ssa-ir-optimizations_asm-assembler-backend"><i class="fa fa-link"></i></a>ASM: Assembler Backend</h2>
+
+<h3><a class="anchor" id="ssa-ir-optimizations_asm-assembler-backend_reverse-code-generation" href="#ssa-ir-optimizations_asm-assembler-backend_reverse-code-generation"><i class="fa fa-link"></i></a>Reverse Code Generation</h3>
+
+<h3><a class="anchor" id="ssa-ir-optimizations_asm-assembler-backend_dce-on-the-fly-dead-code-elimination" href="#ssa-ir-optimizations_asm-assembler-backend_dce-on-the-fly-dead-code-elimination"><i class="fa fa-link"></i></a>DCE: On-The-Fly Dead-Code Elimination</h3>
+
+<h3><a class="anchor" id="ssa-ir-optimizations_asm-assembler-backend_linear-scan-register-allocation" href="#ssa-ir-optimizations_asm-assembler-backend_linear-scan-register-allocation"><i class="fa fa-link"></i></a>Linear-Scan Register Allocation</h3>
+
+<h3><a class="anchor" id="ssa-ir-optimizations_asm-assembler-backend_register-hinting" href="#ssa-ir-optimizations_asm-assembler-backend_register-hinting"><i class="fa fa-link"></i></a>Register Hinting</h3>
+
+<h3><a class="anchor" id="ssa-ir-optimizations_asm-assembler-backend_register-renaming" href="#ssa-ir-optimizations_asm-assembler-backend_register-renaming"><i class="fa fa-link"></i></a>Register Renaming</h3>
+
+<h3><a class="anchor" id="ssa-ir-optimizations_asm-assembler-backend_register-coalescing" href="#ssa-ir-optimizations_asm-assembler-backend_register-coalescing"><i class="fa fa-link"></i></a>Register Coalescing</h3>
+
+<h3><a class="anchor" id="ssa-ir-optimizations_asm-assembler-backend_phi-register-shuffling" href="#ssa-ir-optimizations_asm-assembler-backend_phi-register-shuffling"><i class="fa fa-link"></i></a>PHI Register Shuffling</h3>
+
+<h3><a class="anchor" id="ssa-ir-optimizations_asm-assembler-backend_rematerialization" href="#ssa-ir-optimizations_asm-assembler-backend_rematerialization"><i class="fa fa-link"></i></a>Rematerialization</h3>
+
+<h3><a class="anchor" id="ssa-ir-optimizations_asm-assembler-backend_constant-synthesizing" href="#ssa-ir-optimizations_asm-assembler-backend_constant-synthesizing"><i class="fa fa-link"></i></a>Constant Synthesizing</h3>
+
+<h3><a class="anchor" id="ssa-ir-optimizations_asm-assembler-backend_spill-and-restore-scheduling" href="#ssa-ir-optimizations_asm-assembler-backend_spill-and-restore-scheduling"><i class="fa fa-link"></i></a>Spill and Restore Scheduling</h3>
+
+<h3><a class="anchor" id="ssa-ir-optimizations_asm-assembler-backend_loop-inversion" href="#ssa-ir-optimizations_asm-assembler-backend_loop-inversion"><i class="fa fa-link"></i></a>Loop Inversion</h3>
+
+<h3><a class="anchor" id="ssa-ir-optimizations_asm-assembler-backend_loop-alignment" href="#ssa-ir-optimizations_asm-assembler-backend_loop-alignment"><i class="fa fa-link"></i></a>Loop Alignment</h3>
+
+<h3><a class="anchor" id="ssa-ir-optimizations_asm-assembler-backend_gc-step-elimination" href="#ssa-ir-optimizations_asm-assembler-backend_gc-step-elimination"><i class="fa fa-link"></i></a>GC Step Elimination</h3>
+
+<h3><a class="anchor" id="ssa-ir-optimizations_asm-assembler-backend_fuse-operand-fusion" href="#ssa-ir-optimizations_asm-assembler-backend_fuse-operand-fusion"><i class="fa fa-link"></i></a>FUSE: Operand Fusion</h3>
+
+<h3><a class="anchor" id="ssa-ir-optimizations_asm-assembler-backend_instruction-specialization" href="#ssa-ir-optimizations_asm-assembler-backend_instruction-specialization"><i class="fa fa-link"></i></a>Instruction Specialization</h3>
+
+<h3><a class="anchor" id="ssa-ir-optimizations_asm-assembler-backend_instruction-combining" href="#ssa-ir-optimizations_asm-assembler-backend_instruction-combining"><i class="fa fa-link"></i></a>Instruction Combining</h3>
+
+<h3><a class="anchor" id="ssa-ir-optimizations_asm-assembler-backend_machine-code-patching" href="#ssa-ir-optimizations_asm-assembler-backend_machine-code-patching"><i class="fa fa-link"></i></a>Machine Code Patching</h3>
+
+    </div>
+  </div>
+  </div>
+
+</div>
+<div id="footer">
+  <p id="last-edit">Last edited by <b>Arran Cudbard-Bell (arr2036)</b>, 2014-03-29 23:39:57</p>
+    <p>
+      <a id="delete-link" href="/luajit-wiki/Optimizations" data-confirm="Are you sure you want to delete this page?"><span>Delete this Page</span></a>
+    </p>
+</div>
+</div>
+
+<form name="rename" method="POST" action="/rename/Optimizations">
+  <input type="hidden" name="rename"/>
+  <input type="hidden" name="message"/>
+</form>
+<div id="cust-footer">
+  <p>Sponsored by <a href="http://www.networkradius.com">Network RADIUS</a></p>
+</div>
+
+
+</body>
+</html>

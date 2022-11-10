@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-type" content="text/html;charset=utf-8">
+  <link rel=”alternate” type=”application/rss+xml” title=”wiki.luajit.org edit/commit log” href=”http://wiki.luajit.org/feeds/global.xml” />
+ 
+  <link rel="stylesheet" type="text/css" href="/luajit-wiki/css/gollum.css" media="all">
+  <link rel="stylesheet" type="text/css" href="/luajit-wiki/css/editor.css" media="all">
+  <link rel="stylesheet" type="text/css" href="/luajit-wiki/css/dialog.css" media="all">
+  <link rel="stylesheet" type="text/css" href="/luajit-wiki/css/template.css" media="all">
+ 
+  <link rel="stylesheet" type="text/css" href="/luajit-wiki/css/custom.css" media="all">
+  <!--[if IE 7]>
+  <link rel="stylesheet" type="text/css" href="/luajit-wiki/css/ie7.css" media="all">
+  <![endif]-->
+  
+  <script type="text/javascript" src="/luajit-wiki/javascript/jquery.js"></script>
+  <script type="text/javascript" src="/luajit-wiki/javascript/gollum.js"></script>
+  <script type="text/javascript" src="/luajit-wiki/javascript/gollum.dialog.js"></script>
+  <script type="text/javascript" src="/luajit-wiki/javascript/gollum.placeholder.js"></script>
+  
+  <script type="text/javascript" src="/luajit-wiki/javascript/editor/gollum.editor.js"></script>
+  
+  <title>Bytecode</title>
+</head>
+<body>
+<div id="cust-site">
+  <a href="http://luajit.org"><span>Lua<span id="cust-logo">JIT</span></span></a>
+</div>
+<div id="cust-header">
+  <h1>The LuaJIT Wiki</h1>
+</div>
+<div id="user">
+    <p>
+      not logged in | <strong><a href="/luajit-wiki/__omnigollum__/login">[Login]</a></strong>
+    <p>
+</div>
+
+<div id="wiki-wrapper" class="history">
+<div id="head">
+  <h1>History for <strong>Bytecode</strong></h1>
+  <ul class="actions">
+    <li class="minibutton">
+      <div id="searchbar">
+        <form action="/search" method="get" id="search-form">
+        <div id="searchbar-fauxtext">
+          <input type="text" name="q" id="search-query" value="Search&hellip;" autocomplete="off">
+          <a href="#" id="search-submit" title="Search this wiki">
+            <span>Search</span>
+          </a>
+        </div>
+        </form>
+      </div>    </li>
+    <li class="minibutton"><a href="/luajit-wiki/Bytecode"
+       class="action-view-page">View Page</a></li>
+    <li class="minibutton"><a href="/luajit-wiki/edit/Bytecode"
+       class="action-edit-page">Edit Page</a></li>
+  </ul>
+</div>
+<div id="wiki-history">
+  
+  <ul class="actions">
+    <li class="minibutton"><a href="javascript:void(0);"
+       class="action-compare-revision">Compare Revisions</a></li>
+  </ul>
+
+  <form name="compare-versions" id="version-form" method="post"
+   action="/compare/Bytecode">
+  <fieldset>
+  <table>
+    <tbody>
+      
+      <tr>
+        <td class="checkbox">
+          <input type="checkbox" name="versions[]" value="749f04bf9244c7bae50c99313afc00cdeb556373">
+        </td>
+        <td class="author">
+          <a href="javascript:void(0)">
+            <img src="https://secure.gravatar.com/avatar/18126e7bd3f84b3f3e4df094def5b7de?s=16"
+             alt="avatar: Mike Pall" class="mini-gravatar">
+            <span class="username">Mike Pall</span>
+          </a>
+        </td>
+        <td class="commit-name">
+          <span class="time-elapsed">June 21, 2012:</span>&nbsp;
+          Bytecode: Minor fixes.
+          [<a href="/luajit-wiki/Bytecode/749f04bf9244c7bae50c99313afc00cdeb556373" title="View commit">749f04b</a>]
+        </td>
+      </tr>
+      <tr>
+        <td class="checkbox">
+          <input type="checkbox" name="versions[]" value="34589f549f9b8e276f13da7c14b4b00031754214">
+        </td>
+        <td class="author">
+          <a href="javascript:void(0)">
+            <img src="https://secure.gravatar.com/avatar/18126e7bd3f84b3f3e4df094def5b7de?s=16"
+             alt="avatar: Mike Pall" class="mini-gravatar">
+            <span class="username">Mike Pall</span>
+          </a>
+        </td>
+        <td class="commit-name">
+          <span class="time-elapsed">June 21, 2012:</span>&nbsp;
+          Bytecode: Minor fixes.
+          [<a href="/luajit-wiki/Bytecode/34589f549f9b8e276f13da7c14b4b00031754214" title="View commit">34589f5</a>]
+        </td>
+      </tr>
+      <tr>
+        <td class="checkbox">
+          <input type="checkbox" name="versions[]" value="323977d14ccf1626064c566b8ad7a88f1b87b6d9">
+        </td>
+        <td class="author">
+          <a href="javascript:void(0)">
+            <img src="https://secure.gravatar.com/avatar/18126e7bd3f84b3f3e4df094def5b7de?s=16"
+             alt="avatar: Mike Pall" class="mini-gravatar">
+            <span class="username">Mike Pall</span>
+          </a>
+        </td>
+        <td class="commit-name">
+          <span class="time-elapsed">June 21, 2012:</span>&nbsp;
+          Bytecode: Add returns, loops/branches and function headers.
+          [<a href="/luajit-wiki/Bytecode/323977d14ccf1626064c566b8ad7a88f1b87b6d9" title="View commit">323977d</a>]
+        </td>
+      </tr>
+      <tr>
+        <td class="checkbox">
+          <input type="checkbox" name="versions[]" value="6c805efc3d7ae936ad3cc00740c49f9238be80c6">
+        </td>
+        <td class="author">
+          <a href="javascript:void(0)">
+            <img src="https://secure.gravatar.com/avatar/18126e7bd3f84b3f3e4df094def5b7de?s=16"
+             alt="avatar: Mike Pall" class="mini-gravatar">
+            <span class="username">Mike Pall</span>
+          </a>
+        </td>
+        <td class="commit-name">
+          <span class="time-elapsed">June 01, 2012:</span>&nbsp;
+          Bytecode: Calls and vararg handling.
+          [<a href="/luajit-wiki/Bytecode/6c805efc3d7ae936ad3cc00740c49f9238be80c6" title="View commit">6c805ef</a>]
+        </td>
+      </tr>
+      <tr>
+        <td class="checkbox">
+          <input type="checkbox" name="versions[]" value="4ad13bc9b4dbb7b781163b660bf7131bb95a4b26">
+        </td>
+        <td class="author">
+          <a href="javascript:void(0)">
+            <img src="https://secure.gravatar.com/avatar/18126e7bd3f84b3f3e4df094def5b7de?s=16"
+             alt="avatar: Mike Pall" class="mini-gravatar">
+            <span class="username">Mike Pall</span>
+          </a>
+        </td>
+        <td class="commit-name">
+          <span class="time-elapsed">June 01, 2012:</span>&nbsp;
+          Bytecode: Table ops.
+          [<a href="/luajit-wiki/Bytecode/4ad13bc9b4dbb7b781163b660bf7131bb95a4b26" title="View commit">4ad13bc</a>]
+        </td>
+      </tr>
+      <tr>
+        <td class="checkbox">
+          <input type="checkbox" name="versions[]" value="43a61abddbf69d412a44bf728843c1d006dac381">
+        </td>
+        <td class="author">
+          <a href="javascript:void(0)">
+            <img src="https://secure.gravatar.com/avatar/e2b783689a83a2187923729774f6db19?s=16"
+             alt="avatar: Geoff Leyland" class="mini-gravatar">
+            <span class="username">Geoff Leyland</span>
+          </a>
+        </td>
+        <td class="commit-name">
+          <span class="time-elapsed">June 01, 2012:</span>&nbsp;
+          Do a proper job of tidying up the headings in Bytecode
+          [<a href="/luajit-wiki/Bytecode/43a61abddbf69d412a44bf728843c1d006dac381" title="View commit">43a61ab</a>]
+        </td>
+      </tr>
+      <tr>
+        <td class="checkbox">
+          <input type="checkbox" name="versions[]" value="25639247ef6546dc8e94f7d10d410b48659a34b6">
+        </td>
+        <td class="author">
+          <a href="javascript:void(0)">
+            <img src="https://secure.gravatar.com/avatar/e2b783689a83a2187923729774f6db19?s=16"
+             alt="avatar: Geoff Leyland" class="mini-gravatar">
+            <span class="username">Geoff Leyland</span>
+          </a>
+        </td>
+        <td class="commit-name">
+          <span class="time-elapsed">June 01, 2012:</span>&nbsp;
+          Promoted a few lines in Bytecode.md that looked like they should be headings to headings
+          [<a href="/luajit-wiki/Bytecode/25639247ef6546dc8e94f7d10d410b48659a34b6" title="View commit">2563924</a>]
+        </td>
+      </tr>
+      <tr>
+        <td class="checkbox">
+          <input type="checkbox" name="versions[]" value="22881d61d2723a45931572aa6f9545eb45ad4721">
+        </td>
+        <td class="author">
+          <a href="javascript:void(0)">
+            <img src="https://secure.gravatar.com/avatar/18126e7bd3f84b3f3e4df094def5b7de?s=16"
+             alt="avatar: Mike Pall" class="mini-gravatar">
+            <span class="username">Mike Pall</span>
+          </a>
+        </td>
+        <td class="commit-name">
+          <span class="time-elapsed">May 11, 2012:</span>&nbsp;
+          Table formatting.
+          [<a href="/luajit-wiki/Bytecode/22881d61d2723a45931572aa6f9545eb45ad4721" title="View commit">22881d6</a>]
+        </td>
+      </tr>
+      <tr>
+        <td class="checkbox">
+          <input type="checkbox" name="versions[]" value="e8efb584f222da2deba7573f553c51a9ad2deab2">
+        </td>
+        <td class="author">
+          <a href="javascript:void(0)">
+            <img src="https://secure.gravatar.com/avatar/18126e7bd3f84b3f3e4df094def5b7de?s=16"
+             alt="avatar: Mike Pall" class="mini-gravatar">
+            <span class="username">Mike Pall</span>
+          </a>
+        </td>
+        <td class="commit-name">
+          <span class="time-elapsed">May 11, 2012:</span>&nbsp;
+          Reformat more bytecode ops.
+          [<a href="/luajit-wiki/Bytecode/e8efb584f222da2deba7573f553c51a9ad2deab2" title="View commit">e8efb58</a>]
+        </td>
+      </tr>
+      <tr>
+        <td class="checkbox">
+          <input type="checkbox" name="versions[]" value="57e020d7a055957584fc7ac4418bff60148aa621">
+        </td>
+        <td class="author">
+          <a href="javascript:void(0)">
+            <img src="https://secure.gravatar.com/avatar/18126e7bd3f84b3f3e4df094def5b7de?s=16"
+             alt="avatar: Mike Pall" class="mini-gravatar">
+            <span class="username">Mike Pall</span>
+          </a>
+        </td>
+        <td class="commit-name">
+          <span class="time-elapsed">May 11, 2012:</span>&nbsp;
+          Reformat bytecode comparison ops.
+          [<a href="/luajit-wiki/Bytecode/57e020d7a055957584fc7ac4418bff60148aa621" title="View commit">57e020d</a>]
+        </td>
+      </tr>
+      <tr>
+        <td class="checkbox">
+          <input type="checkbox" name="versions[]" value="5c460a1777aceaf53c289106a5a75e7426602f37">
+        </td>
+        <td class="author">
+          <a href="javascript:void(0)">
+            <img src="https://secure.gravatar.com/avatar/18126e7bd3f84b3f3e4df094def5b7de?s=16"
+             alt="avatar: Mike Pall" class="mini-gravatar">
+            <span class="username">Mike Pall</span>
+          </a>
+        </td>
+        <td class="commit-name">
+          <span class="time-elapsed">May 11, 2012:</span>&nbsp;
+          Add description of bytecode operand types.
+          [<a href="/luajit-wiki/Bytecode/5c460a1777aceaf53c289106a5a75e7426602f37" title="View commit">5c460a1</a>]
+        </td>
+      </tr>
+      <tr>
+        <td class="checkbox">
+          <input type="checkbox" name="versions[]" value="c728f657001eaeee7f64eb99f47dc413c8e29a56">
+        </td>
+        <td class="author">
+          <a href="javascript:void(0)">
+            <img src="https://secure.gravatar.com/avatar/18126e7bd3f84b3f3e4df094def5b7de?s=16"
+             alt="avatar: Mike Pall" class="mini-gravatar">
+            <span class="username">Mike Pall</span>
+          </a>
+        </td>
+        <td class="commit-name">
+          <span class="time-elapsed">May 11, 2012:</span>&nbsp;
+          Rewrite intro for bytecode format.
+          [<a href="/luajit-wiki/Bytecode/c728f657001eaeee7f64eb99f47dc413c8e29a56" title="View commit">c728f65</a>]
+        </td>
+      </tr>
+      <tr>
+        <td class="checkbox">
+          <input type="checkbox" name="versions[]" value="be54066ff50823e902733d0efcfe6de9582b0cb9">
+        </td>
+        <td class="author">
+          <a href="javascript:void(0)">
+            <img src="https://secure.gravatar.com/avatar/a3b7f21aeaa03477e852a891f480b26b?s=16"
+             alt="avatar: Arran Cudbard-Bell" class="mini-gravatar">
+            <span class="username">Arran Cudbard-Bell</span>
+          </a>
+        </td>
+        <td class="commit-name">
+          <span class="time-elapsed">May 11, 2012:</span>&nbsp;
+          
+          [<a href="/luajit-wiki/Bytecode/be54066ff50823e902733d0efcfe6de9582b0cb9" title="View commit">be54066</a>]
+        </td>
+      </tr>
+      <tr>
+        <td class="checkbox">
+          <input type="checkbox" name="versions[]" value="1f1a8b8b78afa639a43cbaeee06fb418ff47e282">
+        </td>
+        <td class="author">
+          <a href="javascript:void(0)">
+            <img src="https://secure.gravatar.com/avatar/a3b7f21aeaa03477e852a891f480b26b?s=16"
+             alt="avatar: Arran Cudbard-Bell" class="mini-gravatar">
+            <span class="username">Arran Cudbard-Bell</span>
+          </a>
+        </td>
+        <td class="commit-name">
+          <span class="time-elapsed">May 11, 2012:</span>&nbsp;
+          Convert ops to third level titles, so they're indented correctly in the TOC
+          [<a href="/luajit-wiki/Bytecode/1f1a8b8b78afa639a43cbaeee06fb418ff47e282" title="View commit">1f1a8b8</a>]
+        </td>
+      </tr>
+      <tr>
+        <td class="checkbox">
+          <input type="checkbox" name="versions[]" value="92b176698daaa1f1b9c5c29b4fcae6975f21c5f8">
+        </td>
+        <td class="author">
+          <a href="javascript:void(0)">
+            <img src="https://secure.gravatar.com/avatar/c510febb9bed68b5cc4a09f076701e0f?s=16"
+             alt="avatar: David Manura" class="mini-gravatar">
+            <span class="username">David Manura</span>
+          </a>
+        </td>
+        <td class="commit-name">
+          <span class="time-elapsed">May 11, 2012:</span>&nbsp;
+          moved my notes from lua-users.org
+          [<a href="/luajit-wiki/Bytecode/92b176698daaa1f1b9c5c29b4fcae6975f21c5f8" title="View commit">92b1766</a>]
+        </td>
+      </tr>
+      
+    </tbody>
+  </table>
+  </fieldset>
+  </form>
+</div>
+<div id="footer">
+  <ul class="actions">
+    <li class="minibutton"><a href="javascript:void(0);"
+       class="action-compare-revision">Compare Revisions</a></li>
+       
+    <!-- only show this button if we have more than 20 revisions -->
+    <li class="minibutton"><a href="#"
+       class="action-back-to-top">Back to Top</a></li>
+  </ul>
+</div>
+</div>
+
+
+</body>
+</html>

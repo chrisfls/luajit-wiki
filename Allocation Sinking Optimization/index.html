@@ -1,0 +1,1023 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-type" content="text/html;charset=utf-8">
+  <link rel=”alternate” type=”application/rss+xml” title=”wiki.luajit.org edit/commit log” href=”http://wiki.luajit.org/feeds/global.xml” />
+ 
+  <link rel="stylesheet" type="text/css" href="/luajit-wiki/css/gollum.css" media="all">
+  <link rel="stylesheet" type="text/css" href="/luajit-wiki/css/editor.css" media="all">
+  <link rel="stylesheet" type="text/css" href="/luajit-wiki/css/dialog.css" media="all">
+  <link rel="stylesheet" type="text/css" href="/luajit-wiki/css/template.css" media="all">
+ 
+  <link rel="stylesheet" type="text/css" href="/luajit-wiki/css/custom.css" media="all">
+  <!--[if IE 7]>
+  <link rel="stylesheet" type="text/css" href="/luajit-wiki/css/ie7.css" media="all">
+  <![endif]-->
+  
+  <script type="text/javascript" src="/luajit-wiki/javascript/jquery.js"></script>
+  <script type="text/javascript" src="/luajit-wiki/javascript/gollum.js"></script>
+  <script type="text/javascript" src="/luajit-wiki/javascript/gollum.dialog.js"></script>
+  <script type="text/javascript" src="/luajit-wiki/javascript/gollum.placeholder.js"></script>
+  
+  <script type="text/javascript" src="/luajit-wiki/javascript/editor/gollum.editor.js"></script>
+  <script type="text/javascript" src="https://c328740.ssl.cf1.rackcdn.com/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  <title>Allocation Sinking Optimization</title>
+</head>
+<body>
+<div id="cust-site">
+  <a href="http://luajit.org"><span>Lua<span id="cust-logo">JIT</span></span></a>
+</div>
+<div id="cust-header">
+  <h1>The LuaJIT Wiki</h1>
+</div>
+<div id="user">
+    <p>
+      not logged in | <strong><a href="/luajit-wiki/__omnigollum__/login">[Login]</a></strong>
+    <p>
+</div>
+
+<div id="wiki-wrapper" class="page">
+<div id="head">
+  <h1>Allocation Sinking Optimization</h1>
+  <ul class="actions">
+    <li class="minibutton">
+      <div id="searchbar">
+        <form action="/search" method="get" id="search-form">
+        <div id="searchbar-fauxtext">
+          <input type="text" name="q" id="search-query" value="Search&hellip;" autocomplete="off">
+          <a href="#" id="search-submit" title="Search this wiki">
+            <span>Search</span>
+          </a>
+        </div>
+        </form>
+      </div>    </li>
+    <li class="minibutton"><a href="/luajit-wiki/pages"
+      class="action-all-pages">All Pages</a></li>
+    <li class="minibutton"><a href="/luajit-wiki/fileview"
+    class="action-all-pages">File View</a></li>
+    <li class="minibutton" class="jaws">
+      <a href="#" id="minibutton-new-page">New Page</a></li>
+    <li class="minibutton"><a href="/luajit-wiki/edit/Allocation+Sinking+Optimization"
+       class="action-edit-page">Edit Page</a></li>
+    <li class="minibutton"><a href="/luajit-wiki/history/Allocation+Sinking+Optimization"
+       class="action-page-history">Page History</a></li>
+  </ul>
+</div>
+<div id="wiki-content">
+<div class=" has-toc">
+  <div id="wiki-toc-main">
+    <div class="toc">
+  <div class="toc-title">Table of Contents</div>
+  <ul>
+    <li>
+      <a href="#Introduction">Introduction</a>
+    </li>
+  </ul>
+  <ul>
+    <ul>
+      <li>
+        <a href="#Rationale">Rationale</a>
+      </li>
+    </ul>
+  </ul>
+  <ul>
+    <ul>
+      <li>
+        <a href="#Motivating-Example">Motivating Example</a>
+      </li>
+    </ul>
+  </ul>
+  <ul>
+    <ul>
+      <li>
+        <a href="#The-Goal">The Goal</a>
+      </li>
+    </ul>
+  </ul>
+  <ul>
+    <ul>
+      <li>
+        <a href="#The-Missing-Details">The Missing Details</a>
+      </li>
+    </ul>
+  </ul>
+  <ul>
+    <li>
+      <a href="#Examples">Examples</a>
+    </li>
+  </ul>
+  <ul>
+    <ul>
+      <li>
+        <a href="#Motivating-Example-Again">Motivating Example Again</a>
+      </li>
+    </ul>
+  </ul>
+  <ul>
+    <ul>
+      <li>
+        <a href="#Re-Sinking">Re-Sinking</a>
+      </li>
+    </ul>
+  </ul>
+  <ul>
+    <ul>
+      <li>
+        <a href="#Point-Class">Point Class</a>
+      </li>
+    </ul>
+  </ul>
+  <ul>
+    <ul>
+      <ul>
+        <li>
+          <a href="#Point-Class-With-Lua-Tables">Point Class With Lua Tables</a>
+        </li>
+      </ul>
+    </ul>
+  </ul>
+  <ul>
+    <ul>
+      <ul>
+        <li>
+          <a href="#Point-Class-With-FFI-cdata-struct">Point Class With FFI cdata struct</a>
+        </li>
+      </ul>
+    </ul>
+  </ul>
+  <ul>
+    <ul>
+      <ul>
+        <li>
+          <a href="#Point-Class-in-C%2B%2B-and-Java">Point Class in C++ and Java</a>
+        </li>
+      </ul>
+    </ul>
+  </ul>
+  <ul>
+    <ul>
+      <ul>
+        <li>
+          <a href="#Point-Class-Benchmarks">Point Class Benchmarks</a>
+        </li>
+      </ul>
+    </ul>
+  </ul>
+  <ul>
+    <li>
+      <a href="#Implementation">Implementation</a>
+    </li>
+  </ul>
+  <ul>
+    <ul>
+      <li>
+        <a href="#SINK-Optimization-Pass">SINK Optimization Pass</a>
+      </li>
+    </ul>
+  </ul>
+  <ul>
+    <ul>
+      <ul>
+        <li>
+          <a href="#Mark-Phase">Mark Phase</a>
+        </li>
+      </ul>
+    </ul>
+  </ul>
+  <ul>
+    <ul>
+      <ul>
+        <li>
+          <a href="#Sweep-Phase">Sweep Phase</a>
+        </li>
+      </ul>
+    </ul>
+  </ul>
+  <ul>
+    <ul>
+      <li>
+        <a href="#Assembler-Backend">Assembler Backend</a>
+      </li>
+    </ul>
+  </ul>
+  <ul>
+    <ul>
+      <ul>
+        <li>
+          <a href="#Snapshot-Allocations">Snapshot Allocations</a>
+        </li>
+      </ul>
+    </ul>
+  </ul>
+  <ul>
+    <ul>
+      <ul>
+        <li>
+          <a href="#Sunk-Instructions">Sunk Instructions</a>
+        </li>
+      </ul>
+    </ul>
+  </ul>
+  <ul>
+    <ul>
+      <li>
+        <a href="#Snapshot-Handling">Snapshot Handling</a>
+      </li>
+    </ul>
+  </ul>
+  <ul>
+    <ul>
+      <ul>
+        <li>
+          <a href="#Snapshot-Restore">Snapshot Restore</a>
+        </li>
+      </ul>
+    </ul>
+  </ul>
+  <ul>
+    <ul>
+      <ul>
+        <li>
+          <a href="#Snapshot-Replay">Snapshot Replay</a>
+        </li>
+      </ul>
+    </ul>
+  </ul>
+</div>
+  </div>
+  <div id="wiki-body" class="gollum-markdown-content">
+    <div class="markdown-body">
+      <h1>Introduction<a class="anchor" id="Introduction" href="#Introduction"></a>
+</h1>
+
+<p>The <strong>Allocation Sinking and Store Sinking Optimization</strong> was added
+to LuaJIT 2.0 in July 2012. This page documents the rationale for this
+optimization, the algorithm used and its implementation. The resulting
+performance is discussed and compared to other languages, too.</p>
+
+<p>The research and the development of this optimization has been sponsored
+by an anonymous corporate <a href="http://luajit.org/sponsors.html">sponsor</a> in
+2012.</p>
+
+<p>Although this optimization is based on other well-known techniques, the
+combination may be considered innovative. I (Mike Pall) hereby donate
+the related intellectual property to the public domain. If you find it
+useful, please use it and share it!</p>
+
+<h2>Rationale<a class="anchor" id="Rationale" href="#Rationale"></a>
+</h2>
+
+<p>Avoiding temporary allocations is an important optimization for
+high-level languages. Allocations are expensive and cause additional
+overhead since they need to be garbage collected later. The cost can be
+reduced with considerable effort (cf. the <a class="internal present" href="/luajit-wiki/New-Garbage-Collector">New Garbage Collector</a>),
+but an eliminated allocation is always the cheapest option.</p>
+
+<p>LuaJIT already eliminates many temporary allocations with multiple
+techniques: e.g. floating-point numbers aren't boxed and the JIT
+compiler eliminates allocations for most immutable objects. However,
+many allocations remain, especially in OO-heavy workloads.</p>
+
+<p>The traditional techniques to avoid temporary allocations are escape
+analysis and scalar replacement of aggregates (SRA). Escape analysis
+verifies that an object doesn't escape through <em>any</em> code path. But code
+generated for dynamic languages has many fallback paths, e.g. to handle
+dynamic typing. Sadly, this means that almost any object inevitably
+escapes through at least one of these uncommon code paths. This makes
+the traditional techniques ineffective for dynamic languages.</p>
+
+<h2>Motivating Example<a class="anchor" id="Motivating-Example" href="#Motivating-Example"></a>
+</h2>
+
+<p>For explanatory purposes, the following synthetic example has an
+explicit code path where the allocation escapes to. Of course, the same
+underlying logic applies for implicit code paths caused by the dynamic
+language semantics.</p>
+
+<div class="highlight">
+<pre><span class="kd">local</span> <span class="n">x</span><span class="p">,</span> <span class="n">z</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="kc">nil</span>
+<span class="k">for</span> <span class="n">i</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="mi">100</span> <span class="k">do</span>
+  <span class="kd">local</span> <span class="n">t</span> <span class="o">=</span> <span class="p">{</span><span class="n">i</span><span class="p">}</span>
+  <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">90</span> <span class="k">then</span>
+    <span class="n">z</span> <span class="o">=</span> <span class="n">t</span>
+  <span class="k">end</span>
+  <span class="n">x</span> <span class="o">=</span> <span class="n">x</span> <span class="o">+</span> <span class="n">t</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+<span class="k">end</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">z</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+</pre>
+</div>
+
+
+<p>Although the uncommon code path for <code>i == 90</code> is only taken once,
+traditional escape analysis would fail, because <code>t</code> <strong>does escape</strong> to
+<code>z</code> at one point in the control flow.</p>
+
+<p>[Granted, no sane programmer would write such code. But it may arise
+indirectly as a consequence of higher language abstractions, e.g. when
+operating on aggregates. See below for some practical examples.]</p>
+
+<p>Let's take a look at the IR and the snapshots generated by LuaJIT with
+the sinking optimization disabled (<code>-O-sink</code>). Only the looping part of
+the trace is shown:</p>
+
+<div class="highlight">
+<pre><span class="p">....</span>        <span class="n">SNAP</span>   #4   <span class="p">[</span> <span class="o">----</span> 0009 <span class="o">----</span> 0010 <span class="o">----</span> <span class="o">----</span> 0010 <span class="p">]</span>
+0012 <span class="o">------</span> <span class="n">LOOP</span> <span class="o">------------</span>
+0013 <span class="o">&gt;</span>  <span class="n">tab</span> <span class="n">TNEW</span>   #3    #0
+0014    <span class="n">p32</span> <span class="n">FLOAD</span>  0013  <span class="n">tab</span><span class="p">.</span><span class="n">array</span>
+0015    <span class="n">p32</span> <span class="n">AREF</span>   0014  <span class="o">+</span>1
+0016    <span class="n">num</span> <span class="n">CONV</span>   0010  <span class="n">num</span><span class="p">.</span><span class="n">int</span>
+0017    <span class="n">num</span> <span class="n">ASTORE</span> 0015  0016
+<span class="p">....</span>        <span class="n">SNAP</span>   #5   <span class="p">[</span> <span class="o">----</span> 0009 <span class="o">----</span> 0010 <span class="o">----</span> <span class="o">----</span> 0010 0013 <span class="p">]</span>
+0018 <span class="o">&gt;</span>  <span class="n">int</span> <span class="n">NE</span>     0010  <span class="o">+</span>90
+0019  <span class="o">+</span> <span class="n">num</span> <span class="n">ADD</span>    0016  0009
+0020  <span class="o">+</span> <span class="n">int</span> <span class="n">ADD</span>    0010  <span class="o">+</span>1
+<span class="p">....</span>        <span class="n">SNAP</span>   #6   <span class="p">[</span> <span class="o">----</span> 0019 <span class="o">----</span> <span class="p">]</span>
+0021 <span class="o">&gt;</span>  <span class="n">int</span> <span class="n">LE</span>     0020  <span class="o">+</span>100
+0022    <span class="n">int</span> <span class="n">PHI</span>    0010  0020
+0023    <span class="n">num</span> <span class="n">PHI</span>    0009  0019
+</pre>
+</div>
+
+
+<p>As we can see, the table allocation <code>TNEW</code> in instruction 0013 escapes
+to the snapshot for side exit #5. Much more interesting is to see that
+the load <code>t[1]</code> has been eliminated. The stored value <code>i</code> (the left PHI
+operand at 0010, not shown) has been forwarded through the
+integer-to-number conversion (0016) and then added to <code>x</code> in instruction
+0019. <code>x</code> itself escapes through side exit #6, but the allocation is
+dead before the next loop iteration.</p>
+
+<p>[Note: the code path starting at side exit #5 is never compiled, since
+the side exit is not taken often enough. What happens when a side trace
+is compiled is shown below.]</p>
+
+<p>The solution to the problem discussed above starts with an observation:
+there are no loads left for the temporary object! Thanks to advanced
+alias analysis, store-to-load-forwarding in LuaJIT is generally quite
+effective at removing all loads from temporary objects: they are simply
+replaced with the corresponding stored values.</p>
+
+<p>The only references to a temporary allocation are then the stores
+themselves (via the <code>AREF</code> and the <code>FLOAD</code> in the above example).
+However, these stores are pointless if the allocation is not used later
+on in the fast code path. The allocation is thus only created for
+consistency with the other code paths, but performs no real function for
+the fast path.</p>
+
+<p>The basic idea is now to move the temporary allocation where it's really
+needed. This is 'code motion' in compiler terminology. Since we want to
+move it to a side path of the code, a more precise term is 'sinking'.</p>
+
+<p>Here's the above example again, but with store-to-load-forwarding and
+sinking applied by hand on the right side:</p>
+
+<div class="highlight">
+<pre>local x<span class="p">,</span> z <span class="o">=</span> <span class="m">0</span><span class="p">,</span> nil  <span class="o">|</span>  local x<span class="p">,</span> z <span class="o">=</span> <span class="m">0</span><span class="p">,</span> nil
+for i<span class="o">=</span><span class="m">1</span><span class="p">,</span><span class="m">100</span> do       <span class="o">|</span>  for i<span class="o">=</span><span class="m">1</span><span class="p">,</span><span class="m">100</span> do
+  local t <span class="o">=</span> <span class="p">{</span>i<span class="p">}</span>      <span class="o">|</span>                    <span class="o">---</span><span class="m">.</span>
+  if i <span class="o">==</span> <span class="m">90</span> then    <span class="o">|</span>    if i <span class="o">==</span> <span class="m">90</span> then    <span class="o">|</span>
+                     <span class="o">|</span>      local t <span class="o">=</span> <span class="p">{</span>i<span class="p">}</span> <span class="o">&lt;--</span>´
+    z <span class="o">=</span> t            <span class="o">|</span>      z <span class="o">=</span> t      <span class="o">|</span>
+  end                <span class="o">|</span>    end          <span class="o">|</span>
+  x <span class="o">=</span> x <span class="o">+</span> t<span class="p">[</span><span class="m">1</span><span class="p">]</span>       <span class="o">|</span>    x <span class="o">=</span> x <span class="o">+</span> i <span class="o">&lt;--</span>´
+end                  <span class="o">|</span>  end
+print<span class="p">(</span>x<span class="p">,</span> z<span class="p">[</span><span class="m">1</span><span class="p">])</span>       <span class="o">|</span>  print<span class="p">(</span>x<span class="p">,</span> z<span class="p">[</span><span class="m">1</span><span class="p">])</span>
+</pre>
+</div>
+
+
+<p>You can easily verify that both produce the exact same output. But the
+IR for the hand-optimized Lua code is very different:</p>
+
+<div class="highlight">
+<pre><span class="p">....</span>        <span class="n">SNAP</span>   #4   <span class="p">[</span> <span class="o">----</span> 0005 <span class="o">----</span> 0006 <span class="o">----</span> <span class="o">----</span> 0006 <span class="p">]</span>
+0008 <span class="o">------</span> <span class="n">LOOP</span> <span class="o">------------</span>
+<span class="p">....</span>        <span class="n">SNAP</span>   #5   <span class="p">[</span> <span class="o">----</span> 0005 <span class="o">----</span> 0006 <span class="o">----</span> <span class="o">----</span> 0006 <span class="p">]</span>
+0009 <span class="o">&gt;</span>  <span class="n">int</span> <span class="n">NE</span>     0006  <span class="o">+</span>90
+0010    <span class="n">num</span> <span class="n">CONV</span>   0006  <span class="n">num</span><span class="p">.</span><span class="n">int</span>
+0011  <span class="o">+</span> <span class="n">num</span> <span class="n">ADD</span>    0010  0005
+0012  <span class="o">+</span> <span class="n">int</span> <span class="n">ADD</span>    0006  <span class="o">+</span>1
+<span class="p">....</span>        <span class="n">SNAP</span>   #6   <span class="p">[</span> <span class="o">----</span> 0011 <span class="o">----</span> <span class="p">]</span>
+0013 <span class="o">&gt;</span>  <span class="n">int</span> <span class="n">LE</span>     0012  <span class="o">+</span>100
+0014    <span class="n">int</span> <span class="n">PHI</span>    0006  0012
+0015    <span class="n">num</span> <span class="n">PHI</span>    0005  0011
+</pre>
+</div>
+
+
+<p>The allocation and the related store is gone from the fast path of the
+loop, which means it'll run much faster!</p>
+
+<h2>The Goal<a class="anchor" id="The-Goal" href="#The-Goal"></a>
+</h2>
+
+<p>The main innovation of the approach described above is to combine
+store-to-load-forwarding with store sinking and allocation sinking. This
+is highly effective in avoiding temporary allocations in the fast paths,
+even under the presence of many uncommon paths where the temporary
+object may escape to.</p>
+
+<p>The combination of the two optimizations has the same effect as scalar
+replacement of aggregates (SRA), but it's applicable in more contexts.
+This approach is most effective for dynamic languages, but may be
+successfully applied elsewhere, when the classic techniques fail.</p>
+
+<p>The goal is to automatically perform the above optimization, whenever
+feasible and profitable.</p>
+
+<p>Note this optimization completely <em>eliminates</em> the allocation from the
+fast path. It does <em>not</em> turn a heap allocation into a stack allocation.
+The stored values are still live, usually in registers and sometimes in
+spill slots. However, the layout of spill slots does not need to match
+the layout of an allocated object (nor is it suitable to be passed to a
+C function expecting such an object).</p>
+
+<h2>The Missing Details<a class="anchor" id="The-Missing-Details" href="#The-Missing-Details"></a>
+</h2>
+
+<p>The above example is greatly simplified, of course. In practice, an
+allocation may escape to more than one snapshot or to more than one
+stack slot in the same snapshot. There may be stores both before and
+after a snapshot, which may even overwrite each other's values. And, most
+importantly, temporary allocations may be held in loop-carried
+variables, which further complicates the analysis.</p>
+
+<p>Sinking an allocation that escapes to a snapshot means extra work for
+the data-driven exit handler: the allocation needs to be unsunk, i.e.
+created on-the-fly and the related stores need to be performed, too.</p>
+
+<p>Similarly, a side trace may need to be compiled corresponding to a
+snapshot with a sunk allocation: the allocation and the related stores
+need to be replayed in the side trace. For a truly general solution, a
+sunk allocation that's replayed in a side trace may be sunk again, of
+course.</p>
+
+<p>The same approach needs to work for all types of allocations, not just
+for Lua tables. Temporary allocations of mutable and immutable FFI
+objects are common, too.</p>
+
+<h1>Examples<a class="anchor" id="Examples" href="#Examples"></a>
+</h1>
+
+<p>The exact algorithm used for this optimization is explained in the
+implementation section below. For better understanding, this section
+shows the results of the optimization for a range of examples.</p>
+
+<h2>Motivating Example Again<a class="anchor" id="Motivating-Example-Again" href="#Motivating-Example-Again"></a>
+</h2>
+
+<p>Here's the motivating example again plus the IR and the machine code for
+the loop part with the sinking optimization turned on:</p>
+
+<div class="highlight">
+<pre><span class="kd">local</span> <span class="n">x</span><span class="p">,</span> <span class="n">z</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="kc">nil</span>
+<span class="k">for</span> <span class="n">i</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="mi">100</span> <span class="k">do</span>
+  <span class="kd">local</span> <span class="n">t</span> <span class="o">=</span> <span class="p">{</span><span class="n">i</span><span class="p">}</span>
+  <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">90</span> <span class="k">then</span>
+    <span class="n">z</span> <span class="o">=</span> <span class="n">t</span>
+  <span class="k">end</span>
+  <span class="n">x</span> <span class="o">=</span> <span class="n">x</span> <span class="o">+</span> <span class="n">t</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+<span class="k">end</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">z</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+</pre>
+</div>
+
+
+<div class="highlight">
+<pre><span class="p">....</span>              <span class="n">SNAP</span>   #4   <span class="p">[</span> <span class="o">----</span> 0009 <span class="o">----</span> 0010 <span class="o">----</span> <span class="o">----</span> 0010 <span class="p">]</span>
+0012 <span class="o">------------</span> <span class="n">LOOP</span> <span class="o">------------</span>
+0013  <span class="p">{</span><span class="n">sink</span><span class="p">}</span>  <span class="n">tab</span> <span class="n">TNEW</span>   #3    #0
+0014          <span class="n">p32</span> <span class="n">FLOAD</span>  0013  <span class="n">tab</span><span class="p">.</span><span class="n">array</span>
+0015          <span class="n">p32</span> <span class="n">AREF</span>   0014  <span class="o">+</span>1
+0016 <span class="n">xmm6</span>     <span class="n">num</span> <span class="n">CONV</span>   0010  <span class="n">num</span><span class="p">.</span><span class="n">int</span>
+0017  <span class="p">{</span>0013<span class="p">}</span>  <span class="n">num</span> <span class="n">ASTORE</span> 0015  0016
+<span class="p">....</span>              <span class="n">SNAP</span>   #5   <span class="p">[</span> <span class="o">----</span> 0009 <span class="o">----</span> 0010 <span class="o">----</span> <span class="o">----</span> 0010 0013 <span class="p">]</span>
+0018       <span class="o">&gt;</span>  <span class="n">int</span> <span class="n">NE</span>     0010  <span class="o">+</span>90
+0019 <span class="n">xmm7</span>   <span class="o">+</span> <span class="n">num</span> <span class="n">ADD</span>    0016  0009
+0020 <span class="n">rbp</span>    <span class="o">+</span> <span class="n">int</span> <span class="n">ADD</span>    0010  <span class="o">+</span>1
+<span class="p">....</span>              <span class="n">SNAP</span>   #6   <span class="p">[</span> <span class="o">----</span> 0019 <span class="o">----</span> <span class="p">]</span>
+0021       <span class="o">&gt;</span>  <span class="n">int</span> <span class="n">LE</span>     0020  <span class="o">+</span>100
+0022 <span class="n">rbp</span>      <span class="n">int</span> <span class="n">PHI</span>    0010  0020
+0023 <span class="n">xmm7</span>     <span class="n">num</span> <span class="n">PHI</span>    0009  0019
+</pre>
+</div>
+
+
+<div class="highlight">
+<pre><span class="o">-&gt;</span><span class="n">LOOP</span><span class="p">:</span>
+394<span class="n">cffd0</span>  <span class="n">xorps</span> <span class="n">xmm6</span><span class="p">,</span> <span class="n">xmm6</span>
+394<span class="n">cffd3</span>  <span class="n">cvtsi2sd</span> <span class="n">xmm6</span><span class="p">,</span> <span class="n">ebp</span>
+394<span class="n">cffd7</span>  <span class="n">cmp</span> <span class="n">ebp</span><span class="p">,</span> <span class="o">+</span>0<span class="n">x5a</span>
+394<span class="n">cffda</span>  <span class="n">jz</span> 0<span class="n">x394c0024</span> <span class="o">-&gt;</span>5
+394<span class="n">cffe0</span>  <span class="n">addsd</span> <span class="n">xmm7</span><span class="p">,</span> <span class="n">xmm6</span>
+394<span class="n">cffe4</span>  <span class="n">add</span> <span class="n">ebp</span><span class="p">,</span> <span class="o">+</span>0<span class="n">x01</span>
+394<span class="n">cffe7</span>  <span class="n">cmp</span> <span class="n">ebp</span><span class="p">,</span> <span class="o">+</span>0<span class="n">x64</span>
+394<span class="n">cffea</span>  <span class="n">jle</span> 0<span class="n">x394cffd0</span> <span class="o">-&gt;</span><span class="n">LOOP</span>
+394<span class="n">cffec</span>  <span class="n">jmp</span> 0<span class="n">x394c0028</span> <span class="o">-&gt;</span>6
+</pre>
+</div>
+
+
+<p>As you can see, the allocation and the store have been sunk. No register
+or spill slot is allocated to them: it shows <code>{sink}</code> or the reference
+of the allocation corresponding to the store instead. The machine code
+for the loop contains only the conversion, the <code>i == 90</code> check, the
+summation of <code>x</code> and the loop increment plus boundary check.</p>
+
+<p>[Note: the <code>xorps</code> avoids a partial-register-write stall for the SSE2
+conversion instruction.]</p>
+
+<h2>Re-Sinking<a class="anchor" id="Re-Sinking" href="#Re-Sinking"></a>
+</h2>
+
+<p>Here's an example that shows how a sunk allocation is sunk again in a
+side trace:</p>
+
+<div class="highlight">
+<pre><span class="kd">local</span> <span class="n">z</span> <span class="o">=</span> <span class="kc">nil</span>
+<span class="k">for</span> <span class="n">i</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="mi">200</span> <span class="k">do</span>
+  <span class="kd">local</span> <span class="n">t</span> <span class="o">=</span> <span class="p">{</span><span class="n">i</span><span class="p">}</span>
+  <span class="k">if</span> <span class="n">i</span> <span class="o">&gt;</span> <span class="mi">100</span> <span class="k">then</span>
+    <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">190</span> <span class="k">then</span> <span class="n">z</span> <span class="o">=</span> <span class="n">t</span> <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">z</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+</pre>
+</div>
+
+
+<p>Here's the IR for the first trace (the <code>}</code> shows sunk instructions):</p>
+
+<div class="highlight">
+<pre><span class="p">....</span>        <span class="n">SNAP</span>   #0   <span class="p">[</span> <span class="o">----</span> <span class="p">]</span>
+0001    <span class="n">int</span> <span class="n">SLOAD</span>  #2    <span class="n">CI</span>
+0002 <span class="p">}</span>  <span class="n">tab</span> <span class="n">TNEW</span>   #3    #0
+0003    <span class="n">p32</span> <span class="n">FLOAD</span>  0002  <span class="n">tab</span><span class="p">.</span><span class="n">array</span>
+0004    <span class="n">p32</span> <span class="n">AREF</span>   0003  <span class="o">+</span>1
+0005    <span class="n">num</span> <span class="n">CONV</span>   0001  <span class="n">num</span><span class="p">.</span><span class="n">int</span>
+0006 <span class="p">}</span>  <span class="n">num</span> <span class="n">ASTORE</span> 0004  0005
+<span class="p">....</span>        <span class="n">SNAP</span>   #1   <span class="p">[</span> <span class="o">----</span> <span class="o">----</span> 0001 <span class="o">----</span> <span class="o">----</span> 0001 0002 <span class="p">]</span>
+0007 <span class="o">&gt;</span>  <span class="n">int</span> <span class="n">LE</span>     0001  <span class="o">+</span>100
+0008  <span class="o">+</span> <span class="n">int</span> <span class="n">ADD</span>    0001  <span class="o">+</span>1
+<span class="p">....</span>        <span class="n">SNAP</span>   #2   <span class="p">[</span> <span class="o">----</span> <span class="o">----</span> <span class="p">]</span>
+0009 <span class="o">&gt;</span>  <span class="n">int</span> <span class="n">LE</span>     0008  <span class="o">+</span>200
+<span class="p">....</span>        <span class="n">SNAP</span>   #3   <span class="p">[</span> <span class="o">----</span> <span class="o">----</span> 0008 <span class="o">----</span> <span class="o">----</span> 0008 <span class="p">]</span>
+0010 <span class="o">------</span> <span class="n">LOOP</span> <span class="o">------------</span>
+0011 <span class="p">}</span>  <span class="n">tab</span> <span class="n">TNEW</span>   #3    #0
+0012    <span class="n">p32</span> <span class="n">FLOAD</span>  0011  <span class="n">tab</span><span class="p">.</span><span class="n">array</span>
+0013    <span class="n">p32</span> <span class="n">AREF</span>   0012  <span class="o">+</span>1
+0014    <span class="n">num</span> <span class="n">CONV</span>   0008  <span class="n">num</span><span class="p">.</span><span class="n">int</span>
+0015 <span class="p">}</span>  <span class="n">num</span> <span class="n">ASTORE</span> 0013  0014
+<span class="p">....</span>        <span class="n">SNAP</span>   #4   <span class="p">[</span> <span class="o">----</span> <span class="o">----</span> 0008 <span class="o">----</span> <span class="o">----</span> 0008 0011 <span class="p">]</span>
+0016 <span class="o">&gt;</span>  <span class="n">int</span> <span class="n">LE</span>     0008  <span class="o">+</span>100
+0017  <span class="o">+</span> <span class="n">int</span> <span class="n">ADD</span>    0008  <span class="o">+</span>1
+<span class="p">....</span>        <span class="n">SNAP</span>   #5   <span class="p">[</span> <span class="o">----</span> <span class="o">----</span> <span class="p">]</span>
+0018 <span class="o">&gt;</span>  <span class="n">int</span> <span class="n">LE</span>     0017  <span class="o">+</span>200
+0019    <span class="n">int</span> <span class="n">PHI</span>    0008  0017
+</pre>
+</div>
+
+
+<p>A side trace is spawned, the sunk allocation and the sunk store is
+replayed before the first snapshot. Then it's sunk again:</p>
+
+<div class="highlight">
+<pre>0001    <span class="n">int</span> <span class="n">SLOAD</span>  #2    <span class="n">PI</span>
+0002 <span class="p">}</span>  <span class="n">tab</span> <span class="n">TNEW</span>   #3    #0
+0003    <span class="n">p32</span> <span class="n">FLOAD</span>  0002  <span class="n">tab</span><span class="p">.</span><span class="n">array</span>
+0004    <span class="n">p32</span> <span class="n">AREF</span>   0003  <span class="o">+</span>1
+0005    <span class="n">num</span> <span class="n">CONV</span>   0001  <span class="n">num</span><span class="p">.</span><span class="n">int</span>
+0006 <span class="p">}</span>  <span class="n">num</span> <span class="n">ASTORE</span> 0004  0005
+<span class="p">....</span>        <span class="n">SNAP</span>   #0   <span class="p">[</span> <span class="o">----</span> <span class="o">----</span> 0001 <span class="o">----</span> <span class="o">----</span> 0001 0002 <span class="p">]</span>
+0007 <span class="o">&gt;</span>  <span class="n">nil</span> <span class="n">GCSTEP</span>
+<span class="p">....</span>        <span class="n">SNAP</span>   #1   <span class="p">[</span> <span class="o">----</span> <span class="o">----</span> 0001 <span class="o">----</span> <span class="o">----</span> <span class="o">----</span> 0002 <span class="p">]</span>
+0008 <span class="o">&gt;</span>  <span class="n">int</span> <span class="n">NE</span>     0001  <span class="o">+</span>190
+0009    <span class="n">int</span> <span class="n">ADD</span>    0001  <span class="o">+</span>1
+<span class="p">....</span>        <span class="n">SNAP</span>   #2   <span class="p">[</span> <span class="o">----</span> <span class="o">----</span> <span class="p">]</span>
+0010 <span class="o">&gt;</span>  <span class="n">int</span> <span class="n">LE</span>     0009  <span class="o">+</span>200
+0011    <span class="n">num</span> <span class="n">CONV</span>   0009  <span class="n">num</span><span class="p">.</span><span class="n">int</span>
+<span class="p">....</span>        <span class="n">SNAP</span>   #3   <span class="p">[</span> <span class="o">----</span> <span class="o">----</span> 0011 <span class="o">----</span> <span class="o">----</span> 0011 <span class="p">]</span>
+</pre>
+</div>
+
+
+<p>[An explicit <code>GCSTEP</code> instruction is needed after the first snapshot to
+prevent implicit GC steps before the first snapshot. It's really a no-op
+here, since no allocations are performed.]</p>
+
+<h2>Point Class<a class="anchor" id="Point-Class" href="#Point-Class"></a>
+</h2>
+
+<p>Here's a practical example of a higher language abstraction: a
+(simplified) 'point' class. It needs to create temporary objects as part
+of arithmetic operations on point objects.</p>
+
+<h3>Point Class With Lua Tables<a class="anchor" id="Point-Class-With-Lua-Tables" href="#Point-Class-With-Lua-Tables"></a>
+</h3>
+
+<p>First, the version for plain Lua tables:</p>
+
+<div class="highlight">
+<pre><span class="kd">local</span> <span class="n">point</span>
+<span class="n">point</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="n">new</span> <span class="o">=</span> <span class="k">function</span><span class="p">(</span><span class="n">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">setmetatable</span><span class="p">({</span><span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">},</span> <span class="n">self</span><span class="p">)</span>
+  <span class="k">end</span><span class="p">,</span>
+  <span class="n">__add</span> <span class="o">=</span> <span class="k">function</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
+   <span class="k">return</span> <span class="n">point</span><span class="p">:</span><span class="n">new</span><span class="p">(</span><span class="n">a</span><span class="p">.</span><span class="n">x</span> <span class="o">+</span> <span class="n">b</span><span class="p">.</span><span class="n">x</span><span class="p">,</span> <span class="n">a</span><span class="p">.</span><span class="n">y</span> <span class="o">+</span> <span class="n">b</span><span class="p">.</span><span class="n">y</span><span class="p">)</span>
+  <span class="k">end</span><span class="p">,</span>
+<span class="p">}</span>
+<span class="n">point</span><span class="p">.</span><span class="n">__index</span> <span class="o">=</span> <span class="n">point</span>
+<span class="kd">local</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="o">=</span> <span class="n">point</span><span class="p">:</span><span class="n">new</span><span class="p">(</span><span class="mf">1.5</span><span class="p">,</span> <span class="mf">2.5</span><span class="p">),</span> <span class="n">point</span><span class="p">:</span><span class="n">new</span><span class="p">(</span><span class="mf">3.25</span><span class="p">,</span> <span class="mf">4.75</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">i</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="mi">100000000</span> <span class="k">do</span> <span class="n">a</span> <span class="o">=</span> <span class="p">(</span><span class="n">a</span> <span class="o">+</span> <span class="n">b</span><span class="p">)</span> <span class="o">+</span> <span class="n">b</span> <span class="k">end</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">a</span><span class="p">.</span><span class="n">x</span><span class="p">,</span> <span class="n">a</span><span class="p">.</span><span class="n">y</span><span class="p">)</span>
+</pre>
+</div>
+
+
+<p>It creates two temporary objects per iteration, but LuaJIT is able to
+optimize them away. Here's the machine code for the loop part:</p>
+
+<div class="highlight">
+<pre><span class="o">-&gt;</span><span class="n">LOOP</span><span class="p">:</span>
+394<span class="n">cffe0</span>  <span class="n">addsd</span> <span class="n">xmm6</span><span class="p">,</span> <span class="n">xmm1</span>
+394<span class="n">cffe4</span>  <span class="n">addsd</span> <span class="n">xmm7</span><span class="p">,</span> <span class="n">xmm0</span>
+394<span class="n">cffe8</span>  <span class="n">addsd</span> <span class="n">xmm6</span><span class="p">,</span> <span class="n">xmm1</span>
+394<span class="n">cffec</span>  <span class="n">addsd</span> <span class="n">xmm7</span><span class="p">,</span> <span class="n">xmm0</span>
+394<span class="n">cfff0</span>  <span class="n">add</span> <span class="n">ebp</span><span class="p">,</span> <span class="o">+</span>0<span class="n">x01</span>
+394<span class="n">cfff3</span>  <span class="n">cmp</span> <span class="n">ebp</span><span class="p">,</span> 0<span class="n">x05f5e100</span>
+394<span class="n">cfff9</span>  <span class="n">jle</span> 0<span class="n">x394cffe0</span> <span class="o">-&gt;</span><span class="n">LOOP</span>
+394<span class="n">cfffb</span>  <span class="n">jmp</span> 0<span class="n">x394c0028</span> <span class="o">-&gt;</span>6
+</pre>
+</div>
+
+
+<p>[Note: floating-point arithmetic is not associative. The compiler is not
+allowed to transform <code>(a+b)+b</code> into <code>a+(b+b)</code> and then hoist out the
+computation of <code>b+b</code>. It really needs two FP additions per component for
+a total of four SSE2 <code>addsd</code> instructions per loop iteration.]</p>
+
+<h3>Point Class With FFI cdata struct<a class="anchor" id="Point-Class-With-FFI-cdata-struct" href="#Point-Class-With-FFI-cdata-struct"></a>
+</h3>
+
+<div class="highlight">
+<pre><span class="kd">local</span> <span class="n">ffi</span> <span class="o">=</span> <span class="nb">require</span><span class="p">(</span><span class="s2">"</span><span class="s">ffi"</span><span class="p">)</span>
+<span class="kd">local</span> <span class="n">point</span>
+<span class="n">point</span> <span class="o">=</span> <span class="n">ffi</span><span class="p">.</span><span class="n">metatype</span><span class="p">(</span><span class="s2">"</span><span class="s">struct { double x, y; }"</span><span class="p">,</span> <span class="p">{</span>
+  <span class="n">__add</span> <span class="o">=</span> <span class="k">function</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
+   <span class="k">return</span> <span class="n">point</span><span class="p">(</span><span class="n">a</span><span class="p">.</span><span class="n">x</span> <span class="o">+</span> <span class="n">b</span><span class="p">.</span><span class="n">x</span><span class="p">,</span> <span class="n">a</span><span class="p">.</span><span class="n">y</span> <span class="o">+</span> <span class="n">b</span><span class="p">.</span><span class="n">y</span><span class="p">)</span>
+  <span class="k">end</span>
+<span class="p">})</span>
+<span class="kd">local</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="o">=</span> <span class="n">point</span><span class="p">(</span><span class="mf">1.5</span><span class="p">,</span> <span class="mf">2.5</span><span class="p">),</span> <span class="n">point</span><span class="p">(</span><span class="mf">3.25</span><span class="p">,</span> <span class="mf">4.75</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">i</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="mi">100000000</span> <span class="k">do</span> <span class="n">a</span> <span class="o">=</span> <span class="p">(</span><span class="n">a</span> <span class="o">+</span> <span class="n">b</span><span class="p">)</span> <span class="o">+</span> <span class="n">b</span> <span class="k">end</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">a</span><span class="p">.</span><span class="n">x</span><span class="p">,</span> <span class="n">a</span><span class="p">.</span><span class="n">y</span><span class="p">)</span>
+</pre>
+</div>
+
+
+<p>The machine code inside the loop is identical to the above example. A
+similar example with immutable 'complex' cdata objects generates the
+same code, too.</p>
+
+<h3>Point Class in C++ and Java<a class="anchor" id="Point-Class-in-C%2B%2B-and-Java" href="#Point-Class-in-C%2B%2B-and-Java"></a>
+</h3>
+
+<p>For comparison, here's the same point class implemented in C++:</p>
+
+<div class="highlight">
+<pre><span class="cp">#include &lt;iostream&gt;</span>
+
+<span class="n">class</span> <span class="n">Point</span> <span class="p">{</span>
+<span class="nl">public:</span>
+  <span class="n">Point</span><span class="p">(</span><span class="kt">double</span> <span class="n">x</span><span class="p">,</span> <span class="kt">double</span> <span class="n">y</span><span class="p">)</span> <span class="o">:</span> <span class="n">x</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">y</span><span class="p">(</span><span class="n">y</span><span class="p">)</span> <span class="p">{</span> <span class="p">}</span>
+  <span class="n">Point</span> <span class="n">operator</span><span class="o">+</span><span class="p">(</span><span class="k">const</span> <span class="n">Point</span> <span class="o">&amp;</span><span class="n">b</span><span class="p">)</span> <span class="k">const</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="n">Point</span><span class="p">(</span><span class="n">x</span><span class="o">+</span><span class="n">b</span><span class="p">.</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="o">+</span><span class="n">b</span><span class="p">.</span><span class="n">y</span><span class="p">);</span>
+  <span class="p">}</span>
+  <span class="kt">double</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
+<span class="p">{</span>
+  <span class="kt">int</span> <span class="n">i</span><span class="p">;</span>
+  <span class="n">Point</span> <span class="n">a</span><span class="p">(</span><span class="mf">1.5</span><span class="p">,</span> <span class="mf">2.5</span><span class="p">),</span> <span class="n">b</span><span class="p">(</span><span class="mf">3.25</span><span class="p">,</span> <span class="mf">4.75</span><span class="p">);</span>
+  <span class="k">for</span> <span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">100000000</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="p">(</span><span class="n">a</span> <span class="o">+</span> <span class="n">b</span><span class="p">)</span> <span class="o">+</span> <span class="n">b</span><span class="p">;</span>
+  <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">a</span><span class="p">.</span><span class="n">x</span> <span class="o">&lt;&lt;</span> <span class="sc">' '</span> <span class="o">&lt;&lt;</span> <span class="n">a</span><span class="p">.</span><span class="n">y</span> <span class="o">&lt;&lt;</span> <span class="sc">'\n'</span><span class="p">;</span>
+  <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</pre>
+</div>
+
+
+<p>Note that this code is passing aggregate values around and not actually
+allocating objects. However, the C++ compiler still has to perform SRA
+for optimal results. Not surprisingly, the machine code for the loop is
+basically the same as the code LuaJIT generates.</p>
+
+<p>[We'll ignore auto-vectorization/auto-simdization for the moment.]</p>
+
+<p>And here's the same point class implemented in Java:</p>
+
+<div class="highlight">
+<pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Point</span> <span class="o">{</span>
+  <span class="kd">public</span> <span class="kt">double</span> <span class="n">x</span><span class="o">,</span> <span class="n">y</span><span class="o">;</span>
+  <span class="kd">public</span> <span class="nf">Point</span><span class="o">(</span><span class="kt">double</span> <span class="n">x0</span><span class="o">,</span> <span class="kt">double</span> <span class="n">y0</span><span class="o">)</span> <span class="o">{</span> <span class="n">x</span> <span class="o">=</span> <span class="n">x0</span><span class="o">;</span> <span class="n">y</span> <span class="o">=</span> <span class="n">y0</span><span class="o">;</span> <span class="o">}</span>
+  <span class="kd">public</span> <span class="n">Point</span> <span class="nf">add</span><span class="o">(</span><span class="n">Point</span> <span class="n">b</span><span class="o">)</span> <span class="o">{</span> <span class="k">return</span> <span class="k">new</span> <span class="n">Point</span><span class="o">(</span><span class="n">x</span> <span class="o">+</span> <span class="n">b</span><span class="o">.</span><span class="na">x</span><span class="o">,</span> <span class="n">y</span> <span class="o">+</span> <span class="n">b</span><span class="o">.</span><span class="na">y</span><span class="o">);</span> <span class="o">}</span>
+
+  <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span> <span class="n">args</span><span class="o">[])</span>
+  <span class="o">{</span>
+    <span class="kt">int</span> <span class="n">i</span><span class="o">;</span>
+    <span class="n">Point</span> <span class="n">a</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Point</span><span class="o">(</span><span class="mf">1.5</span><span class="o">,</span> <span class="mf">2.5</span><span class="o">);</span>
+    <span class="n">Point</span> <span class="n">b</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Point</span><span class="o">(</span><span class="mf">2.25</span><span class="o">,</span> <span class="mf">4.75</span><span class="o">);</span>
+    <span class="k">for</span> <span class="o">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">100000000</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span>
+      <span class="n">a</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">b</span><span class="o">).</span><span class="na">add</span><span class="o">(</span><span class="n">b</span><span class="o">);</span>
+    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">a</span><span class="o">.</span><span class="na">x</span> <span class="o">+</span> <span class="s">" "</span> <span class="o">+</span> <span class="n">a</span><span class="o">.</span><span class="na">y</span><span class="o">);</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</pre>
+</div>
+
+
+<p>JVM/Hotspot 1.7 is unable to eliminate the allocations. Adding the
+option <code>-XX:+DoEscapeAnalysis</code> doesn't change anything. Moving the loop
+to a separate method or using an outer loop doesn't help either.</p>
+
+<h3>Point Class Benchmarks<a class="anchor" id="Point-Class-Benchmarks" href="#Point-Class-Benchmarks"></a>
+</h3>
+
+<p>Here's the runtime for the point class in seconds (YMMV). Lower is
+better:</p>
+
+<table>
+<tr>
+<th>Time</th>
+<th>Point object</th>
+<th>VM/Compiler</th>
+</tr>
+<tr>
+<td>140.0</td>
+<td>Lua table</td>
+<td>Lua 5.1.5</td>
+</tr>
+<tr>
+<td>26.9</td>
+<td>Lua table</td>
+<td>LuaJIT 2.0 git HEAD -O-sink</td>
+</tr>
+<tr>
+<td>10.9</td>
+<td>FFI struct</td>
+<td>LuaJIT 2.0 git HEAD -O-sink</td>
+</tr>
+<tr>
+<td>0.2</td>
+<td>Lua table</td>
+<td>LuaJIT 2.0 git HEAD -O+sink</td>
+</tr>
+<tr>
+<td>0.2</td>
+<td>FFI struct</td>
+<td>LuaJIT 2.0 git HEAD -O+sink</td>
+</tr>
+<tr>
+<td>0.2</td>
+<td>C++ class</td>
+<td>GCC 4.4.3 -O2 (or -O3)</td>
+</tr>
+<tr>
+<td>1.2</td>
+<td>Java class</td>
+<td>JVM/Hotspot 1.7.0_05</td>
+</tr>
+</table><p>LuaJIT is around 700 times faster than plain Lua and it's the same speed
+as C++ -- <strong>for this example</strong>.</p>
+
+<p>JVM 1.7 is unable to eliminate the allocations, but has a fast allocator
+and garbage collector. Still, the JVM is around 6 times slower than
+LuaJIT or C++ for this example.</p>
+
+<p>Note: this cannot be extrapolated to other code, of course. And it does
+<strong>not</strong> lead to a generalizable statement about the relative performance
+of Lua, LuaJIT, Java or C++.</p>
+
+<p>[Yes, a runtime of 0.2 seconds is too low for precise results. But for
+this simple example, scaling the loop iterations up yields consistent
+results. The code generated by LuaJIT and C++ <em>really</em> has the same
+performance.]</p>
+
+<h1>Implementation<a class="anchor" id="Implementation" href="#Implementation"></a>
+</h1>
+
+<p>Different parts of the JIT-compiler are involved in handling allocation
+sinking and store sinking. The following subsections describe the
+required additions and changes to the implementation.</p>
+
+<h2>SINK Optimization Pass<a class="anchor" id="SINK-Optimization-Pass" href="#SINK-Optimization-Pass"></a>
+</h2>
+
+<p>The SINK optimization pass is only invoked, if:</p>
+
+<ol>
+<li>The SINK optimization and the FOLD, CSE, DCE and FWD optimizations
+are turned on. This is the case for <code>-O3</code>, which is the default.</li>
+<li>The IR of the current trace holds at least one <code>TNEW</code>, <code>TDUP</code>, <code>CNEW</code>
+or <code>CNEWI</code> instruction.</li>
+</ol><p>This pass traverses the IR of the current trace in two phases, very much
+like a classic mark &amp; sweep garbage collection algorithm:</p>
+
+<ul>
+<li>The mark phase marks all allocations that cannot be sunk.</li>
+<li>The sweep phase tags the unmarked allocations and the related stores
+as sunk.</li>
+</ul><h3>Mark Phase<a class="anchor" id="Mark-Phase" href="#Mark-Phase"></a>
+</h3>
+
+<p>The mark phase is a single-pass backward propagation algorithm.
+Initially, the marks of all IR instructions are clear. Then the roots
+are marked (most of this happens on-the-fly) and the marks are
+propagated backwards. The following roots are considered:</p>
+
+<ol>
+<li>All instructions referenced by the last snapshot of a trace, if the
+trace links to another trace.</li>
+<li>All instructions referenced by <code>PHI</code> instructions that do not
+reference an allocation instruction or that reference two different
+opcodes.</li>
+<li>The references for any remaining load or <code>CALLL</code> instructions.</li>
+<li>The arguments of any IR <code>CALLS</code> or <code>CALLXS</code> instructions.</li>
+<li>The stored value of all store instructions and <code>CNEWI</code>.</li>
+<li>The references for any ineligible store instructions.</li>
+</ol><p>A store instruction is only eligible, if all of these conditions are
+true:</p>
+
+<ol>
+<li>The store reference is a single instruction. Plus a fetch of the base
+pointer for some reference types.</li>
+<li>The store reference has a constant key, index or offset.</li>
+<li>The store reference points to an allocation.</li>
+<li>If the allocation is a PHI value, then the stored value must either
+be a PHI value itself (or an integer-to-number conversion of it) or a
+loop-invariant value.</li>
+</ol><p>Finally, the PHI references are iteratively remarked. If the left side
+and the right side have different marks or a different number of PHI
+values stored, then both sides are marked. This is repeated until the
+marks converge.</p>
+
+<p>After this pass is complete, the allocations that are unmarked are
+considered safe to be sunk.</p>
+
+<h3>Sweep Phase<a class="anchor" id="Sweep-Phase" href="#Sweep-Phase"></a>
+</h3>
+
+<p>The sweep phase is a single-pass through the IR instructions:</p>
+
+<ol>
+<li>A <code>PHI</code> instruction is tagged as sunk if it refers to unmarked
+allocations (it's enough to check one side).</li>
+<li>A store or a <code>NEWREF</code> is tagged as sunk if the corresponding
+allocation is unmarked.</li>
+<li>An allocation is tagged as sunk if it's unmarked.</li>
+</ol><p>All marks are cleared, too. Tagging works as follows:</p>
+
+<ul>
+<li>The IR is tagged to contain valid register/spill slot assignments.</li>
+<li>All untagged instructions are set to REGSP_INIT (no register or spill
+slot allocated).</li>
+<li>Sunk allocations, <code>NEWREF</code> and stores have the register field set to
+RID_SINK (treated like no register has been allocated to it).</li>
+<li>Sunk allocations and <code>NEWREF</code> have a zero spill slot field.</li>
+<li>Sunk stores have a spill slot field that holds the delta between the
+store and the corresponding allocation (or 255 if the delta is too
+large). This can be used as a quick test when traversing the IR in
+search of related stores (see below).</li>
+</ul><h2>Assembler Backend<a class="anchor" id="Assembler-Backend" href="#Assembler-Backend"></a>
+</h2>
+
+<p>The assembler backend translates the IR to machine code. It needs to
+know about sunk instructions to avoid generating machine code for them.</p>
+
+<h3>Snapshot Allocations<a class="anchor" id="Snapshot-Allocations" href="#Snapshot-Allocations"></a>
+</h3>
+
+<p>The first encountered guard that needs to add an exit for a snapshot
+calls a special routine that prepares the current snapshot. Every
+instruction producing an escaping value must have a register or spill
+slot allocated to it if it doesn't have one already.</p>
+
+<p>This ensures that all values escaping through the snapshot are live at
+all exits. Processing is backwards, so any value live at the first
+encountered guard (highest IR instruction) is live at all other guards,
+up to the snapshot.</p>
+
+<p>The snapshot preparation checks for sunk allocations and allocates the
+stored values instead. This involves searching for all stores related to
+an allocation. Only the store instructions between the allocation
+reference and the snapshot reference need to be considered.</p>
+
+<p>Once this is done, the register for an allocation is changed from
+RID_SINK to RID_SUNK. This prevents extra invocations in case the
+allocation escapes to more than one stack slot or through another
+snapshot further up.</p>
+
+<p>Additional logic tries to allocate a value for the input of an
+integer-to-number conversion instead of the conversion itself. This
+effectively sinks conversions and removes them from the fast path.</p>
+
+<h3>Sunk Instructions<a class="anchor" id="Sunk-Instructions" href="#Sunk-Instructions"></a>
+</h3>
+
+<p>A sunk allocation instruction has its register set to RID_SINK or
+RID_SUNK and a zero (unused) spill slot. The result is thus considered
+unused by on-the-fly dead-code elimination (DCE). No code is emitted for
+a sunk allocation.</p>
+
+<p>Unused, sunk conversions are eliminated by DCE and no code is emitted
+for them.</p>
+
+<p>Store instructions and the <code>NEWREF</code> instruction are not eligible for
+DCE, so they need an explicit check for RID_SINK in their backend
+handler to not emit any code.</p>
+
+<p>Sunk <code>PHI</code> instructions need the same check to avoid allocating a
+register or spill slot for the referenced allocations.</p>
+
+<h2>Snapshot Handling<a class="anchor" id="Snapshot-Handling" href="#Snapshot-Handling"></a>
+</h2>
+
+<p>Snapshots hold the execution state from the view of the bytecode
+interpreter at selected points in a trace. Sunk allocations and sunk
+conversions are not actually executed on-trace and thus do not generate
+a value. However, the stored values (or input values for conversions)
+<em>are</em> computed and can be used to restore or replay a snapshot.</p>
+
+<h3>Snapshot Restore<a class="anchor" id="Snapshot-Restore" href="#Snapshot-Restore"></a>
+</h3>
+
+<p>A taken side exit that has no attached side trace (yet) needs to restore
+the Lua stack to a sane state. The snapshot corresponding to the exit
+has a list of Lua stack slots to be restored and their IR references.
+These can be used together with the register and spill slot assignments
+in the IR to restore the Lua stack from the exit state of the trace,
+which holds the current register and spill slot values.</p>
+
+<p>Sunk allocations (that escape through a snapshot) have their register
+set to RID_SUNK. The allocation needs to be 'unsunk': the object needs
+to be allocated and the related stores need to be performed, as if the
+object had been allocated on-trace.</p>
+
+<p>The snapshot allocation in the assembler backend makes sure that all
+sunk stores have live values at the exit. The actual values are restored
+via their IR reference and the exit state, too. Keys of sunk stores are
+always constant, so they can be reconstructed solely from the IR.</p>
+
+<p>Care needs to be taken to de-duplicate allocation references. A sunk
+allocation may escape to more than one stack slot and all of them must
+refer to the same object.</p>
+
+<h3>Snapshot Replay<a class="anchor" id="Snapshot-Replay" href="#Snapshot-Replay"></a>
+</h3>
+
+<p>The IR for a side trace needs to start with the instructions that link
+to the parent values included in the snapshot. The <code>SLOAD</code> instruction
+with the flag IRSLOAD_PARENT provides parent links for values that
+correspond to a Lua stack slot.</p>
+
+<p>Sunk allocations, sunk stores and sunk conversions need to be replayed
+instead. Sunk stores and conversions may reference values from the
+parent that do not have a corresponding Lua stack slot. The <code>PVAL</code>
+instruction provides the necessary parent links.</p>
+
+<p>All parent links must be at the start of the trace, since their
+registers and stack slots must be coalesced with the parent trace
+atomically. Also, a <code>PVAL</code> must not be used if there's a parent <code>SLOAD</code>
+for the same reference. This causes some ordering constraints, which
+mandates a multi-pass algorithm:</p>
+
+<ol>
+<li>Emit all parent <code>SLOAD</code> instructions for non-sunk slots from the
+snapshot.</li>
+<li>Emit <code>PVAL</code> instructions for all dependent values from sunk
+allocations or conversions, except if there's a parent <code>SLOAD</code>
+instruction for the same reference.</li>
+<li>Replay the sunk instructions. Allocations need to replay the key
+references for the sunk stores and the sunk stores themselves, too.</li>
+</ol><p>[Note: this sounds more expensive, than it is. This algorithm iterates
+a limited number of times -- usually less than five. Also,
+passes two and three are only performed when needed.]</p>
+    </div>
+  </div>
+  </div>
+
+</div>
+<div id="footer">
+  <p id="last-edit">Last edited by <b>Geoff Leyland</b>, 2012-07-12 00:42:54</p>
+</div>
+</div>
+<div id="cust-footer">
+  <p>Sponsored by <a href="http://www.networkradius.com">Network RADIUS</a></p>
+</div>
+
+
+</body>
+</html>

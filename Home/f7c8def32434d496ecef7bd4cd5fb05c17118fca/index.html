@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-type" content="text/html;charset=utf-8">
+  <link rel=”alternate” type=”application/rss+xml” title=”wiki.luajit.org edit/commit log” href=”http://wiki.luajit.org/feeds/global.xml” />
+ 
+  <link rel="stylesheet" type="text/css" href="/luajit-wiki/css/gollum.css" media="all">
+  <link rel="stylesheet" type="text/css" href="/luajit-wiki/css/editor.css" media="all">
+  <link rel="stylesheet" type="text/css" href="/luajit-wiki/css/dialog.css" media="all">
+  <link rel="stylesheet" type="text/css" href="/luajit-wiki/css/template.css" media="all">
+ 
+  <link rel="stylesheet" type="text/css" href="/luajit-wiki/css/custom.css" media="all">
+  <!--[if IE 7]>
+  <link rel="stylesheet" type="text/css" href="/luajit-wiki/css/ie7.css" media="all">
+  <![endif]-->
+  
+  <script type="text/javascript" src="/luajit-wiki/javascript/jquery.js"></script>
+  <script type="text/javascript" src="/luajit-wiki/javascript/gollum.js"></script>
+  <script type="text/javascript" src="/luajit-wiki/javascript/gollum.dialog.js"></script>
+  <script type="text/javascript" src="/luajit-wiki/javascript/gollum.placeholder.js"></script>
+  
+  <script type="text/javascript" src="/luajit-wiki/javascript/editor/gollum.editor.js"></script>
+  
+  <title>Home</title>
+</head>
+<body>
+<div id="cust-site">
+  <a href="http://luajit.org"><span>Lua<span id="cust-logo">JIT</span></span></a>
+</div>
+<div id="cust-header">
+  <h1>The LuaJIT Wiki</h1>
+</div>
+<div id="user">
+    <p>
+      not logged in | <strong><a href="/luajit-wiki/__omnigollum__/login">[Login]</a></strong>
+    <p>
+</div>
+
+<div id="wiki-wrapper" class="page">
+<div id="head">
+  <h1>Home</h1>
+  <ul class="actions">
+    <li class="minibutton">
+      <div id="searchbar">
+        <form action="/search" method="get" id="search-form">
+        <div id="searchbar-fauxtext">
+          <input type="text" name="q" id="search-query" value="Search&hellip;" autocomplete="off">
+          <a href="#" id="search-submit" title="Search this wiki">
+            <span>Search</span>
+          </a>
+        </div>
+        </form>
+      </div>    </li>
+    <li class="minibutton"><a href="/luajit-wiki/pages"
+      class="action-all-pages">All Pages</a></li>
+    <li class="minibutton"><a href="/luajit-wiki/fileview"
+    class="action-all-pages">File View</a></li>
+    <li class="minibutton" class="jaws">
+      <a href="#" id="minibutton-new-page">New Page</a></li>
+    <li class="minibutton"><a href="/luajit-wiki/edit/Home"
+       class="action-edit-page">Edit Page</a></li>
+    <li class="minibutton"><a href="/luajit-wiki/history/Home"
+       class="action-page-history">Page History</a></li>
+  </ul>
+</div>
+<div id="wiki-content">
+<div class="">
+  <div id="wiki-body" class="gollum-markdown-content">
+    <div class="markdown-body">
+      <div class="highlight">
+<pre><span class="kd">local</span> <span class="n">ffi</span> <span class="o">=</span> <span class="nb">require</span><span class="p">(</span><span class="s2">"</span><span class="s">ffi"</span><span class="p">)</span>
+<span class="n">ffi</span><span class="p">.</span><span class="n">cdef</span><span class="s">[[</span>
+<span class="s">int printf(const char *fmt, ...);</span>
+<span class="s">]]</span>
+<span class="n">ffi</span><span class="p">.</span><span class="n">C</span><span class="p">.</span><span class="n">printf</span><span class="p">(</span><span class="s2">"</span><span class="s">Hello %s!</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="s2">"</span><span class="s">wiki"</span><span class="p">)</span>
+</pre>
+</div>
+
+
+<h1>Directory of Content<a class="anchor" id="Directory-of-Content" href="#Directory-of-Content"></a>
+</h1>
+
+<ul>
+<li>
+<a class="internal present" href="/luajit-wiki/Bytecode" rel="nofollow">Bytecode</a> - Bytecode reference</li>
+<li>
+<a class="internal present" href="/luajit-wiki/SSA-IR" rel="nofollow">SSA IR</a> - SSA IR reference</li>
+<li>
+<a class="internal present" href="/luajit-wiki/Test" rel="nofollow">Test</a> - testing the wiki</li>
+</ul><h1>FAQ<a class="anchor" id="FAQ" href="#FAQ"></a>
+</h1>
+
+<h2>The purpose of the wiki<a class="anchor" id="The-purpose-of-the-wiki" href="#The-purpose-of-the-wiki"></a>
+</h2>
+
+<p>This wiki has been created to gather together resources from the growing LuaJIT community, and to record insights from LuaJIT's maintainers.</p>
+
+<h2>What powers the wiki?<a class="anchor" id="What-powers-the-wiki%3F" href="#What-powers-the-wiki%3F"></a>
+</h2>
+
+<p>The wiki itself is based on <a href="http://github.com/github/gollum" rel="nofollow">Gollum</a>, one of the many useful sub-projects run by <a href="http://www.github.com" rel="nofollow">GitHub</a>. This wiki is a modified branch of 2.0 (hopefully less modified as fixes and code gets merged back), but should behave very similarly to the embedded wikis included in GitHub project mini portals.</p>
+
+<h2>Why do I need to authenticate?<a class="anchor" id="Why-do-I-need-to-authenticate%3F" href="#Why-do-I-need-to-authenticate%3F"></a>
+</h2>
+
+<p>Because open wikis get incredible amounts of spam. We've tried to make it as painless as possible by linking to commonly used authentication providers. If you'd like to see another provider added, check if it's supported by the <a href="http://github.com/intridea/omniauth" rel="nofollow">Omniauth</a> project (or contribute a patch to omniauth) and send a post to the mailing list.</p>
+
+<h2>Why does the email address for my edits appear as <a href="mailto:anon@anon.com" rel="nofollow">anon@anon.com</a>?<a class="anchor" id="Why-does-the-email-address-for-my-edits-appear-as-anon%40anon.com%3F" href="#Why-does-the-email-address-for-my-edits-appear-as-anon%40anon.com%3F"></a>
+</h2>
+
+<p>This means your authentication provider didn't provide a valid email address when you logged into the wiki. </p>
+
+<p>If you're using GitHub goto your <a href="https://github.com/settings/profile" rel="nofollow">public profile</a> page and verify that the <em>Email</em> field is filled in.</p>
+
+<h2>Other ways to edit the wiki<a class="anchor" id="Other-ways-to-edit-the-wiki" href="#Other-ways-to-edit-the-wiki"></a>
+</h2>
+
+<p>One of the cool things about Gollum is it uses Git as it's storage and revision control backend, which means you can clone the wiki and edit pages offline. </p>
+
+<div class="highlight">
+<pre>git clone git://wiki.luajit.org/wiki.luajit.org.git
+</pre>
+</div>
+
+
+<p>You can then use your favourite editor to edit the <a href="http://daringfireball.net/projects/markdown/basics" rel="nofollow">Markdown</a> source of wiki pages, and push the changes back.</p>
+
+<p>There are no restrictions on who can commit back to the wiki via the Git interface (we hope spammers and spam bots haven't figured out how to use Git yet).</p>
+    </div>
+  </div>
+  </div>
+
+</div>
+<div id="footer">
+  <p id="last-edit">Last edited by <b>Mike Pall</b>, 2012-10-24 12:56:47</p>
+</div>
+</div>
+<div id="cust-footer">
+  <p>Sponsored by <a href="http://www.networkradius.com">Network RADIUS</a></p>
+</div>
+
+
+</body>
+</html>

@@ -1,0 +1,267 @@
+/* Copyright (C) 2004-2012 Mike Pall.
+ *
+ * You are welcome to use the general ideas of this design for your own sites.
+ * But please do not steal the stylesheet (unless it's for a good cause
+ * like setting up a wiki), the layout or the color scheme.
+ */
+/* colorscheme:
+ *
+ * site  |  head   #4162bf/white   | #6078bf/#e6ecff
+ */
+
+body {
+  font-family: Verdana, Arial, Helvetica, sans-serif;
+  background: #E6ECFF;
+}
+
+a:link, a:visited {
+  text-decoration: none;
+  background: transparent;
+  color: #2142bf;
+}
+
+a:hover {
+  text-decoration: none;
+  background: transparent;
+  color: red;
+}
+
+h1, h2, h3 {
+  font-weight: bold;
+  text-align: left;
+  margin: 0.5em 0;
+  padding: 0;
+  background: transparent;
+}
+
+h1 {
+  font-size: 250%;
+  line-height: 3em; /* really 6em relative to body, match #site span */
+  margin: 0;
+}
+
+h2 {
+  font-size: 200%;
+  color: #606060;
+}
+
+h3 {
+  font-size: 125%;
+  color: #404040;
+}
+
+b {
+  color: #404040;
+}
+
+.markdown-body {
+    font-size: 1em;
+    line-height: 1.6;
+    padding: 0 2em 0 0;
+}
+
+.markdown-body h2 {
+    font-size: 20px;
+}
+
+.markdown-body pre {
+    line-height: 1.4;
+    border: 1px solid #BFCFFF;
+    background: #F0F4FF;
+    border-radius: 0px
+}
+
+.markdown-body table {
+    border-collapse: collapse;
+}
+
+.markdown-body table tr th {
+    background: #F0F4FF;
+    border: 1px solid #BFCFFF;
+    padding: 3px 8px;
+}
+
+.markdown-body table tr td {
+    background: #F0F4FF;
+    border: 1px solid #BFCFFF;
+    padding: 3px 8px;
+}
+
+.markdown-body ul, .markdown-body ol, .markdown-body dl, .markdown-body li {
+    margin: 5px 0;
+}
+
+#wiki-wrapper {
+    max-width: 1024px;
+    width: 100%;
+}
+
+#wiki-toc-main {
+    background: #F0F4FF;
+    border: 1px solid #BFCFFF;
+}
+
+.toc-title {
+	color: black;
+	font-size: 1.5em;
+	font-weight: bold;
+	
+}
+
+.toc ul li {
+	line-height: 1.75em;
+	font-size: 0.8em;
+}
+
+#gollum-editor {
+    background: #F0F4FF;
+    border: 1px solid #BFCFFF;
+}
+
+#gollum-editor .singleline input {
+    font-size: 1em;
+}
+
+#gollum-editor input#gollum-editor-submit, #gollum-editor #gollum-editor-preview,
+#gollum-editor #gollum-editor-function-bar a.function-button,
+#gollum-dialog-dialog a.minibutton {
+    background: none;
+}
+
+.minibutton a:hover, #search-submit:hover, 
+#gollum-editor input#gollum-editor-submit:hover, #gollum-editor #gollum-editor-preview:hover,
+#gollum-editor a.minibutton:hover,
+#gollum-editor #gollum-editor-function-bar a.function-button:hover,
+#gollum-dialog-dialog a.minibutton:hover {
+    background: #6078bf;
+    border: 1px solid #6078bf;
+}
+
+.compare .data tr td {
+    font-size: 1.0em;
+}
+
+#head #searchbar #searchbar-fauxtext {
+    height: 2em;
+}
+
+#cust-site {
+  font-size: 0.8em;
+  clear: both;
+  float: left;
+  width: 16.25em;
+  text-align: center;
+  font-weight: bold;
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  color: #ffffff;
+}
+
+#cust-site a {
+  font-size: 250%;
+}
+
+#cust-site a:link, #cust-site a:visited {
+  text-decoration: none;
+  font-weight: bold;
+  background: transparent;
+  color: #ffffff;
+}
+
+#cust-site span {
+  line-height: 3em; /* really 6em relative to body, match h1 */
+}
+
+#cust-logo {
+  color: #ffb380;
+}
+
+#cust-header {
+  font-size: 0.8em;
+  margin: 0;
+  padding: 0 0 0 2.5em;
+  border-left: solid 16.25em #4162bf;
+  background: #6078bf;
+  color: #e6ecff;
+}
+
+#cust-footer {
+  text-align: center;
+  margin: 10px;
+  font-weight: bold;
+}
+
+#cust-footer img {
+ padding-bottom: 0.3em
+}
+
+/* Pygments overrides matches original Lua colour scheme */
+.highlight .hll { background-color: #ffffcc }
+.highlight .c { color: #00a000; font-style: italic } /* Comment */
+.highlight .err { color: #F00000; background-color: #F0A0A0 } /* Error */
+.highlight .k { color: navy; font-weight: bold; } /* Keyword */
+.highlight .cm { color: #00a000 } /* Comment.Multiline */
+.highlight .cp { color: #00a000 } /* Comment.Preproc */
+.highlight .c1 { color: #00a000 } /* Comment.Single */
+.highlight .cs { color: #00a000 } /* Comment.Special */
+.highlight .gd { color: #F00000 } /* Generic.Deleted */
+.highlight .ge { font-style: italic } /* Generic.Emph */
+.highlight .gr { color: #aa0000 } /* Generic.Error */
+.highlight .gh { color: #000080; font-weight: bold } /* Generic.Heading */
+.highlight .gi { color: #00aa00 } /* Generic.Inserted */
+.highlight .go { color: #888888 } /* Generic.Output */
+.highlight .gp { color: #555555 } /* Generic.Prompt */
+.highlight .gs { font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+.highlight .gt { color: #aa0000 } /* Generic.Traceback */
+.highlight .kc { color: navy; font-weight: bold } /* Keyword.Constant */
+.highlight .kd { color: navy; font-weight: bold } /* Keyword.Declaration */
+.highlight .kn { color: navy; font-weight: bold } /* Keyword.Namespace */
+.highlight .kp { color: navy; font-weight: bold } /* Keyword.Pseudo */
+.highlight .kr { color: navy; font-weight: bold } /* Keyword.Reserved */
+.highlight .kt { color: navy; font-weight: bold  } /* Keyword.Type */
+.highlight .m { color: #009999 } /* Literal.Number */
+.highlight .s { color: #009090 } /* Literal.String */
+.highlight .na { color: #1e90ff } /* Name.Attribute */
+.highlight .nb { color: #900090 } /* Name.Builtin */
+.highlight .nc { color: #900090 } /* Name.Class */
+.highlight .no { color: #900090 } /* Name.Constant */
+.highlight .nd { color: #900090 } /* Name.Decorator */
+.highlight .ni { color: #800000; font-weight: bold } /* Name.Entity */
+.highlight .nf { color: #000000 } /* Name.Function */
+.highlight .nn { color: #00aaaa; text-decoration: underline } /* Name.Namespace */
+.highlight .nt { color: #1e90ff; font-weight: bold } /* Name.Tag */
+.highlight .nv { color: #aa0000 } /* Name.Variable */
+.highlight .ow { color: #0000aa } /* Operator.Word */
+.highlight .w { color: #bbbbbb } /* Text.Whitespace */
+.highlight .mf { color: #000000 } /* Literal.Number.Float */
+.highlight .mh { color: #000000 } /* Literal.Number.Hex */
+.highlight .mi { color: #000000 } /* Literal.Number.Integer */
+.highlight .mo { color: #000000 } /* Literal.Number.Oct */
+.highlight .sb { color: #009090 } /* Literal.String.Backtick */
+.highlight .sc { color: #009090 } /* Literal.String.Char */
+.highlight .sd { color: #009090 } /* Literal.String.Doc */
+.highlight .s2 { color: #009090 } /* Literal.String.Double */
+.highlight .se { color: #009090 } /* Literal.String.Escape */
+.highlight .sh { color: #009090 } /* Literal.String.Heredoc */
+.highlight .si { color: #009090 } /* Literal.String.Interpol */
+.highlight .sx { color: #009090 } /* Literal.String.Other */
+.highlight .sr { color: #009090 } /* Literal.String.Regex */
+.highlight .s1 { color: #009090 } /* Literal.String.Single */
+.highlight .ss { color: #009090 } /* Literal.String.Symbol */
+.highlight .bp { color: #aa0000 } /* Name.Builtin.Pseudo */
+.highlight .vc { color: #aa0000 } /* Name.Variable.Class */
+.highlight .vg { color: #aa0000 } /* Name.Variable.Global */
+.highlight .vi { color: #aa0000 } /* Name.Variable.Instance */
+.highlight .il { color: #000000 } /* Literal.Number.Integer.Long */
+
+/* @section user */
+#user p {
+    text-align: right;
+    padding-right:0.5em;
+    font-size: .8em;
+    line-height: 2.0em;
+    color: #999;
+}
+

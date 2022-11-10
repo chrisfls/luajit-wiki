@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-type" content="text/html;charset=utf-8">
+  <link rel=”alternate” type=”application/rss+xml” title=”wiki.luajit.org edit/commit log” href=”http://wiki.luajit.org/feeds/global.xml” />
+ 
+  <link rel="stylesheet" type="text/css" href="/luajit-wiki/css/gollum.css" media="all">
+  <link rel="stylesheet" type="text/css" href="/luajit-wiki/css/editor.css" media="all">
+  <link rel="stylesheet" type="text/css" href="/luajit-wiki/css/dialog.css" media="all">
+  <link rel="stylesheet" type="text/css" href="/luajit-wiki/css/template.css" media="all">
+ 
+  <link rel="stylesheet" type="text/css" href="/luajit-wiki/css/custom.css" media="all">
+  <!--[if IE 7]>
+  <link rel="stylesheet" type="text/css" href="/luajit-wiki/css/ie7.css" media="all">
+  <![endif]-->
+  
+  <script type="text/javascript" src="/luajit-wiki/javascript/jquery.js"></script>
+  <script type="text/javascript" src="/luajit-wiki/javascript/gollum.js"></script>
+  <script type="text/javascript" src="/luajit-wiki/javascript/gollum.dialog.js"></script>
+  <script type="text/javascript" src="/luajit-wiki/javascript/gollum.placeholder.js"></script>
+  
+  <script type="text/javascript" src="/luajit-wiki/javascript/editor/gollum.editor.js"></script>
+  <script type="text/javascript" src="https://c328740.ssl.cf1.rackcdn.com/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  <title>Wiki FAQ</title>
+</head>
+<body>
+<div id="cust-site">
+  <a href="http://luajit.org"><span>Lua<span id="cust-logo">JIT</span></span></a>
+</div>
+<div id="cust-header">
+  <h1>The LuaJIT Wiki</h1>
+</div>
+<div id="user">
+    <p>
+      not logged in | <strong><a href="/luajit-wiki/__omnigollum__/login">[Login]</a></strong>
+    <p>
+</div>
+
+<div id="wiki-wrapper" class="page">
+<div id="head">
+  <h1>Wiki FAQ</h1>
+  <ul class="actions">
+    <li class="minibutton">
+      <div id="searchbar">
+        <form action="/search" method="get" id="search-form">
+        <div id="searchbar-fauxtext">
+          <input type="text" name="q" id="search-query" value="Search&hellip;" autocomplete="off">
+          <a href="#" id="search-submit" title="Search this wiki">
+            <span>Search</span>
+          </a>
+        </div>
+        </form>
+      </div>    </li>
+    <li class="minibutton"><a href="/luajit-wiki/pages"
+      class="action-all-pages">All Pages</a></li>
+    <li class="minibutton"><a href="/luajit-wiki/fileview"
+    class="action-all-pages">File View</a></li>
+    <li class="minibutton" class="jaws">
+      <a href="#" id="minibutton-new-page">New Page</a></li>
+    <li class="minibutton"><a href="/luajit-wiki/edit/Wiki+FAQ"
+       class="action-edit-page">Edit Page</a></li>
+    <li class="minibutton"><a href="/luajit-wiki/history/Wiki+FAQ"
+       class="action-page-history">Page History</a></li>
+  </ul>
+</div>
+<div id="wiki-content">
+<div class=" has-toc">
+  <div id="wiki-toc-main">
+    <div class="toc">
+  <div class="toc-title">Table of Contents</div>
+  <ul>
+    <li>
+      <a href="#The-purpose-of-the-wiki">The purpose of the wiki</a>
+    </li>
+  </ul>
+  <ul>
+    <li>
+      <a href="#What-powers-the-wiki%3F">What powers the wiki?</a>
+    </li>
+  </ul>
+  <ul>
+    <li>
+      <a href="#Why-do-I-need-to-authenticate%3F">Why do I need to authenticate?</a>
+    </li>
+  </ul>
+  <ul>
+    <li>
+      <a href="#How-do-I-associate-an-avatar-%28picture%2Ficon%29-with-my-account%3F">How do I associate an avatar (picture/icon) with my account?</a>
+    </li>
+  </ul>
+  <ul>
+    <li>
+      <a href="#Why-do-I-get-the-error-%22Insufficient-data-from-authentication-provider%2C-email-not-provided-or-empty%22">Why do I get the error "Insufficient data from authentication provider, email not provided or empty"</a>
+    </li>
+  </ul>
+  <ul>
+    <li>
+      <a href="#Other-ways-to-edit-the-wiki">Other ways to edit the wiki</a>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div id="wiki-body" class="gollum-markdown-content">
+    <div class="markdown-body">
+      <h1>The purpose of the wiki<a class="anchor" id="The-purpose-of-the-wiki" href="#The-purpose-of-the-wiki"></a>
+</h1>
+
+<p>This wiki has been created to gather together resources from the growing LuaJIT community, and to record insights from LuaJIT's maintainers.</p>
+
+<h1>What powers the wiki?<a class="anchor" id="What-powers-the-wiki%3F" href="#What-powers-the-wiki%3F"></a>
+</h1>
+
+<p>The wiki itself is based on <a href="http://github.com/github/gollum">Gollum</a>, one of the many useful sub-projects run by <a href="http://www.github.com">GitHub</a>. This wiki is a modified branch of 2.0 (hopefully less modified as fixes and code gets merged back), but should behave very similarly to the embedded wikis included in GitHub project mini portals.</p>
+
+<h1>Why do I need to authenticate?<a class="anchor" id="Why-do-I-need-to-authenticate%3F" href="#Why-do-I-need-to-authenticate%3F"></a>
+</h1>
+
+<p>Because open wikis get incredible amounts of spam. We've tried to make it as painless as possible by linking to commonly used authentication providers. If you'd like to see another provider added, check if it's supported by the <a href="http://github.com/intridea/omniauth">Omniauth</a> project (or contribute a patch to omniauth) and send a post to the mailing list.</p>
+
+<h1>How do I associate an avatar (picture/icon) with my account?<a class="anchor" id="How-do-I-associate-an-avatar-%28picture%2Ficon%29-with-my-account%3F" href="#How-do-I-associate-an-avatar-%28picture%2Ficon%29-with-my-account%3F"></a>
+</h1>
+
+<p>Create an account with <a href="http://en.gravatar.com/">Gravatar</a> and associate it with the email address returned by your identity provider. Many sites now support Gravatar including GitHub and WordPress.</p>
+
+<h1>Why do I get the error "Insufficient data from authentication provider, email not provided or empty"<a class="anchor" id="Why-do-I-get-the-error-%22Insufficient-data-from-authentication-provider%2C-email-not-provided-or-empty%22" href="#Why-do-I-get-the-error-%22Insufficient-data-from-authentication-provider%2C-email-not-provided-or-empty%22"></a>
+</h1>
+
+<p>This means your identity provider didn't provide a valid email address when you attempted to log into the wiki. </p>
+
+<p>If you're using GitHub goto your <a href="https://github.com/settings/profile">public profile</a> page and verify that the <em>Email</em> field is filled in.</p>
+
+<h1>Other ways to edit the wiki<a class="anchor" id="Other-ways-to-edit-the-wiki" href="#Other-ways-to-edit-the-wiki"></a>
+</h1>
+
+<p>One of the cool things about Gollum is it uses Git as its storage and revision control backend, which means you can clone the wiki and edit pages offline. </p>
+
+<div class="highlight">
+<pre>git clone git://wiki.luajit.org/wiki.luajit.org.git
+</pre>
+</div>
+
+
+<p>You can then use your favourite editor to edit the <a href="http://daringfireball.net/projects/markdown/basics">Markdown</a> source of wiki pages, and push the changes back.</p>
+
+<p>There are no restrictions on who can commit back to the wiki via the Git interface (we hope spammers and spam bots haven't figured out how to use Git yet).</p>
+    </div>
+  </div>
+  </div>
+
+</div>
+<div id="footer">
+  <p id="last-edit">Last edited by <b>Arran Cudbard-Bell</b>, 2012-10-13 16:32:08</p>
+</div>
+</div>
+<div id="cust-footer">
+  <p>Sponsored by <a href="http://www.networkradius.com">Network RADIUS</a></p>
+</div>
+
+
+</body>
+</html>

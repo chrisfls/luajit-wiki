@@ -1,0 +1,924 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-type" content="text/html;charset=utf-8">
+  <meta name="MobileOptimized" content="width">
+  <meta name="HandheldFriendly" content="true">
+  <meta name="viewport" content="width=device-width">
+  <link rel=”alternate” type=”application/rss+xml” title=”wiki.luajit.org edit and commit log” href=”http://wiki.luajit.org/feeds/global.xml” />
+  <link rel="stylesheet" type="text/css" href="/luajit-wiki/css/gollum.css" media="all">
+  <link rel="stylesheet" type="text/css" href="/luajit-wiki/css/editor.css" media="all">
+  <link rel="stylesheet" type="text/css" href="/luajit-wiki/css/dialog.css" media="all">
+  <link rel="stylesheet" type="text/css" href="/luajit-wiki/css/template.css" media="all">
+  <link rel="stylesheet" type="text/css" href="/luajit-wiki/css/print.css" media="print">
+  <link rel="stylesheet" type="text/css" href="/luajit-wiki/custom.css" media="all">
+  <meta name="robots" content="noindex, nofollow" />
+
+  <!--[if IE 7]>
+  <link rel="stylesheet" type="text/css" href="/luajit-wiki/css/ie7.css" media="all">
+  <![endif]-->
+
+  <script>
+      var baseUrl = '';
+      var uploadDest   = '';
+      var pageFullPath = 'NYI';
+  </script>
+  <script type="text/javascript" src="/luajit-wiki/javascript/jquery-1.7.2.min.js"></script>
+  <script type="text/javascript" src="/luajit-wiki/javascript/mousetrap.min.js"></script>
+  <script type="text/javascript" src="/luajit-wiki/javascript/gollum.js"></script>
+  <script type="text/javascript" src="/luajit-wiki/javascript/gollum.dialog.js"></script>
+  <script type="text/javascript" src="/luajit-wiki/javascript/gollum.placeholder.js"></script>
+  <script type="text/javascript" src="/luajit-wiki/javascript/editor/gollum.editor.js"></script>
+
+  
+
+  <title>NYI</title>
+</head>
+<body>
+
+<div id="cust-site">
+  <a href="http://luajit.org"><span>Lua<span id="cust-logo">JIT</span></span></a>
+</div>
+<div id="cust-header">
+  <h1>The LuaJIT Wiki</h1>
+</div>
+<div id="user">
+    <p>
+      not logged in | <strong><a href="/luajit-wiki/__omnigollum__/login">[Login]</a></strong>
+    <p>
+</div>
+
+<script>
+Mousetrap.bind(['e'], function( e ) {
+  e.preventDefault();
+  window.location = "/edit" + window.location.pathname;
+  return false;
+});
+</script>
+<div id="wiki-wrapper" class="page">
+<div id="head">
+  <h1>NYI</h1>
+  <ul class="actions">
+    <li class="minibutton">
+      <div id="searchbar">
+        <form action="/search" method="get" id="search-form">
+        <div id="searchbar-fauxtext">
+          <input type="text" name="q" id="search-query" value="Search&hellip;" autocomplete="off">
+          <a href="#" id="search-submit" title="Search this wiki">
+            <span>Search</span>
+          </a>
+        </div>
+        </form>
+      </div>    </li>
+    <li class="minibutton"><a href="/luajit-wiki/"
+       class="action-home-page">Home</a></li>
+    <li class="minibutton"><a href="/luajit-wiki/pages"
+      class="action-all-pages">All</a></li>
+    <li class="minibutton"><a href="/luajit-wiki/fileview"
+    class="action-fileview">Files</a></li>
+      <li class="minibutton jaws">
+        <a href="#" id="minibutton-new-page">New</a></li>
+  </ul>
+</div>
+<div id="wiki-content">
+<div class="">
+  <div id="wiki-body" class="gollum-markdown-content">
+    <div class="markdown-body">
+      <h1>Not Yet Implemented</h1>
+
+<p>All aspects of Lua are implemented in LuaJIT's interpreter, but not all
+of them are implemented in LuaJIT's JIT compiler. This page serves as a
+quick reference to identify whether certain things are implemented or
+not. Hopefully meaning that you can avoid them in performance-critical
+code rather than puzzle over why you're seeing poorly performing code
+and NYI messages from <code>-jv</code>.</p>
+
+<p>Note that the goal of LuaJIT is not only to produce fast code, but to
+have a fast and compact JIT compiler, too. It's not a stated goal to
+compile everything, since the interpreter is fast enough for many tasks.
+And speed doesn't matter for anything that's done only a couple of times
+during the runtime of a program. E.g. it would be absolutely pointless
+to compile <code>require()</code> or <code>module()</code> (in fact, these should eventually
+be rewritten as plain Lua functions).</p>
+
+<p>However, the number of JIT-compiled cases will grow over time, based on
+demand and user feedback.</p>
+
+<p>The following tables provide an indication whether a feature is
+JIT-compiled or not:</p>
+
+<ul>
+<li>
+<strong>yes</strong> - Always JIT-compiled.</li>
+<li>
+<strong>partial</strong> - May be JIT-compiled, depending on the circumstances.
+Otherwise will fall back to the interpreter.</li>
+<li>
+<strong>no</strong> - Not JIT-compiled (yet), will always fall back to the interpreter.</li>
+<li>
+<strong>NO</strong> - Ditto. Will not be JIT-compiled, even in future versions.</li>
+</ul>
+
+<h3><a class="anchor" id="todo-for-luajit-2-0" href="#todo-for-luajit-2-0"><i class="fa fa-link"></i></a>TODO for LuaJIT 2.0</h3>
+
+<p>Most <code>ffi.*</code> functions will be compiled.</p>
+
+<h3><a class="anchor" id="outlook-on-luajit-2-1" href="#outlook-on-luajit-2-1"><i class="fa fa-link"></i></a>Outlook on LuaJIT 2.1</h3>
+
+<p>The <a class="internal present" href="/luajit-wiki/New-Garbage-Collector" rel="nofollow">New Garbage Collector</a> planned for LuaJIT 2.1 will have support
+for in-place movable/resizable buffer objects. This will allow
+compilation of <code>CAT</code>, <code>string.*</code> and <code>table.concat</code>.</p>
+
+<p>Many of the remaining NYI library functions may be rewritten as plain
+Lua functions with the help of special bytecodes. These can then be compiled
+like any other Lua function.</p>
+
+<h2><a class="anchor" id="bytecode" href="#bytecode"><i class="fa fa-link"></i></a>Bytecode</h2>
+
+<p>Almost all bytecodes are compiled, except for these:</p>
+
+<table>
+<tr>
+<th>Bytecode</th>
+<th>Compiled?</th>
+<th>Remarks</th>
+</tr>
+<tr>
+<td>CAT</td>
+<td>no</td>
+<td>Concatenation operator '..'.</td>
+</tr>
+<tr>
+<td>FNEW</td>
+<td>no</td>
+<td>Create closure.</td>
+</tr>
+<tr>
+<td>FUNCC</td>
+<td>NO</td>
+<td>Call C function via classic API.</td>
+</tr>
+<tr>
+<td>FUNCCW</td>
+<td>NO</td>
+<td>Call wrapped C function via classic API.</td>
+</tr>
+<tr>
+<td>FUNC*</td>
+<td>partial</td>
+<td>Call built-in function. See below.</td>
+</tr>
+<tr>
+<td>ISNEXT</td>
+<td>no</td>
+<td>Check for next() loop optimization.</td>
+</tr>
+<tr>
+<td>ITERN</td>
+<td>no</td>
+<td>Optimized call to next() in loop.</td>
+</tr>
+<tr>
+<td>CALLT</td>
+<td>partial</td>
+<td>Tailcall. Some tailcalls to frames lower than the starting frame of the trace are not compiled.</td>
+</tr>
+<tr>
+<td>RET*</td>
+<td>partial</td>
+<td>Return from function. Returns to C frames and some returns to frames lower than the starting frame of the trace are not compiled.</td>
+</tr>
+<tr>
+<td>TSETM</td>
+<td>no</td>
+<td>Initialize table with multiple return values.</td>
+</tr>
+<tr>
+<td>UCLO</td>
+<td>no</td>
+<td>Close upvalues.</td>
+</tr>
+<tr>
+<td>VARG</td>
+<td>partial</td>
+<td>Vararg operator '...'. Multi-result VARG is only compiled when used with select().</td>
+</tr>
+</table>
+
+<p>Notes:</p>
+
+<ul>
+<li>Table accesses to mixed dense/sparse tables are not compiled.</li>
+<li>Bytecode execution that would cause an error in the interpreter is
+never compiled.</li>
+</ul>
+
+<h2><a class="anchor" id="libraries" href="#libraries"><i class="fa fa-link"></i></a>Libraries</h2>
+
+<p>The following tables list whether or not <strong>calls</strong> to the various
+built-in library functions will get compiled. This may depend on the
+arguments passed (esp. their types) and the exact circumstances of the
+call.</p>
+
+<h3><a class="anchor" id="libraries_base-library" href="#libraries_base-library"><i class="fa fa-link"></i></a>Base Library</h3>
+
+<table>
+<tr>
+<th>Function</th>
+<th>Compiled?</th>
+<th>Remarks</th>
+</tr>
+<tr>
+<td>assert</td>
+<td><b>yes</b></td>
+<td></td>
+</tr>
+<tr>
+<td>collectgarbage</td>
+<td>no</td>
+<td></td>
+</tr>
+<tr>
+<td>dofile</td>
+<td>NO</td>
+<td></td>
+</tr>
+<tr>
+<td>error</td>
+<td>NO</td>
+<td></td>
+</tr>
+<tr>
+<td>getfenv</td>
+<td>no</td>
+<td></td>
+</tr>
+<tr>
+<td>getmetatable</td>
+<td><b>yes</b></td>
+<td></td>
+</tr>
+<tr>
+<td>ipairs</td>
+<td><b>yes</b></td>
+<td></td>
+</tr>
+<tr>
+<td>load</td>
+<td>NO</td>
+<td></td>
+</tr>
+<tr>
+<td>loadfile</td>
+<td>NO</td>
+<td></td>
+</tr>
+<tr>
+<td>loadstring</td>
+<td>NO</td>
+<td></td>
+</tr>
+<tr>
+<td>next</td>
+<td>no</td>
+<td></td>
+</tr>
+<tr>
+<td>pairs</td>
+<td>no</td>
+<td></td>
+</tr>
+<tr>
+<td>pcall</td>
+<td><b>yes</b></td>
+<td></td>
+</tr>
+<tr>
+<td>print</td>
+<td>no</td>
+<td></td>
+</tr>
+<tr>
+<td>rawequal</td>
+<td><b>yes</b></td>
+<td></td>
+</tr>
+<tr>
+<td>rawget</td>
+<td><b>yes</b></td>
+<td></td>
+</tr>
+<tr>
+<td>rawlen (5.2)</td>
+<td>yes</td>
+<td></td>
+</tr>
+<tr>
+<td>rawset</td>
+<td><b>yes</b></td>
+<td></td>
+</tr>
+<tr>
+<td>select</td>
+<td>partial</td>
+<td>Only compiled when first argument is a constant.</td>
+</tr>
+<tr>
+<td>setfenv</td>
+<td>no</td>
+<td></td>
+</tr>
+<tr>
+<td>setmetatable</td>
+<td><b>yes</b></td>
+<td></td>
+</tr>
+<tr>
+<td>tonumber</td>
+<td>partial</td>
+<td>Won't compile for bases other than 10, other exceptions apply.</td>
+</tr>
+<tr>
+<td>tostring</td>
+<td>partial</td>
+<td>Only compiled for strings, numbers, booleans, nil, and values with a __tostring metamethod.</td>
+</tr>
+<tr>
+<td>type</td>
+<td><b>yes</b></td>
+<td></td>
+</tr>
+<tr>
+<td>unpack</td>
+<td>no</td>
+<td></td>
+</tr>
+<tr>
+<td>xpcall</td>
+<td><b>yes</b></td>
+<td></td>
+</tr>
+</table>
+
+<h3><a class="anchor" id="libraries_string-library" href="#libraries_string-library"><i class="fa fa-link"></i></a>String Library</h3>
+
+<table>
+<tr>
+<th>Function</th>
+<th>Compiled?</th>
+<th>Remarks</th>
+</tr>
+<tr>
+<td>string.byte</td>
+<td><b>yes</b></td>
+<td></td>
+</tr>
+<tr>
+<td>string.char</td>
+<td>no</td>
+<td></td>
+</tr>
+<tr>
+<td>string.dump</td>
+<td>NO</td>
+<td></td>
+</tr>
+<tr>
+<td>string.find</td>
+<td>no</td>
+<td></td>
+</tr>
+<tr>
+<td>string.format</td>
+<td>no</td>
+<td></td>
+</tr>
+<tr>
+<td>string.gmatch</td>
+<td>no</td>
+<td></td>
+</tr>
+<tr>
+<td>string.gsub</td>
+<td>no</td>
+<td></td>
+</tr>
+<tr>
+<td>string.len</td>
+<td><b>yes</b></td>
+<td></td>
+</tr>
+<tr>
+<td>string.lower</td>
+<td>no</td>
+<td></td>
+</tr>
+<tr>
+<td>string.match</td>
+<td>no</td>
+<td></td>
+</tr>
+<tr>
+<td>string.rep</td>
+<td>no</td>
+<td></td>
+</tr>
+<tr>
+<td>string.reverse</td>
+<td>no</td>
+<td></td>
+</tr>
+<tr>
+<td>string.sub</td>
+<td><b>yes</b></td>
+<td></td>
+</tr>
+<tr>
+<td>string.upper</td>
+<td>no</td>
+<td></td>
+</tr>
+</table>
+
+<h3><a class="anchor" id="libraries_table-library" href="#libraries_table-library"><i class="fa fa-link"></i></a>Table Library</h3>
+
+<table>
+<tr>
+<th>Function</th>
+<th>Compiled?</th>
+<th>Remarks</th>
+</tr>
+<tr>
+<td>table.concat</td>
+<td>no</td>
+<td></td>
+</tr>
+<tr>
+<td>table.foreach</td>
+<td>no</td>
+<td></td>
+</tr>
+<tr>
+<td>table.foreachi</td>
+<td>no</td>
+<td></td>
+</tr>
+<tr>
+<td>table.getn</td>
+<td><b>yes</b></td>
+<td></td>
+</tr>
+<tr>
+<td>table.insert</td>
+<td>partial</td>
+<td>Only when pushing.</td>
+</tr>
+<tr>
+<td>table.maxn</td>
+<td>no</td>
+<td></td>
+</tr>
+<tr>
+<td>table.pack (5.2)</td>
+<td>no</td>
+<td></td>
+</tr>
+<tr>
+<td>table.remove</td>
+<td>partial</td>
+<td>Only when popping.</td>
+</tr>
+<tr>
+<td>table.sort</td>
+<td>no</td>
+<td></td>
+</tr>
+<tr>
+<td>table.unpack (5.2)</td>
+<td>no</td>
+<td></td>
+</tr>
+</table>
+
+<h3><a class="anchor" id="libraries_math-library" href="#libraries_math-library"><i class="fa fa-link"></i></a>Math Library</h3>
+
+<table>
+<tr>
+<th>Function</th>
+<th>Compiled?</th>
+<th>Remarks</th>
+</tr>
+<tr>
+<td>math.abs</td>
+<td><b>yes</b></td>
+<td></td>
+</tr>
+<tr>
+<td>math.acos</td>
+<td><b>yes</b></td>
+<td></td>
+</tr>
+<tr>
+<td>math.asin</td>
+<td><b>yes</b></td>
+<td></td>
+</tr>
+<tr>
+<td>math.atan</td>
+<td><b>yes</b></td>
+<td></td>
+</tr>
+<tr>
+<td>math.atan2</td>
+<td><b>yes</b></td>
+<td></td>
+</tr>
+<tr>
+<td>math.ceil</td>
+<td><b>yes</b></td>
+<td></td>
+</tr>
+<tr>
+<td>math.cos</td>
+<td><b>yes</b></td>
+<td></td>
+</tr>
+<tr>
+<td>math.cosh</td>
+<td><b>yes</b></td>
+<td></td>
+</tr>
+<tr>
+<td>math.deg</td>
+<td><b>yes</b></td>
+<td></td>
+</tr>
+<tr>
+<td>math.exp</td>
+<td><b>yes</b></td>
+<td></td>
+</tr>
+<tr>
+<td>math.floor</td>
+<td><b>yes</b></td>
+<td></td>
+</tr>
+<tr>
+<td>math.fmod</td>
+<td>no</td>
+<td></td>
+</tr>
+<tr>
+<td>math.frexp</td>
+<td>no</td>
+<td></td>
+</tr>
+<tr>
+<td>math.ldexp</td>
+<td><b>yes</b></td>
+<td></td>
+</tr>
+<tr>
+<td>math.log</td>
+<td><b>yes</b></td>
+<td></td>
+</tr>
+<tr>
+<td>math.log10</td>
+<td><b>yes</b></td>
+<td></td>
+</tr>
+<tr>
+<td>math.max</td>
+<td><b>yes</b></td>
+<td></td>
+</tr>
+<tr>
+<td>math.min</td>
+<td><b>yes</b></td>
+<td></td>
+</tr>
+<tr>
+<td>math.modf</td>
+<td><b>yes</b></td>
+<td></td>
+</tr>
+<tr>
+<td>math.pow</td>
+<td><b>yes</b></td>
+<td></td>
+</tr>
+<tr>
+<td>math.rad</td>
+<td><b>yes</b></td>
+<td></td>
+</tr>
+<tr>
+<td>math.random</td>
+<td><b>yes</b></td>
+<td></td>
+</tr>
+<tr>
+<td>math.randomseed</td>
+<td>no</td>
+<td></td>
+</tr>
+<tr>
+<td>math.sin</td>
+<td><b>yes</b></td>
+<td></td>
+</tr>
+<tr>
+<td>math.sinh</td>
+<td><b>yes</b></td>
+<td></td>
+</tr>
+<tr>
+<td>math.sqrt</td>
+<td><b>yes</b></td>
+<td></td>
+</tr>
+<tr>
+<td>math.tan</td>
+<td><b>yes</b></td>
+<td></td>
+</tr>
+<tr>
+<td>math.tanh</td>
+<td><b>yes</b></td>
+<td></td>
+</tr>
+</table>
+
+<h3><a class="anchor" id="libraries_io-library" href="#libraries_io-library"><i class="fa fa-link"></i></a>IO Library</h3>
+
+<table>
+<tr>
+<th>Function</th>
+<th>Compiled?</th>
+<th>Remarks</th>
+</tr>
+<tr>
+<td>io.close</td>
+<td>no</td>
+<td></td>
+</tr>
+<tr>
+<td>io.flush</td>
+<td><b>yes</b></td>
+<td></td>
+</tr>
+<tr>
+<td>io.input</td>
+<td>no</td>
+<td></td>
+</tr>
+<tr>
+<td>io.lines</td>
+<td>no</td>
+<td></td>
+</tr>
+<tr>
+<td>io.open</td>
+<td>no</td>
+<td></td>
+</tr>
+<tr>
+<td>io.output</td>
+<td>no</td>
+<td></td>
+</tr>
+<tr>
+<td>io.popen</td>
+<td>no</td>
+<td></td>
+</tr>
+<tr>
+<td>io.read</td>
+<td>no</td>
+<td></td>
+</tr>
+<tr>
+<td>io.tmpfile</td>
+<td>no</td>
+<td></td>
+</tr>
+<tr>
+<td>io.type</td>
+<td>no</td>
+<td></td>
+</tr>
+<tr>
+<td>io.write</td>
+<td><b>yes</b></td>
+<td></td>
+</tr>
+</table>
+
+<h3><a class="anchor" id="libraries_bit-library" href="#libraries_bit-library"><i class="fa fa-link"></i></a>Bit Library</h3>
+
+<table>
+<tr>
+<th>Function</th>
+<th>Compiled?</th>
+<th>Remarks</th>
+</tr>
+<tr>
+<td>bit.arshift</td>
+<td><b>yes</b></td>
+<td></td>
+</tr>
+<tr>
+<td>bit.band</td>
+<td><b>yes</b></td>
+<td></td>
+</tr>
+<tr>
+<td>bit.bnot</td>
+<td><b>yes</b></td>
+<td></td>
+</tr>
+<tr>
+<td>bit.bor</td>
+<td><b>yes</b></td>
+<td></td>
+</tr>
+<tr>
+<td>bit.bswap</td>
+<td><b>yes</b></td>
+<td></td>
+</tr>
+<tr>
+<td>bit.bxor</td>
+<td><b>yes</b></td>
+<td></td>
+</tr>
+<tr>
+<td>bit.lshift</td>
+<td><b>yes</b></td>
+<td></td>
+</tr>
+<tr>
+<td>bit.rol</td>
+<td><b>yes</b></td>
+<td></td>
+</tr>
+<tr>
+<td>bit.ror</td>
+<td><b>yes</b></td>
+<td></td>
+</tr>
+<tr>
+<td>bit.rshift</td>
+<td><b>yes</b></td>
+<td></td>
+</tr>
+<tr>
+<td>bit.tobit</td>
+<td><b>yes</b></td>
+<td></td>
+</tr>
+<tr>
+<td>bit.tohex</td>
+<td>no</td>
+<td></td>
+</tr>
+</table>
+
+<h3><a class="anchor" id="libraries_ffi-library" href="#libraries_ffi-library"><i class="fa fa-link"></i></a>FFI Library</h3>
+
+<table>
+<tr>
+<th>Function</th>
+<th>Compiled?</th>
+<th>Remarks</th>
+</tr>
+<tr>
+<td>ffi.alignof</td>
+<td>no</td>
+<td></td>
+</tr>
+<tr>
+<td>ffi.abi</td>
+<td><b>yes</b></td>
+<td></td>
+</tr>
+<tr>
+<td>ffi.cast</td>
+<td>partial</td>
+<td>Same restrictions as ffi.new (casting is a form of cdata creation).</td>
+</tr>
+<tr>
+<td>ffi.cdef</td>
+<td>NO</td>
+<td></td>
+</tr>
+<tr>
+<td>ffi.copy</td>
+<td><b>yes</b></td>
+<td></td>
+</tr>
+<tr>
+<td>ffi.errno</td>
+<td>partial</td>
+<td>Not when setting a new value.</td>
+</tr>
+<tr>
+<td>ffi.fill</td>
+<td><b>yes</b></td>
+<td></td>
+</tr>
+<tr>
+<td>ffi.gc</td>
+<td>no</td>
+<td></td>
+</tr>
+<tr>
+<td>ffi.istype</td>
+<td><b>yes</b></td>
+<td></td>
+</tr>
+<tr>
+<td>ffi.load</td>
+<td>NO</td>
+<td></td>
+</tr>
+<tr>
+<td>ffi.metatype</td>
+<td>NO</td>
+<td></td>
+</tr>
+<tr>
+<td>ffi.new</td>
+<td>partial</td>
+<td>Not when the allocation is for more than 128 bytes, other exceptions apply.</td>
+</tr>
+<tr>
+<td>ffi.offsetof</td>
+<td>no</td>
+<td></td>
+</tr>
+<tr>
+<td>ffi.sizeof</td>
+<td>no</td>
+<td></td>
+</tr>
+<tr>
+<td>ffi.string</td>
+<td><b>yes</b></td>
+<td></td>
+</tr>
+<tr>
+<td>ffi.typeof</td>
+<td>partial</td>
+<td>Only for cdata arguments. NO for cdecl strings.</td>
+</tr>
+</table>
+
+<p>For more details see the <a href="http://luajit.org/ext_ffi_semantics.html#status" rel="nofollow">current implementation status of the FFI
+library</a>.</p>
+
+<h3><a class="anchor" id="libraries_coroutine-library" href="#libraries_coroutine-library"><i class="fa fa-link"></i></a>Coroutine Library</h3>
+
+<p>No functions are compiled.</p>
+
+<h3><a class="anchor" id="libraries_os-library" href="#libraries_os-library"><i class="fa fa-link"></i></a>OS Library</h3>
+
+<p>No functions are compiled.</p>
+
+<h3><a class="anchor" id="libraries_package-library" href="#libraries_package-library"><i class="fa fa-link"></i></a>Package Library</h3>
+
+<p>No functions are compiled (NO).</p>
+
+<h3><a class="anchor" id="libraries_debug-library" href="#libraries_debug-library"><i class="fa fa-link"></i></a>Debug Library</h3>
+
+<p>No functions are compiled (NO).</p>
+
+<h3><a class="anchor" id="libraries_jit-library" href="#libraries_jit-library"><i class="fa fa-link"></i></a>JIT Library</h3>
+
+<p>No functions are compiled (NO).</p>
+
+    </div>
+  </div>
+  </div>
+
+</div>
+<div id="footer">
+  <p id="last-edit">Last edited by <b>Pierre FICHEPOIL (ExtReMLapin)</b>, 2019-11-18 10:20:28</p>
+    <p>
+      <a id="delete-link" href="/luajit-wiki/NYI" data-confirm="Are you sure you want to delete this page?"><span>Delete this Page</span></a>
+    </p>
+</div>
+</div>
+
+<form name="rename" method="POST" action="/rename/NYI">
+  <input type="hidden" name="rename"/>
+  <input type="hidden" name="message"/>
+</form>
+<div id="cust-footer">
+  <p>Sponsored by <a href="http://www.networkradius.com">Network RADIUS</a></p>
+</div>
+
+
+</body>
+</html>

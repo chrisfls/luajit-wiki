@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-type" content="text/html;charset=utf-8">
+  <meta name="MobileOptimized" content="width">
+  <meta name="HandheldFriendly" content="true">
+  <meta name="viewport" content="width=device-width">
+  <link rel=”alternate” type=”application/rss+xml” title=”wiki.luajit.org edit and commit log” href=”http://wiki.luajit.org/feeds/global.xml” />
+  <link rel="stylesheet" type="text/css" href="/luajit-wiki/css/gollum.css" media="all">
+  <link rel="stylesheet" type="text/css" href="/luajit-wiki/css/editor.css" media="all">
+  <link rel="stylesheet" type="text/css" href="/luajit-wiki/css/dialog.css" media="all">
+  <link rel="stylesheet" type="text/css" href="/luajit-wiki/css/template.css" media="all">
+  <link rel="stylesheet" type="text/css" href="/luajit-wiki/css/print.css" media="print">
+  <link rel="stylesheet" type="text/css" href="/luajit-wiki/custom.css" media="all">
+  
+
+  <!--[if IE 7]>
+  <link rel="stylesheet" type="text/css" href="/luajit-wiki/css/ie7.css" media="all">
+  <![endif]-->
+
+  <script>
+      var baseUrl = '';
+      var uploadDest   = '';
+      var pageFullPath = 'FFI Callback Restrictions: Encountered Cases';
+  </script>
+  <script type="text/javascript" src="/luajit-wiki/javascript/jquery-1.7.2.min.js"></script>
+  <script type="text/javascript" src="/luajit-wiki/javascript/mousetrap.min.js"></script>
+  <script type="text/javascript" src="/luajit-wiki/javascript/gollum.js"></script>
+  <script type="text/javascript" src="/luajit-wiki/javascript/gollum.dialog.js"></script>
+  <script type="text/javascript" src="/luajit-wiki/javascript/gollum.placeholder.js"></script>
+  <script type="text/javascript" src="/luajit-wiki/javascript/editor/gollum.editor.js"></script>
+
+  
+
+  <title>FFI Callback Restrictions: Encountered Cases</title>
+</head>
+<body>
+
+<div id="cust-site">
+  <a href="http://luajit.org"><span>Lua<span id="cust-logo">JIT</span></span></a>
+</div>
+<div id="cust-header">
+  <h1>The LuaJIT Wiki</h1>
+</div>
+<div id="user">
+    <p>
+      not logged in | <strong><a href="/luajit-wiki/__omnigollum__/login">[Login]</a></strong>
+    <p>
+</div>
+
+<script>
+Mousetrap.bind(['e'], function( e ) {
+  e.preventDefault();
+  window.location = "/edit" + window.location.pathname;
+  return false;
+});
+</script>
+<div id="wiki-wrapper" class="page">
+<div id="head">
+  <h1>FFI Callback Restrictions: Encountered Cases</h1>
+  <ul class="actions">
+    <li class="minibutton">
+      <div id="searchbar">
+        <form action="/search" method="get" id="search-form">
+        <div id="searchbar-fauxtext">
+          <input type="text" name="q" id="search-query" value="Search&hellip;" autocomplete="off">
+          <a href="#" id="search-submit" title="Search this wiki">
+            <span>Search</span>
+          </a>
+        </div>
+        </form>
+      </div>    </li>
+    <li class="minibutton"><a href="/luajit-wiki/"
+       class="action-home-page">Home</a></li>
+    <li class="minibutton"><a href="/luajit-wiki/pages"
+      class="action-all-pages">All</a></li>
+    <li class="minibutton"><a href="/luajit-wiki/fileview"
+    class="action-fileview">Files</a></li>
+      <li class="minibutton jaws">
+        <a href="#" id="minibutton-new-page">New</a></li>
+        <li class="minibutton jaws">
+          <a href="#" id="minibutton-rename-page">Rename</a></li>
+        <li class="minibutton"><a href="/luajit-wiki/edit/FFI-Callback-Restrictions%3A-Encountered-Cases"
+           class="action-edit-page">Edit</a></li>
+    <li class="minibutton jaws">
+    <li class="minibutton"><a href="/luajit-wiki/history/FFI-Callback-Restrictions%3A-Encountered-Cases"
+       class="action-page-history">History</a></li>
+	<li class="minibutton jaws">
+    <li class="minibutton"><a href="/luajit-wiki/latest_changes"
+       class="action-page-history">Latest Changes</a></li>
+  </ul>
+</div>
+<div id="wiki-content">
+<div class=" has-toc">
+  <div id="wiki-toc-main">
+    <div class="toc"><div class="toc-title">Table of Contents</div><ul><ul><li><a href="#win32-drag-and-drop">Win32 Drag-and-Drop</a></li></ul></ul><ul><ul><li><a href="#chipmunk-spatial-queries">
+Chipmunk Spatial Queries</a></li></ul></ul><ul><ul><li><a href="#libuv-uv_read_cb">
+libuv uv_read_cb</a></li></ul></ul><ul><ul><li><a href="#libclang-ast-visitor-callback">
+libclang AST visitor callback</a></li></ul></ul><ul><ul><li><a href="#libretro-vararg-logging-function">
+libretro vararg logging function</a></li></ul></ul><ul><ul><li><a href="#cocoa">Cocoa</a></li></ul></ul></div>
+  </div>
+  <div id="wiki-body" class="gollum-markdown-content">
+    <div class="markdown-body">
+      <p>While binding to C APIs that need callbacks is fine most of the time, occasionally you will hit a rare case where the API needs features that <a href="http://luajit.org/ext_ffi_semantics.html#callback">the FFI does not yet support</a> - specifically, callback signatures with varargs or pass-by-value aggregates.</p>
+
+<p>Please list examples here as you encounter them.</p>
+
+<h2><a class="anchor" id="win32-drag-and-drop" href="#win32-drag-and-drop"><i class="fa fa-link"></i></a>Win32 Drag-and-Drop</h2>
+
+<p>Implementing the <a href="http://msdn.microsoft.com/en-us/library/windows/desktop/ms679679%28v=vs.85%29.aspx">IDropTarget</a> COM interface requires methods that need pass-by-value <strong>POINTL</strong> struct parameters.</p>
+
+<h2><a class="anchor" id="chipmunk-spatial-queries" href="#chipmunk-spatial-queries"><i class="fa fa-link"></i></a>
+<a href="http://chipmunk-physics.net/">Chipmunk</a> Spatial Queries</h2>
+
+<p><a href="http://chipmunk-physics.net/release/ChipmunkLatest-Docs/#Queries-PointQueries">cpSpaceNearestPointQuery</a> and <a href="http://chipmunk-physics.net/release/ChipmunkLatest-Docs/#Queries-SegmentQueries">cpSpaceSegmentQuery</a> require callbacks with pass-by-value <strong>cpVect</strong> struct parameters.</p>
+
+<h2><a class="anchor" id="libuv-uv_read_cb" href="#libuv-uv_read_cb"><i class="fa fa-link"></i></a>
+<a href="https://github.com/joyent/libuv">libuv</a> uv_read_cb</h2>
+
+<p><strong>uv_read_start</strong> requires <strong>uv_read_cb</strong> callback with pass-by-value <strong>uv_buf_t</strong> struct parameter. There is an <a href="https://github.com/joyent/libuv/issues/684">open discussion</a> with a <a href="https://github.com/joyent/libuv/issues/684#issuecomment-12277786">proposal</a> to change it.</p>
+
+<h2><a class="anchor" id="libclang-ast-visitor-callback" href="#libclang-ast-visitor-callback"><i class="fa fa-link"></i></a>
+<a href="http://clang.llvm.org/">libclang</a> AST visitor callback</h2>
+
+<p><a href="http://clang.llvm.org/doxygen/group__CINDEX__CURSOR__TRAVERSAL.html#ga5d0a813d937e1a7dcc35f206ad1f7a91">clang_visitChildren</a> requires callbacks to receive <a href="http://clang.llvm.org/doxygen/structCXCursor.html">CXCursor</a> by value.</p>
+
+<p>Please see this example for how to overcome this: <a class="internal present" href="/luajit-wiki/FFI-Callbacks-with-pass-by-value-structs">FFI Callbacks with pass-by-value structs</a></p>
+
+<h2><a class="anchor" id="libretro-vararg-logging-function" href="#libretro-vararg-logging-function"><i class="fa fa-link"></i></a>
+<a href="https://github.com/libretro/RetroArch">libretro</a> vararg logging function</h2>
+
+<p><a href="https://github.com/libretro/RetroArch/blob/master/libretro-common/include/libretro.h#L2041">retro_log_printf_t</a> takes log level, format and varargs to be presented to e g vsnprintf.</p>
+
+<p>Vararg callbacks don't work so there's no way to set this function from luajit (?).</p>
+
+<h2><a class="anchor" id="cocoa" href="#cocoa"><i class="fa fa-link"></i></a>Cocoa</h2>
+
+<p>NSView.drawRect:</p>
+
+<p>NSWindow.windowShouldZoom:toFrame:</p>
+
+<p>NSWindow.windowWillResize:toSize:</p>
+
+    </div>
+  </div>
+  </div>
+
+</div>
+<div id="footer">
+  <p id="last-edit">Last edited by <b>Nevyn Bengtsson (nevyn)</b>, 2021-06-08 21:13:33</p>
+    <p>
+      <a id="delete-link" href="/luajit-wiki/FFI-Callback-Restrictions%3A-Encountered-Cases" data-confirm="Are you sure you want to delete this page?"><span>Delete this Page</span></a>
+    </p>
+</div>
+</div>
+
+<form name="rename" method="POST" action="/rename/FFI-Callback-Restrictions%3A-Encountered-Cases">
+  <input type="hidden" name="rename"/>
+  <input type="hidden" name="message"/>
+</form>
+<div id="cust-footer">
+  <p>Sponsored by <a href="http://www.networkradius.com">Network RADIUS</a></p>
+</div>
+
+
+</body>
+</html>

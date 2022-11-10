@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-type" content="text/html;charset=utf-8">
+  <meta name="MobileOptimized" content="width">
+  <meta name="HandheldFriendly" content="true">
+  <meta name="viewport" content="width=device-width">
+  <link rel=”alternate” type=”application/rss+xml” title=”wiki.luajit.org edit and commit log” href=”http://wiki.luajit.org/feeds/global.xml” />
+  <link rel="stylesheet" type="text/css" href="/luajit-wiki/css/gollum.css" media="all">
+  <link rel="stylesheet" type="text/css" href="/luajit-wiki/css/editor.css" media="all">
+  <link rel="stylesheet" type="text/css" href="/luajit-wiki/css/dialog.css" media="all">
+  <link rel="stylesheet" type="text/css" href="/luajit-wiki/css/template.css" media="all">
+  <link rel="stylesheet" type="text/css" href="/luajit-wiki/css/print.css" media="print">
+  <link rel="stylesheet" type="text/css" href="/luajit-wiki/custom.css" media="all">
+  <meta name="robots" content="noindex, nofollow" />
+
+  <!--[if IE 7]>
+  <link rel="stylesheet" type="text/css" href="/luajit-wiki/css/ie7.css" media="all">
+  <![endif]-->
+
+  <script>
+      var baseUrl = '';
+      var uploadDest   = '';
+      var pageFullPath = 'Open Sponsorships';
+  </script>
+  <script type="text/javascript" src="/luajit-wiki/javascript/jquery-1.7.2.min.js"></script>
+  <script type="text/javascript" src="/luajit-wiki/javascript/mousetrap.min.js"></script>
+  <script type="text/javascript" src="/luajit-wiki/javascript/gollum.js"></script>
+  <script type="text/javascript" src="/luajit-wiki/javascript/gollum.dialog.js"></script>
+  <script type="text/javascript" src="/luajit-wiki/javascript/gollum.placeholder.js"></script>
+  <script type="text/javascript" src="/luajit-wiki/javascript/editor/gollum.editor.js"></script>
+
+  
+
+  <title>Open Sponsorships</title>
+</head>
+<body>
+
+<div id="cust-site">
+  <a href="http://luajit.org"><span>Lua<span id="cust-logo">JIT</span></span></a>
+</div>
+<div id="cust-header">
+  <h1>The LuaJIT Wiki</h1>
+</div>
+<div id="user">
+    <p>
+      not logged in | <strong><a href="/luajit-wiki/__omnigollum__/login">[Login]</a></strong>
+    <p>
+</div>
+
+<script>
+Mousetrap.bind(['e'], function( e ) {
+  e.preventDefault();
+  window.location = "/edit" + window.location.pathname;
+  return false;
+});
+</script>
+<div id="wiki-wrapper" class="page">
+<div id="head">
+  <h1>Open Sponsorships</h1>
+  <ul class="actions">
+    <li class="minibutton">
+      <div id="searchbar">
+        <form action="/search" method="get" id="search-form">
+        <div id="searchbar-fauxtext">
+          <input type="text" name="q" id="search-query" value="Search&hellip;" autocomplete="off">
+          <a href="#" id="search-submit" title="Search this wiki">
+            <span>Search</span>
+          </a>
+        </div>
+        </form>
+      </div>    </li>
+    <li class="minibutton"><a href="/luajit-wiki/"
+       class="action-home-page">Home</a></li>
+    <li class="minibutton"><a href="/luajit-wiki/pages"
+      class="action-all-pages">All</a></li>
+    <li class="minibutton"><a href="/luajit-wiki/fileview"
+    class="action-fileview">Files</a></li>
+      <li class="minibutton jaws">
+        <a href="#" id="minibutton-new-page">New</a></li>
+  </ul>
+</div>
+<div id="wiki-content">
+<div class="">
+  <div id="wiki-body" class="gollum-markdown-content">
+    <div class="markdown-body">
+      <h1>Open Sponsorships</h1>
+
+<p>This is a list of ports, features and other work items that are planned
+for LuaJIT and are still in need of a sponsor.</p>
+
+<p>If you want to see any of these features in a future version of LuaJIT
+and are interested in sponsoring them, please read:
+<a href="http://luajit.org/sponsors.html" rel="nofollow">http://luajit.org/sponsors.html</a> -- Thank you!</p>
+
+<p><strong>Note: The main LuaJIT author (Mike Pall) is working on unrelated
+projects and cannot accept new sponsorships at this time. But other
+community members may be open to sponsorship offers -- please ask on the
+LuaJIT mailing list for any takers.</strong></p>
+
+<p>Please note that some of the items in this list are dependent on others,
+which would have to be implemented first.</p>
+
+<h2><a class="anchor" id="ports-to-more-cpu-architectures" href="#ports-to-more-cpu-architectures"><i class="fa fa-link"></i></a>Ports to More CPU Architectures</h2>
+
+<p>LuaJIT 2.0 has already been ported to the major CPU architectures and
+some of their variants. It currently supports x86, x64, ARM (ARM 32 bit
+instruction set only), PPC (PPC32 only), PPC/e500 (no JIT) and MIPS
+(FPU required).</p>
+
+<p>The following ports are missing and would be a) feasible and b)
+interesting to have:</p>
+
+<h3><a class="anchor" id="ports-to-more-cpu-architectures_arm-thumb2-port" href="#ports-to-more-cpu-architectures_arm-thumb2-port"><i class="fa fa-link"></i></a>ARM Thumb2 Port</h3>
+
+<p>The current ARM port of LuaJIT only supports the 32 bit ARM instruction
+set. The interpreter core is written with the 32 bit ARM instruction set
+in mind and the JIT backend can only emit 32 bit ARM machine code.</p>
+
+<p>Some newer ARM devices, such as the Cortex-M family are popular in
+low-power and embedded environments, but only support the (16 bit)
+Thumb2 instruction set.</p>
+
+<h3><a class="anchor" id="ports-to-more-cpu-architectures_mips-soft-float-and-dual-number-port" href="#ports-to-more-cpu-architectures_mips-soft-float-and-dual-number-port"><i class="fa fa-link"></i></a>MIPS Soft-Float and Dual-Number Port</h3>
+
+<p>Many embedded devices use MIPS CPUs without a hardware FPU. A soft-float
+and dual-number port would allow them to use LuaJIT, e.g. for routers
+running OpenWRT.</p>
+
+<h3><a class="anchor" id="ports-to-more-cpu-architectures_sh4-port" href="#ports-to-more-cpu-architectures_sh4-port"><i class="fa fa-link"></i></a>SH4 Port</h3>
+
+<p>The SH4 CPU family is popular in embedded applications and a port of
+LuaJIT would be welcome by the embedded developer community.</p>
+
+<h3><a class="anchor" id="ports-to-more-cpu-architectures_other-ports" href="#ports-to-more-cpu-architectures_other-ports"><i class="fa fa-link"></i></a>Other Ports</h3>
+
+<p>There are a couple more CPU architectures or architectural variants left
+that are not yet supported by LuaJIT. Whether a port makes sense or not,
+depends on several factors:</p>
+
+<ol>
+<li>The CPU/ABI must have a memory model that's compatible with LuaJIT.</li>
+<li>The architecture must have a reasonable market share.</li>
+<li>The architecture is not dying anytime soon.</li>
+</ol>
+
+<p>The last item is a bit subjective, of course. :-)</p>
+
+<h2><a class="anchor" id="new-garbage-collector-for-luajit-3-0" href="#new-garbage-collector-for-luajit-3-0"><i class="fa fa-link"></i></a>New Garbage Collector for LuaJIT 3.0</h2>
+
+<p>The garbage collector used by LuaJIT 2.x is essentially the same as the
+Lua 5.1 GC. The current garbage collector is relatively slow compared to
+implementations for other language runtimes. It's not competitive with
+top-of-the-line GCs, especially for large workloads.</p>
+
+<p>The main feature planned for LuaJIT 3.0 is a complete redesign of the
+garbage collector from scratch: the <a class="internal present" href="/luajit-wiki/New-Garbage-Collector" rel="nofollow">new garbage collector</a> will be an
+arena-based, quad-color incremental, generational, non-copying,
+high-speed, cache-optimized garbage collector.</p>
+
+<h2><a class="anchor" id="metatable-__index-specialization" href="#metatable-__index-specialization"><i class="fa fa-link"></i></a>Metatable/__index Specialization</h2>
+
+<p>Accesses to metatables and <code>__index</code> tables with constant keys are
+already specialized by the JIT compiler to use optimized hash lookups
+(<code>HREFK</code>). This is based on the assumption that individual objects don't
+change their metatable (once assigned) and that neither the metatable
+nor the <code>__index</code> table are modified. This turns out to be true in
+practice, but those assumptions still need to be checked at runtime,
+which can become costly for OO-heavy programming.</p>
+
+<p>Further specialization can be obtained by strictly relying on these
+assumptions and omitting the related checks in the generated code. In
+case any of the assumptions are broken (e.g. a metatable is written to),
+the previously generated code must be invalidated or flushed.</p>
+
+<p>Different mechanisms for detecting broken assumptions and for
+invalidating the generated code should be evaluated.</p>
+
+<p>This optimization works at the lowest implementation level for
+metatables in the VM. It should equally benefit any code that uses
+metatables, not just the typical frameworks that implement a class-based
+system on top of it.</p>
+
+<h2><a class="anchor" id="value-range-propagation-vrp" href="#value-range-propagation-vrp"><i class="fa fa-link"></i></a>Value-Range Propagation (VRP)</h2>
+
+<p>Value-range propagation is an optimization for the JIT compiler: by
+propagating the possible ranges for a value, subsequent code may be
+optimized or conditionals may be eliminated. Constant propagation
+(already implemented) can be seen as a special case of this
+optimization.</p>
+
+<p>E.g. if a number is known to be in the range <code>0 &lt;= x &lt; 256</code> (say it
+originates from <code>string.byte</code>), then a later mask operation <code>bit.band(x,
+255)</code> is redundant. Similarly, a subsequent test for <code>x &lt; 0</code> can be
+eliminated.</p>
+
+<p>Note that even though few programmers would explicitly write such a
+series of operations, this can easily happen after inlining of functions
+combined with constant propagation.</p>
+
+<h2><a class="anchor" id="hyperblock-scheduling" href="#hyperblock-scheduling"><i class="fa fa-link"></i></a>Hyperblock Scheduling</h2>
+
+<p>Producing good code for unbiased branches is a key problem for trace
+compilers. This is the main cause for "trace explosion" and bad
+performance with certain types of branchy code.</p>
+
+<p>Hyperblock scheduling promises to solve this nicely at the price of a
+major redesign of the compiler: selected traces are woven together to a
+single hyper-trace. This would also pave the way for emitting predicated
+instructions, which benefits some CPUs (e.g. ARM) and is a prerequisite
+for efficient vectorization.</p>
+
+<h2><a class="anchor" id="ffi-c-pre-processor" href="#ffi-c-pre-processor"><i class="fa fa-link"></i></a>FFI C Pre-Processor</h2>
+
+<p>The integrated C parser of the FFI library currently doesn't support
+<code>#define</code> or other C pre-processor features. To support the full range
+of C semantics, an integrated C pre-processor is needed.</p>
+
+<p>This would provide a nice solution to the C re-declaration problem for
+FFI modules, too.</p>
+
+<h2><a class="anchor" id="user-definable-intrinsics-for-the-ffi" href="#user-definable-intrinsics-for-the-ffi"><i class="fa fa-link"></i></a>User-Definable Intrinsics for the FFI</h2>
+
+<p>This is a low-level equivalent to GCC inline assembler: given a C
+function declaration and a machine code template, an intrinsic function
+(builtin) can be constructed and later called. This allows generating
+and executing arbitrary instructions supported by the target CPU. The
+JIT compiler inlines the intrinsic into the generated machine code for
+maximum performance.</p>
+
+<p>Developers usually shouldn't need to write machine code templates
+themselves. Common libraries of intrinsics for different purposes should
+be provided or contributed by experts.</p>
+
+<h2><a class="anchor" id="vector-simd-data-type-support-for-the-ffi" href="#vector-simd-data-type-support-for-the-ffi"><i class="fa fa-link"></i></a>Vector/SIMD Data Type Support for the FFI</h2>
+
+<p>Currently, vector data types may be defined with the FFI, but you really
+can't do much with them. The goal of this project is to add full support
+for vector data types to the JIT compiler and the CPU-specific backends
+(if the target CPU has a vector extension).</p>
+
+<p>A new <code>"ffi.vec"</code> module declares standard vector types and attaches the
+machine-specific SIMD intrinsics as (meta)methods.</p>
+
+<p>Prerequisites for this project are allocation sinking, user-definable
+intrinsics and the new garbage collector.</p>
+
+<p>More about the last two features can be read here:
+  <a href="http://lua-users.org/lists/lua-l/2012-02/msg00207.html" rel="nofollow">http://lua-users.org/lists/lua-l/2012-02/msg00207.html</a></p>
+
+    </div>
+  </div>
+  </div>
+
+</div>
+<div id="footer">
+  <p id="last-edit">Last edited by <b>Mike Pall</b>, 2015-08-18 20:53:32</p>
+    <p>
+      <a id="delete-link" href="/luajit-wiki/Open-Sponsorships" data-confirm="Are you sure you want to delete this page?"><span>Delete this Page</span></a>
+    </p>
+</div>
+</div>
+
+<form name="rename" method="POST" action="/rename/Open-Sponsorships">
+  <input type="hidden" name="rename"/>
+  <input type="hidden" name="message"/>
+</form>
+<div id="cust-footer">
+  <p>Sponsored by <a href="http://www.networkradius.com">Network RADIUS</a></p>
+</div>
+
+
+</body>
+</html>

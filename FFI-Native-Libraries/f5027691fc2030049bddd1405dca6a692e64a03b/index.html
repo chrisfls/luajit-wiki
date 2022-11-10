@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-type" content="text/html;charset=utf-8">
+  <meta name="MobileOptimized" content="width">
+  <meta name="HandheldFriendly" content="true">
+  <meta name="viewport" content="width=device-width">
+  <link rel=”alternate” type=”application/rss+xml” title=”wiki.luajit.org edit and commit log” href=”http://wiki.luajit.org/feeds/global.xml” />
+  <link rel="stylesheet" type="text/css" href="/luajit-wiki/css/gollum.css" media="all">
+  <link rel="stylesheet" type="text/css" href="/luajit-wiki/css/editor.css" media="all">
+  <link rel="stylesheet" type="text/css" href="/luajit-wiki/css/dialog.css" media="all">
+  <link rel="stylesheet" type="text/css" href="/luajit-wiki/css/template.css" media="all">
+  <link rel="stylesheet" type="text/css" href="/luajit-wiki/css/print.css" media="print">
+  <link rel="stylesheet" type="text/css" href="/luajit-wiki/custom.css" media="all">
+  <meta name="robots" content="noindex, nofollow" />
+
+  <!--[if IE 7]>
+  <link rel="stylesheet" type="text/css" href="/luajit-wiki/css/ie7.css" media="all">
+  <![endif]-->
+
+  <script>
+      var baseUrl = '';
+      var uploadDest   = '';
+      var pageFullPath = 'FFI Native Libraries';
+  </script>
+  <script type="text/javascript" src="/luajit-wiki/javascript/jquery-1.7.2.min.js"></script>
+  <script type="text/javascript" src="/luajit-wiki/javascript/mousetrap.min.js"></script>
+  <script type="text/javascript" src="/luajit-wiki/javascript/gollum.js"></script>
+  <script type="text/javascript" src="/luajit-wiki/javascript/gollum.dialog.js"></script>
+  <script type="text/javascript" src="/luajit-wiki/javascript/gollum.placeholder.js"></script>
+  <script type="text/javascript" src="/luajit-wiki/javascript/editor/gollum.editor.js"></script>
+
+  
+
+  <title>FFI Native Libraries</title>
+</head>
+<body>
+
+<div id="cust-site">
+  <a href="http://luajit.org"><span>Lua<span id="cust-logo">JIT</span></span></a>
+</div>
+<div id="cust-header">
+  <h1>The LuaJIT Wiki</h1>
+</div>
+<div id="user">
+    <p>
+      not logged in | <strong><a href="/luajit-wiki/__omnigollum__/login">[Login]</a></strong>
+    <p>
+</div>
+
+<script>
+Mousetrap.bind(['e'], function( e ) {
+  e.preventDefault();
+  window.location = "/edit" + window.location.pathname;
+  return false;
+});
+</script>
+<div id="wiki-wrapper" class="page">
+<div id="head">
+  <h1>FFI Native Libraries</h1>
+  <ul class="actions">
+    <li class="minibutton">
+      <div id="searchbar">
+        <form action="/search" method="get" id="search-form">
+        <div id="searchbar-fauxtext">
+          <input type="text" name="q" id="search-query" value="Search&hellip;" autocomplete="off">
+          <a href="#" id="search-submit" title="Search this wiki">
+            <span>Search</span>
+          </a>
+        </div>
+        </form>
+      </div>    </li>
+    <li class="minibutton"><a href="/luajit-wiki/"
+       class="action-home-page">Home</a></li>
+    <li class="minibutton"><a href="/luajit-wiki/pages"
+      class="action-all-pages">All</a></li>
+    <li class="minibutton"><a href="/luajit-wiki/fileview"
+    class="action-fileview">Files</a></li>
+      <li class="minibutton jaws">
+        <a href="#" id="minibutton-new-page">New</a></li>
+  </ul>
+</div>
+<div id="wiki-content">
+<div class="">
+  <div id="wiki-body" class="gollum-markdown-content">
+    <div class="markdown-body">
+      <h1>List of Available Packages</h1>
+
+<p>As Lua is a very succinct language, with a minimum of pre-installed libraries, much of the power available to a Lua programmer comes from performing interop calls to external libraries.  LuaJIT in particular, provides excellent support for calling external libraries.  If what you want is access to a pre-compiled library that is on your target system, then you want to use a <a class="internal present" href="/luajit-wiki/FFI-Bindings" rel="nofollow">FFI Bindings</a> library.</p>
+
+<p>If what you want instead is code that is written 100% in Lua, with no additional library dependencies, then you might want to grab one of the packages listed here.  </p>
+
+<p>The criteria are:</p>
+
+<ul>
+<li>100% LuaJIT code</li>
+<li>No dependencies on external libraries</li>
+</ul>
+
+<p>Whether your use case is greatly improved through usage of a native package depends on what your criteria are.  One of the key benefits might simply be that you do not have to carry and maintain a separate library, written in a different language than Lua.</p>
+
+<h2><a class="anchor" id="encoding-decoding" href="#encoding-decoding"><i class="fa fa-link"></i></a>Encoding &amp; Decoding</h2>
+
+<ul>
+<li>
+<a href="https://github.com/catwell/luajit-msgpack-pure" rel="nofollow">luajit-msgpack-pure</a>: MessagePack.</li>
+<li>
+<a href="https://github.com/ColonelThirtyTwo/luajit-bson" rel="nofollow">luajit-bson</a>: BSON</li>
+</ul>
+
+<h2><a class="anchor" id="encryption" href="#encryption"><i class="fa fa-link"></i></a>Encryption</h2>
+
+<ul>
+<li>
+<a href="https://github.com/CheyiLin/lrc4" rel="nofollow">lrc4</a>: RC4 stream cipher</li>
+</ul>
+
+<h2><a class="anchor" id="standard-functions" href="#standard-functions"><i class="fa fa-link"></i></a>Standard Functions</h2>
+
+<ul>
+<li>
+<a href="https://github.com/Wiladams/LAPHLibs" rel="nofollow">LAPHLibs</a>: various functions, including utf-8, crc, md5, streams, xml</li>
+<li>
+<a href="http://luapower.com/utf8" rel="nofollow">luapower/utf8</a>: utf-8 basics</li>
+<li>
+<a href="https://github.com/rtsisyk/luafun" rel="nofollow">Lua Fun</a>: functional programming library optimized for tracing JIT</li>
+</ul>
+
+<h2><a class="anchor" id="system-libraries" href="#system-libraries"><i class="fa fa-link"></i></a>System libraries</h2>
+
+<ul>
+<li>
+<a href="https://github.com/justincormack/ljsyscall" rel="nofollow">LJSyscall</a>: Linux system interfaces</li>
+<li>
+<a href="http://fperrad.github.io/ljlinenoise" rel="nofollow">LJLinenoise</a>: Line editing using LJSyscall (port of <a href="https://github.com/antirez/linenoise" rel="nofollow">linenoise</a>)</li>
+<li>
+<a href="http://luapower.com/stdio" rel="nofollow">luapower/stdio</a>: standard i/o with buffers</li>
+</ul>
+
+<h2><a class="anchor" id="numerical-libraries" href="#numerical-libraries"><i class="fa fa-link"></i></a>Numerical libraries</h2>
+
+<ul>
+<li>
+<a href="http://www.scilua.org/rclient.html" rel="nofollow">Rclient</a>: Interfaces LuaJIT with the R language via Rserve</li>
+</ul>
+
+<h2><a class="anchor" id="date-time-libraries" href="#date-time-libraries"><i class="fa fa-link"></i></a>Date Time libraries</h2>
+
+<ul>
+<li>
+<a href="http://scilua.org/time.html" rel="nofollow">Time</a>: dates and periods according to the Gregorian calendar</li>
+</ul>
+
+<h2><a class="anchor" id="data-structures" href="#data-structures"><i class="fa fa-link"></i></a>Data structures</h2>
+
+<ul>
+<li>
+<a href="https://github.com/justincormack/slice" rel="nofollow">slice</a>: array slices</li>
+<li>
+<a href="https://github.com/neomantra/lds" rel="nofollow">lds - LuaJIT Data Structures</a>: STL-like containers such as Vector and Queue  (hashes and trees planned)</li>
+<li>
+<a href="http://luapower.com/ringbuffer" rel="nofollow">luapower/ringbuffer</a>: bidirectional ring buffers</li>
+<li>
+<a href="http://luapower.com/heap" rel="nofollow">luapower/heap</a>: priority queues</li>
+</ul>
+
+<h2><a class="anchor" id="graphics" href="#graphics"><i class="fa fa-link"></i></a>Graphics</h2>
+
+<ul>
+<li>
+<a href="http://luapower.com/affine2d" rel="nofollow">luapower/affine2d</a>: 2D affine transformations</li>
+<li>
+<a href="http://luapower.com/bitmap" rel="nofollow">luapower/bitmap</a>: bitmap conversions</li>
+<li>
+<a href="http://luapower.com/bmp" rel="nofollow">luapower/bmp</a>: BMP file loading and saving</li>
+</ul>
+
+<h2><a class="anchor" id="bundles" href="#bundles"><i class="fa fa-link"></i></a>Bundles</h2>
+
+<ul>
+<li>
+<a href="https://github.com/malkia/ufo" rel="nofollow">UFO</a> - includes OpenGL and glu, OpenCL, SDL, ZeroMQ, GLFW</li>
+</ul>
+
+    </div>
+  </div>
+  </div>
+
+</div>
+<div id="footer">
+  <p id="last-edit">Last edited by <b>Cosmin Apreutesei (capr)</b>, 2016-02-29 09:11:37</p>
+    <p>
+      <a id="delete-link" href="/luajit-wiki/FFI-Native-Libraries" data-confirm="Are you sure you want to delete this page?"><span>Delete this Page</span></a>
+    </p>
+</div>
+</div>
+
+<form name="rename" method="POST" action="/rename/FFI-Native-Libraries">
+  <input type="hidden" name="rename"/>
+  <input type="hidden" name="message"/>
+</form>
+<div id="cust-footer">
+  <p>Sponsored by <a href="http://www.networkradius.com">Network RADIUS</a></p>
+</div>
+
+
+</body>
+</html>

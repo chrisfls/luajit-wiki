@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-type" content="text/html;charset=utf-8">
+  <link rel=”alternate” type=”application/rss+xml” title=”wiki.luajit.org edit and commit log” href=”http://wiki.luajit.org/feeds/global.xml” />
+  <link rel="stylesheet" type="text/css" href="/luajit-wiki/css/gollum.css" media="all">
+  <link rel="stylesheet" type="text/css" href="/luajit-wiki/css/editor.css" media="all">
+  <link rel="stylesheet" type="text/css" href="/luajit-wiki/css/dialog.css" media="all">
+  <link rel="stylesheet" type="text/css" href="/luajit-wiki/css/template.css" media="all">
+  <link rel="stylesheet" type="text/css" href="/luajit-wiki/custom.css" media="all">
+
+  <!--[if IE 7]>
+  <link rel="stylesheet" type="text/css" href="/luajit-wiki/css/ie7.css" media="all">
+  <![endif]-->
+
+  <script>var baseUrl = ''</script>
+  <script type="text/javascript" src="/luajit-wiki/javascript/jquery-1.7.2.min.js"></script>
+  <script type="text/javascript" src="/luajit-wiki/javascript/mousetrap.min.js"></script>
+  <script type="text/javascript" src="/luajit-wiki/javascript/gollum.js"></script>
+  <script type="text/javascript" src="/luajit-wiki/javascript/gollum.dialog.js"></script>
+  <script type="text/javascript" src="/luajit-wiki/javascript/gollum.placeholder.js"></script>
+  <script type="text/javascript" src="/luajit-wiki/javascript/editor/gollum.editor.js"></script>
+
+
+  <title>SSA Instructions</title>
+</head>
+<body>
+<div id="cust-site">
+  <a href="http://luajit.org"><span>Lua<span id="cust-logo">JIT</span></span></a>
+</div>
+<div id="cust-header">
+  <h1>The LuaJIT Wiki</h1>
+</div>
+<div id="user">
+    <p>
+      not logged in | <strong><a href="/luajit-wiki/__omnigollum__/login">[Login]</a></strong>
+    <p>
+</div>
+
+<script>
+Mousetrap.bind(['e'], function( e ) {
+  e.preventDefault();
+  window.location = "/edit" + window.location.pathname;
+  return false;
+});
+</script>
+<div id="wiki-wrapper" class="page">
+<div id="head">
+  <h1>SSA Instructions</h1>
+  <ul class="actions">
+    <li class="minibutton">
+      <div id="searchbar">
+        <form action="/search" method="get" id="search-form">
+        <div id="searchbar-fauxtext">
+          <input type="text" name="q" id="search-query" value="Search&hellip;" autocomplete="off">
+          <a href="#" id="search-submit" title="Search this wiki">
+            <span>Search</span>
+          </a>
+        </div>
+        </form>
+      </div>    </li>
+    <li class="minibutton"><a href="/luajit-wiki/"
+       class="action-edit-page">Home</a></li>
+    <li class="minibutton"><a href="/luajit-wiki/pages"
+      class="action-all-pages">All</a></li>
+    <li class="minibutton"><a href="/luajit-wiki/fileview"
+    class="action-all-pages">Files</a></li>
+    <li class="minibutton" class="jaws">
+      <a href="#" id="minibutton-new-page">New</a></li>
+    <li class="minibutton" class="jaws">
+      <a href="#" id="minibutton-rename-page">Rename</a></li>
+    <li class="minibutton"><a href="/luajit-wiki/edit/SSA-IR"
+       class="action-edit-page">Edit</a></li>
+    <li class="minibutton"><a href="/luajit-wiki/history/SSA-IR"
+       class="action-page-history">History</a></li>
+  </ul>
+</div>
+<div id="wiki-content">
+<div class=" has-toc">
+  <div id="wiki-toc-main">
+    <div class="toc"><div class="toc-title">Table of Contents</div><ul><li><a href="#SSA-Instructions">SSA Instructions</a></li></ul><ul><ul><li><a href="#Foreword">Foreword</a></li></ul></ul><ul><ul><li><a href="#Status">Status</a></li></ul></ul><ul><ul><li><a href="#Overview">Overview</a></li></ul></ul><ul><ul><li><a href="#Guarded-assertions">Guarded assertions</a></li></ul></ul><ul><ul><ul><li><a href="#LT,-N-,-ref,-ref">LT, N , ref, ref</a></li></ul></ul></ul><ul><ul><ul><li><a href="#GE,-N-,-ref,-ref">GE, N , ref, ref</a></li></ul></ul></ul><ul><ul><ul><li><a href="#LE,-N-,-ref,-ref">LE, N , ref, ref</a></li></ul></ul></ul><ul><ul><ul><li><a href="#GT,-N-,-ref,-ref">GT, N , ref, ref</a></li></ul></ul></ul><ul><ul><ul><li><a href="#ULT,----N-,-ref,-ref">ULT,    N , ref, ref</a></li></ul></ul></ul><ul><ul><ul><li><a href="#UGE,----N-,-ref,-ref">UGE,    N , ref, ref</a></li></ul></ul></ul><ul><ul><ul><li><a href="#ULE,----N-,-ref,-ref">ULE,    N , ref, ref</a></li></ul></ul></ul><ul><ul><ul><li><a href="#UGT,----N-,-ref,-ref">UGT,    N , ref, ref</a></li></ul></ul></ul><ul><ul><ul><li><a href="#EQ,-C-,-ref,-ref">EQ, C , ref, ref</a></li></ul></ul></ul><ul><ul><ul><li><a href="#NE,-C-,-ref,-ref">NE, C , ref, ref</a></li></ul></ul></ul><ul><ul><ul><li><a href="#ABC,----N-,-ref,-ref">ABC,    N , ref, ref</a></li></ul></ul></ul><ul><ul><ul><li><a href="#RETF,---S-,-ref,-ref">RETF,   S , ref, ref</a></li></ul></ul></ul><ul><ul><li><a href="#Miscellaneous-Ops">Miscellaneous Ops</a></li></ul></ul><ul><ul><ul><li><a href="#NOP,----N-,-__,-__">NOP,    N , __, __</a></li></ul></ul></ul><ul><ul><ul><li><a href="#BASE,---N-,-lit,-lit">BASE,   N , lit, lit</a></li></ul></ul></ul><ul><ul><ul><li><a href="#PVAL,---N-,-lit,-___">PVAL,   N , lit, ___</a></li></ul></ul></ul><ul><ul><ul><li><a href="#GCSTEP,-S-,-__,-__">GCSTEP, S , __, __</a></li></ul></ul></ul><ul><ul><ul><li><a href="#HIOP,---S-,-ref,-ref">HIOP,   S , ref, ref</a></li></ul></ul></ul><ul><ul><ul><li><a href="#LOOP,---S-,-__,-__">LOOP,   S , __, __</a></li></ul></ul></ul><ul><ul><ul><li><a href="#USE,----S-,-ref,-___">USE,    S , ref, ___</a></li></ul></ul></ul><ul><ul><ul><li><a href="#PHI,----S-,-ref,-ref">PHI,    S , ref, ref</a></li></ul></ul></ul><ul><ul><ul><li><a href="#RENAME,-S-,-ref,-lit">RENAME, S , ref, lit</a></li></ul></ul></ul><ul><ul><li><a href="#Constants">Constants</a></li></ul></ul><ul><ul><ul><li><a href="#KPRI,---N-,-__,-__">KPRI,   N , __, __</a></li></ul></ul></ul><ul><ul><ul><li><a href="#KINT,---N-,-cst,-___">KINT,   N , cst, ___</a></li></ul></ul></ul><ul><ul><ul><li><a href="#KGC,----N-,-cst,-___">KGC,    N , cst, ___</a></li></ul></ul></ul><ul><ul><ul><li><a href="#KPTR,---N-,-cst,-___">KPTR,   N , cst, ___</a></li></ul></ul></ul><ul><ul><ul><li><a href="#KKPTR,--N-,-cst,-___">KKPTR,  N , cst, ___</a></li></ul></ul></ul><ul><ul><ul><li><a href="#KNULL,--N-,-cst,-___">KNULL,  N , cst, ___</a></li></ul></ul></ul><ul><ul><ul><li><a href="#KNUM,---N-,-cst,-___">KNUM,   N , cst, ___</a></li></ul></ul></ul><ul><ul><ul><li><a href="#KINT64,-N-,-cst,-___">KINT64, N , cst, ___</a></li></ul></ul></ul><ul><ul><ul><li><a href="#KSLOT,--N-,-ref,-lit">KSLOT,  N , ref, lit</a></li></ul></ul></ul><ul><ul><li><a href="#Bit-ops">Bit ops</a></li></ul></ul><ul><ul><ul><li><a href="#BNOT,---N-,-ref,-___">BNOT,   N , ref, ___</a></li></ul></ul></ul><ul><ul><ul><li><a href="#BSWAP,--N-,-ref,-___">BSWAP,  N , ref, ___</a></li></ul></ul></ul><ul><ul><ul><li><a href="#BAND,---C-,-ref,-ref">BAND,   C , ref, ref</a></li></ul></ul></ul><ul><ul><ul><li><a href="#BOR,----C-,-ref,-ref">BOR,    C , ref, ref</a></li></ul></ul></ul><ul><ul><ul><li><a href="#BXOR,---C-,-ref,-ref">BXOR,   C , ref, ref</a></li></ul></ul></ul><ul><ul><ul><li><a href="#BSHL,---N-,-ref,-ref">BSHL,   N , ref, ref</a></li></ul></ul></ul><ul><ul><ul><li><a href="#BSHR,---N-,-ref,-ref">BSHR,   N , ref, ref</a></li></ul></ul></ul><ul><ul><ul><li><a href="#BSAR,---N-,-ref,-ref">BSAR,   N , ref, ref</a></li></ul></ul></ul><ul><ul><ul><li><a href="#BROL,---N-,-ref,-ref">BROL,   N , ref, ref</a></li></ul></ul></ul><ul><ul><ul><li><a href="#BROR,---N-,-ref,-ref">BROR,   N , ref, ref</a></li></ul></ul></ul><ul><ul><li><a href="#Arithmetic-ops">Arithmetic ops</a></li></ul></ul><ul><ul><ul><li><a href="#ADD,----C-,-ref,-ref">ADD,    C , ref, ref</a></li></ul></ul></ul><ul><ul><ul><li><a href="#SUB,----N-,-ref,-ref">SUB,    N , ref, ref</a></li></ul></ul></ul><ul><ul><ul><li><a href="#MUL,----C-,-ref,-ref">MUL,    C , ref, ref</a></li></ul></ul></ul><ul><ul><ul><li><a href="#DIV,----N-,-ref,-ref">DIV,    N , ref, ref</a></li></ul></ul></ul><ul><ul><ul><li><a href="#POW,----N-,-ref,-ref">POW,    N , ref, ref</a></li></ul></ul></ul><ul><ul><ul><li><a href="#NEG,----N-,-ref,-ref">NEG,    N , ref, ref</a></li></ul></ul></ul><ul><ul><ul><li><a href="#ABS,----N-,-ref,-ref">ABS,    N , ref, ref</a></li></ul></ul></ul><ul><ul><ul><li><a href="#ATAN2,--N-,-ref,-ref">ATAN2,  N , ref, ref</a></li></ul></ul></ul><ul><ul><ul><li><a href="#LDEXP,--N-,-ref,-ref">LDEXP,  N , ref, ref</a></li></ul></ul></ul><ul><ul><ul><li><a href="#MIN,----C-,-ref,-ref">MIN,    C , ref, ref</a></li></ul></ul></ul><ul><ul><ul><li><a href="#MAX,----C-,-ref,-ref">MAX,    C , ref, ref</a></li></ul></ul></ul><ul><ul><ul><li><a href="#FPMATH,-N-,-ref,-lit">FPMATH, N , ref, lit</a></li></ul></ul></ul><ul><ul><li><a href="#Overflow-checking-arithmetic-ops">Overflow-checking arithmetic ops</a></li></ul></ul><ul><ul><ul><li><a href="#ADDOV,--C-,-ref,-ref">ADDOV,  C , ref, ref</a></li></ul></ul></ul><ul><ul><ul><li><a href="#SUBOV,--N-,-ref,-ref">SUBOV,  N , ref, ref</a></li></ul></ul></ul><ul><ul><ul><li><a href="#MULOV,--CW,-ref,-ref">MULOV,  CW, ref, ref</a></li></ul></ul></ul><ul><ul><li><a href="#Memory-ops">Memory ops</a></li></ul></ul><ul><ul><ul><li><a href="#AREF,---R-,-ref,-ref">AREF,   R , ref, ref</a></li></ul></ul></ul><ul><ul><ul><li><a href="#HREFK,--R-,-ref,-ref">HREFK,  R , ref, ref</a></li></ul></ul></ul><ul><ul><ul><li><a href="#HREF,---L-,-ref,-ref">HREF,   L , ref, ref</a></li></ul></ul></ul><ul><ul><ul><li><a href="#NEWREF,-S-,-ref,-ref">NEWREF, S , ref, ref</a></li></ul></ul></ul><ul><ul><ul><li><a href="#UREFO,--LW,-ref,-lit">UREFO,  LW, ref, lit</a></li></ul></ul></ul><ul><ul><ul><li><a href="#UREFC,--LW,-ref,-lit">UREFC,  LW, ref, lit</a></li></ul></ul></ul><ul><ul><ul><li><a href="#FREF,---R-,-ref,-lit">FREF,   R , ref, lit</a></li></ul></ul></ul><ul><ul><ul><li><a href="#STRREF,-N-,-ref,-ref">STRREF, N , ref, ref</a></li></ul></ul></ul><ul><ul><li><a href="#Loads-and-Stores">Loads and Stores</a></li></ul></ul><ul><ul><ul><li><a href="#ALOAD,--L-,-ref,-___">ALOAD,  L , ref, ___</a></li></ul></ul></ul><ul><ul><ul><li><a href="#HLOAD,--L-,-ref,-___">HLOAD,  L , ref, ___</a></li></ul></ul></ul><ul><ul><ul><li><a href="#ULOAD,--L-,-ref,-___">ULOAD,  L , ref, ___</a></li></ul></ul></ul><ul><ul><ul><li><a href="#FLOAD,--L-,-ref,-lit">FLOAD,  L , ref, lit</a></li></ul></ul></ul><ul><ul><ul><li><a href="#XLOAD,--L-,-ref,-lit">XLOAD,  L , ref, lit</a></li></ul></ul></ul><ul><ul><ul><li><a href="#SLOAD,--L-,-lit,-lit">SLOAD,  L , lit, lit</a></li></ul></ul></ul><ul><ul><ul><li><a href="#VLOAD,--L-,-ref,-___">VLOAD,  L , ref, ___</a></li></ul></ul></ul><ul><ul><ul><li><a href="#ASTORE,-S-,-ref,-ref">ASTORE, S , ref, ref</a></li></ul></ul></ul><ul><ul><ul><li><a href="#HSTORE,-S-,-ref,-ref">HSTORE, S , ref, ref</a></li></ul></ul></ul><ul><ul><ul><li><a href="#USTORE,-S-,-ref,-ref">USTORE, S , ref, ref</a></li></ul></ul></ul><ul><ul><ul><li><a href="#FSTORE,-S-,-ref,-ref">FSTORE, S , ref, ref</a></li></ul></ul></ul><ul><ul><ul><li><a href="#XSTORE,-S-,-ref,-ref">XSTORE, S , ref, ref</a></li></ul></ul></ul><ul><ul><li><a href="#Allocations.">Allocations.</a></li></ul></ul><ul><ul><ul><li><a href="#SNEW,---N-,-ref,-ref">SNEW,   N , ref, ref</a></li></ul></ul></ul><ul><ul><ul><li><a href="#XSNEW,--A-,-ref,-ref">XSNEW,  A , ref, ref</a></li></ul></ul></ul><ul><ul><ul><li><a href="#TNEW,---AW,-lit,-lit">TNEW,   AW, lit, lit</a></li></ul></ul></ul><ul><ul><ul><li><a href="#TDUP,---AW,-ref,-___">TDUP,   AW, ref, ___</a></li></ul></ul></ul><ul><ul><ul><li><a href="#CNEW,---AW,-ref,-ref">CNEW,   AW, ref, ref</a></li></ul></ul></ul><ul><ul><ul><li><a href="#CNEWI,--NW,-ref,-ref">CNEWI,  NW, ref, ref</a></li></ul></ul></ul><ul><ul><li><a href="#Write-barriers">Write barriers</a></li></ul></ul><ul><ul><ul><li><a href="#TBAR,---S-,-ref,-___">TBAR,   S , ref, ___</a></li></ul></ul></ul><ul><ul><ul><li><a href="#OBAR,---S-,-ref,-ref">OBAR,   S , ref, ref</a></li></ul></ul></ul><ul><ul><ul><li><a href="#XBAR,---S-,-__,-__">XBAR,   S , __, __</a></li></ul></ul></ul><ul><ul><li><a href="#Type-conversions">Type conversions</a></li></ul></ul><ul><ul><ul><li><a href="#CONV,---N-,-ref,-lit">CONV,   N , ref, lit</a></li></ul></ul></ul><ul><ul><ul><li><a href="#TOBIT,--N-,-ref,-ref">TOBIT,  N , ref, ref</a></li></ul></ul></ul><ul><ul><ul><li><a href="#TOSTR,--N-,-ref,-___">TOSTR,  N , ref, ___</a></li></ul></ul></ul><ul><ul><ul><li><a href="#STRTO,--N-,-ref,-___">STRTO,  N , ref, ___</a></li></ul></ul></ul><ul><ul><li><a href="#Calls">Calls</a></li></ul></ul><ul><ul><ul><li><a href="#CALLN,--N-,-ref,-lit">CALLN,  N , ref, lit</a></li></ul></ul></ul><ul><ul><ul><li><a href="#CALLL,--L-,-ref,-lit">CALLL,  L , ref, lit</a></li></ul></ul></ul><ul><ul><ul><li><a href="#CALLS,--S-,-ref,-lit">CALLS,  S , ref, lit</a></li></ul></ul></ul><ul><ul><ul><li><a href="#CALLXS,-S-,-ref,-ref">CALLXS, S , ref, ref</a></li></ul></ul></ul><ul><ul><ul><li><a href="#CARG,---N-,-ref,-ref">CARG,   N , ref, ref</a></li></ul></ul></ul></div>
+  </div>
+  <div id="wiki-body" class="gollum-markdown-content">
+    <div class="markdown-body">
+      
+
+<h2>Foreword<a class="anchor" id="Foreword" href="#Foreword"></a></h2>
+
+<p>The following are notes on the SSA IR (static single assignment, intermediate representation) instructions in LuaJIT 2.0.
+See <a href="http://repo.or.cz/w/luajit-2.0.git/blob/HEAD:/src/lj_ir.h">lj_ir.h</a>,
+<a href="http://repo.or.cz/w/luajit-2.0.git/blob/HEAD:/src/lj_asm.c">lj_asm.c</a>,
+<a href="http://repo.or.cz/w/luajit-2.0.git/blob/HEAD:/src/lj_opt_fold.c">lj_opt_fold.c</a>, and
+<a href="http://repo.or.cz/w/luajit-2.0.git/blob/HEAD:/lib/dump.lua">dump.lua</a> for details.</p>
+
+<p>Background notes:</p>
+
+<ul><li><a href="http://en.wikipedia.org/wiki/Static_single_assignment_form">http://en.wikipedia.org/wiki/Static_single_assignment_form</a></li>
+<li><a href="http://en.wikipedia.org/wiki/Intermediate_representation">http://en.wikipedia.org/wiki/Intermediate_representation</a></li>
+</ul><h2>Status<a class="anchor" id="Status" href="#Status"></a></h2>
+
+<p>Warning: this list is incomplete, outdated, and likely has inaccuracies.
+This document reflects version 2.0 GIT HEAD as of July 7th, 2012. Most recent commit: <a href="http://repo.or.cz/w/luajit-2.0.git/commit/6a67fa8a4b2b038e0dca676303545da47f2b9773">6a67fa8a</a>.</p>
+
+<p>Most of the instructions listed here need to be further researched/explained.</p>
+
+<h2>Overview<a class="anchor" id="Overview" href="#Overview"></a></h2>
+
+<p>Basic example:</p>
+
+<div class="highlight"><pre>$ <span class="o">./</span><span class="n">luajit</span> <span class="o">-</span><span class="n">jdump</span><span class="p">=</span><span class="n">bitmsr</span>
+<span class="n">LuaJIT</span> <span class="mf">2.0</span><span class="p">.</span><span class="mi">0</span><span class="o">-</span><span class="n">beta10</span> <span class="o">--</span> <span class="n">Copyright</span> <span class="p">(</span><span class="n">C</span><span class="p">)</span> <span class="mi">2005</span><span class="o">-</span><span class="mi">2012</span> <span class="n">Mike</span> <span class="n">Pall</span><span class="p">.</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">luajit</span><span class="p">.</span><span class="n">org</span><span class="o">/</span>
+<span class="n">JIT</span><span class="p">:</span> <span class="n">ON</span> <span class="n">CMOV</span> <span class="n">SSE2</span> <span class="n">SSE3</span> <span class="n">AMD</span> <span class="n">fold</span> <span class="n">cse</span> <span class="n">dce</span> <span class="n">fwd</span> <span class="n">dse</span> <span class="n">narrow</span> <span class="n">loop</span> <span class="n">abc</span> <span class="n">sink</span> <span class="n">fuse</span>
+<span class="o">&gt;</span> <span class="n">local</span> <span class="n">x</span> <span class="p">=</span> <span class="mf">1.2</span> <span class="k">for</span> <span class="nb">i</span><span class="p">=</span><span class="mi">1</span><span class="p">,</span><span class="mf">1e3</span> <span class="n">do</span> <span class="n">x</span> <span class="p">=</span> <span class="n">x</span> <span class="o">*</span> <span class="o">-</span><span class="mi">3</span> <span class="k">end</span>
+<span class="o">----</span> <span class="n">TRACE</span> <span class="mi">1</span> <span class="n">start</span> <span class="n">stdin</span><span class="p">:</span><span class="mi">1</span>
+<span class="mi">0006</span>  <span class="n">MULVN</span>    <span class="mi">0</span>   <span class="mi">0</span>   <span class="mi">1</span>  <span class="p">;</span> <span class="o">-</span><span class="mi">3</span>
+<span class="mi">0007</span>  <span class="n">FORL</span>     <span class="mi">1</span> <span class="p">=</span><span class="o">&gt;</span> <span class="mi">0006</span>
+<span class="o">----</span> <span class="n">TRACE</span> <span class="mi">1</span> <span class="n">IR</span>
+<span class="c">....              SNAP   #0   [ ---- ]</span>
+<span class="mi">0001</span> <span class="n">rbp</span>      <span class="n">int</span> <span class="n">SLOAD</span>  #<span class="mi">2</span>    <span class="n">CI</span>
+<span class="mi">0002</span> <span class="n">xmm7</span>  <span class="o">&gt;</span>  <span class="n">num</span> <span class="n">SLOAD</span>  #<span class="mi">1</span>    <span class="n">T</span>
+<span class="mi">0003</span> <span class="n">xmm7</span>   <span class="o">+</span> <span class="n">num</span> <span class="n">MUL</span>    <span class="mi">0002</span>  <span class="o">-</span><span class="mi">3</span>  
+<span class="mi">0004</span> <span class="n">rbp</span>    <span class="o">+</span> <span class="n">int</span> <span class="n">ADD</span>    <span class="mi">0001</span>  <span class="o">+</span><span class="mi">1</span>  
+<span class="c">....              SNAP   #1   [ ---- 0003 ]</span>
+<span class="mi">0005</span>       <span class="o">&gt;</span>  <span class="n">int</span> <span class="n">LE</span>     <span class="mi">0004</span>  <span class="o">+</span><span class="mi">1000</span>
+<span class="c">....              SNAP   #2   [ ---- 0003 0004 ---- ---- 0004 ]</span>
+<span class="mi">0006</span> <span class="o">------------</span> <span class="n">LOOP</span> <span class="o">------------</span>
+<span class="mi">0007</span> <span class="n">xmm7</span>   <span class="o">+</span> <span class="n">num</span> <span class="n">MUL</span>    <span class="mi">0003</span>  <span class="o">-</span><span class="mi">3</span>  
+<span class="mi">0008</span> <span class="n">rbp</span>    <span class="o">+</span> <span class="n">int</span> <span class="n">ADD</span>    <span class="mi">0004</span>  <span class="o">+</span><span class="mi">1</span>  
+<span class="c">....              SNAP   #3   [ ---- 0007 ]</span>
+<span class="mi">0009</span>       <span class="o">&gt;</span>  <span class="n">int</span> <span class="n">LE</span>     <span class="mi">0008</span>  <span class="o">+</span><span class="mi">1000</span>
+<span class="mi">0010</span> <span class="n">rbp</span>      <span class="n">int</span> <span class="n">PHI</span>    <span class="mi">0004</span>  <span class="mi">0008</span>
+<span class="mi">0011</span> <span class="n">xmm7</span>     <span class="n">num</span> <span class="n">PHI</span>    <span class="mi">0003</span>  <span class="mi">0007</span>
+<span class="o">----</span> <span class="n">TRACE</span> <span class="mi">1</span> <span class="n">mcode</span> <span class="mi">81</span>
+<span class="mi">394</span><span class="n">cffa3</span>  <span class="n">mov</span> <span class="n">dword</span> <span class="p">[</span><span class="mi">0</span><span class="n">x4183f4a0</span><span class="p">],</span> <span class="mi">0</span><span class="n">x1</span>
+<span class="mi">394</span><span class="n">cffae</span>  <span class="n">movsd</span> <span class="n">xmm0</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="n">x4184f698</span><span class="p">]</span>
+<span class="mi">394</span><span class="n">cffb7</span>  <span class="n">cvtsd2si</span> <span class="n">ebp</span><span class="p">,</span> <span class="p">[</span><span class="n">rdx</span><span class="o">+</span><span class="mi">0</span><span class="n">x8</span><span class="p">]</span>
+<span class="mi">394</span><span class="n">cffbc</span>  <span class="n">cmp</span> <span class="n">dword</span> <span class="p">[</span><span class="n">rdx</span><span class="o">+</span><span class="mi">0</span><span class="n">x4</span><span class="p">],</span> <span class="mi">0</span><span class="n">xfffeffff</span>
+<span class="mi">394</span><span class="n">cffc3</span>  <span class="n">jnb</span> <span class="mi">0</span><span class="n">x394c0010</span>	<span class="o">-&gt;</span><span class="mi">0</span>
+<span class="mi">394</span><span class="n">cffc9</span>  <span class="n">movsd</span> <span class="n">xmm7</span><span class="p">,</span> <span class="p">[</span><span class="n">rdx</span><span class="p">]</span>
+<span class="mi">394</span><span class="n">cffcd</span>  <span class="n">mulsd</span> <span class="n">xmm7</span><span class="p">,</span> <span class="n">xmm0</span>
+<span class="mi">394</span><span class="n">cffd1</span>  <span class="n">add</span> <span class="n">ebp</span><span class="p">,</span> <span class="o">+</span><span class="mi">0</span><span class="n">x01</span>
+<span class="mi">394</span><span class="n">cffd4</span>  <span class="n">cmp</span> <span class="n">ebp</span><span class="p">,</span> <span class="mi">0</span><span class="n">x3e8</span>
+<span class="mi">394</span><span class="n">cffda</span>  <span class="n">jg</span> <span class="mi">0</span><span class="n">x394c0014</span>	<span class="o">-&gt;</span><span class="mi">1</span>
+<span class="o">-&gt;</span><span class="n">LOOP</span><span class="p">:</span>
+<span class="mi">394</span><span class="n">cffe0</span>  <span class="n">mulsd</span> <span class="n">xmm7</span><span class="p">,</span> <span class="n">xmm0</span>
+<span class="mi">394</span><span class="n">cffe4</span>  <span class="n">add</span> <span class="n">ebp</span><span class="p">,</span> <span class="o">+</span><span class="mi">0</span><span class="n">x01</span>
+<span class="mi">394</span><span class="n">cffe7</span>  <span class="n">cmp</span> <span class="n">ebp</span><span class="p">,</span> <span class="mi">0</span><span class="n">x3e8</span>
+<span class="mi">394</span><span class="n">cffed</span>  <span class="n">jle</span> <span class="mi">0</span><span class="n">x394cffe0</span>	<span class="o">-&gt;</span><span class="n">LOOP</span>
+<span class="mi">394</span><span class="n">cffef</span>  <span class="n">jmp</span> <span class="mi">0</span><span class="n">x394c001c</span>	<span class="o">-&gt;</span><span class="mi">3</span>
+<span class="o">----</span> <span class="n">TRACE</span> <span class="mi">1</span> <span class="n">stop</span> <span class="o">-&gt;</span> <span class="n">loop</span>
+</pre></div>
+
+<p>The above prints the bytecode of the trace, the IR generated from that bytecode with snapshots, and the machine code generated from the IR.</p>
+
+<p>The columns of the IR are as follows:</p>
+
+<div class="highlight"><pre>1st column: IR instruction number (implicit SSA ref)
+2nd column: physical CPU register or physical CPU stack slot that
+  value is written to when converted to machine code.
+  '[%x+]' (rather than register name) indicates hexadecimal offset
+  from stack pointer.
+  (This column is only present if the 'r' flags is included in -jdump, which
+  augments the IR with register/stack slots.  It is not part of the IR itself.)
+3nd column: Instruction flags:
+  "&gt;" (IRT_GUARD = 0x80 instruction flag) are locations of
+    guards (leading to possible side exits from the trace).
+  "+" (IRT_ISPHI = 0x40 instruction flag) indicates
+    instruction is left or right PHI operand. (i.e referred
+    to in some PHI instruction).
+4rd column: IR type (see IR Types below)
+5th column: IR opcode (see opcode reference)
+6th/7th column: IR operands (SSA refs or literals)
+  '#' prefixes refer to slot numbers, used in SLOADS.
+     #0 is the base frame (modified only in tail calls).
+     #1 is the first slot in the first frame (register 0 in
+     the bytecode)
+  '[+-]' prefixes indicate positive or negative numeric literals.
+  '[0x%d+]' and NULL are memory addresses.
+  '"..."' are strings.
+  '@' prefixes indicate slots (what is this?).
+  Other possible values: "bias" (number 2^52+2^51 ?), "userdata:%p",
+     "userdata:%p" (table)--when do these occur?.
+</pre></div>
+
+<p>See also SSA dump format comments: <a href="http://lua-users.org/lists/lua-l/2008-06/msg00225.html">http://lua-users.org/lists/lua-l/2008-06/msg00225.html</a> (older version).
+See <code>formatk</code> in <a href="http://repo.or.cz/w/luajit-2.0.git/blob/HEAD:/lib/dump.lua">dump.lua</a>.</p>
+
+<p>Each snaphot (SNAP) lists the modified stack slots and their values.  The i-th value in the snapshot list represents the index of the IR that writes a value in slot number #i.  '---' indicates that the slot is not written.  Frames are separated by '|'.  For further comments on snapshots, see <a href="http://lua-users.org/lists/lua-l/2009-11/msg00089.html">http://lua-users.org/lists/lua-l/2009-11/msg00089.html</a>.</p>
+
+<p>IR types (see <code>irtype_text</code> in <a href="http://repo.or.cz/w/luajit-2.0.git/blob/HEAD:/lib/dump.lua">dump.lua</a> or
+<code>IRTDEF</code> in <a href="http://repo.or.cz/w/luajit-2.0.git/blob/HEAD:/src/lj_ir.h">lj_ir.h</a>:</p>
+
+<div class="highlight"><pre>"<span class="n">nil</span>" <span class="mi">0</span>
+"<span class="n">fal</span>" <span class="mi">1</span>
+"<span class="n">tru</span>" <span class="mi">2</span>
+"<span class="n">lud</span>" <span class="mi">3</span>
+"<span class="n">str</span>" <span class="mi">4</span>
+"<span class="n">p32</span>" <span class="mi">5</span>
+"<span class="n">thr</span>" <span class="mi">6</span>
+"<span class="n">pro</span>" <span class="mi">7</span>
+"<span class="n">fun</span>" <span class="mi">8</span>
+"<span class="n">p64</span>" <span class="mi">9</span>
+"<span class="n">cdt</span>" <span class="mi">10</span>
+"<span class="n">tab</span>" <span class="mi">11</span>
+"<span class="n">udt</span>" <span class="mi">12</span>
+"<span class="n">flt</span>" <span class="mi">13</span>
+"<span class="n">num</span>" <span class="mi">14</span>
+"<span class="n">i8</span> " <span class="mi">15</span>
+"<span class="n">u8</span> " <span class="mi">16</span>
+"<span class="n">i16</span>" <span class="mi">17</span>
+"<span class="n">u16</span>" <span class="mi">18</span>
+"<span class="n">int</span>" <span class="mi">19</span>
+"<span class="n">u32</span>" <span class="mi">20</span>
+"<span class="n">i64</span>" <span class="mi">21</span>
+"<span class="n">u64</span>" <span class="mi">22</span>
+</pre></div>
+
+<p>"Mode bits" (used in below opcode definitions, the second column): Commutative (C), {Normal/Ref (N), Alloc (A), Load (L), Store (S)}, Non-weak guard (W).</p>
+
+<h2>Guarded assertions<a class="anchor" id="Guarded-assertions" href="#Guarded-assertions"></a></h2>
+
+<p>The trace is exited if these checks fail.</p>
+
+<h3>LT, N , ref, ref<a class="anchor" id="LT,-N-,-ref,-ref" href="#LT,-N-,-ref,-ref"></a></h3>
+
+<p>less than.  Exits unless op1 &lt; op2.</p>
+
+<h3>GE, N , ref, ref<a class="anchor" id="GE,-N-,-ref,-ref" href="#GE,-N-,-ref,-ref"></a></h3>
+
+<p>greater than or equal.  Exits unless op1 &gt;= op2.</p>
+
+<h3>LE, N , ref, ref<a class="anchor" id="LE,-N-,-ref,-ref" href="#LE,-N-,-ref,-ref"></a></h3>
+
+<p>Exits unless op1 &lt;= op2.</p>
+
+<p>less than or equal</p>
+
+<h3>GT, N , ref, ref<a class="anchor" id="GT,-N-,-ref,-ref" href="#GT,-N-,-ref,-ref"></a></h3>
+
+<p>Exits unless op1 &gt; op2.</p>
+
+<p>greater than</p>
+
+<p>The next four instructions are unordered comparisons.This concerns floating point comparisons where one value may be NaN.  NaN is not ordered.  For background see [<a href="http://docs.hp.com/en/B3906-90006/ch02s05.html#a9v1zf219haasz">http://docs.hp.com/en/B3906-90006/ch02s05.html#a9v1zf219haasz</a>].  When ints rather than floats are used, this appears to do unsigned comparison.</p>
+
+<h3>ULT,    N , ref, ref<a class="anchor" id="ULT,----N-,-ref,-ref" href="#ULT,----N-,-ref,-ref"></a></h3>
+
+<p>unordered less than</p>
+
+<h3>UGE,    N , ref, ref<a class="anchor" id="UGE,----N-,-ref,-ref" href="#UGE,----N-,-ref,-ref"></a></h3>
+
+<p>unordered greater than or equal</p>
+
+<h3>ULE,    N , ref, ref<a class="anchor" id="ULE,----N-,-ref,-ref" href="#ULE,----N-,-ref,-ref"></a></h3>
+
+<p>unordered less than or equal</p>
+
+<h3>UGT,    N , ref, ref<a class="anchor" id="UGT,----N-,-ref,-ref" href="#UGT,----N-,-ref,-ref"></a></h3>
+
+<p>unordered greater than</p>
+
+<h3>EQ, C , ref, ref<a class="anchor" id="EQ,-C-,-ref,-ref" href="#EQ,-C-,-ref,-ref"></a></h3>
+
+<p>equal</p>
+
+<h3>NE, C , ref, ref<a class="anchor" id="NE,-C-,-ref,-ref" href="#NE,-C-,-ref,-ref"></a></h3>
+
+<p>not equal</p>
+
+<h3>ABC,    N , ref, ref<a class="anchor" id="ABC,----N-,-ref,-ref" href="#ABC,----N-,-ref,-ref"></a></h3>
+
+<p>ABCelim: Array Bounds Check Elimination?</p>
+
+<h3>RETF,   S , ref, ref<a class="anchor" id="RETF,---S-,-ref,-ref" href="#RETF,---S-,-ref,-ref"></a></h3>
+
+<p>Return to lower frame. </p>
+
+<p>Compiled for Lua functions.</p>
+
+<p>Guard that it goes to the right spot.</p>
+
+<h2>Miscellaneous Ops<a class="anchor" id="Miscellaneous-Ops" href="#Miscellaneous-Ops"></a></h2>
+
+<h3>NOP,    N , <em>__, _</em>_<a class="anchor" id="NOP,----N-,-__,-__" href="#NOP,----N-,-__,-__"></a></h3>
+
+<p>no operation (NOP).</p>
+
+<h3>BASE,   N , lit, lit<a class="anchor" id="BASE,---N-,-lit,-lit" href="#BASE,---N-,-lit,-lit"></a></h3>
+
+<p>(?)</p>
+
+<h3>PVAL,   N , lit, ___<a class="anchor" id="PVAL,---N-,-lit,-___" href="#PVAL,---N-,-lit,-___"></a></h3>
+
+<h3>GCSTEP, S , <em>__, _</em>_<a class="anchor" id="GCSTEP,-S-,-__,-__" href="#GCSTEP,-S-,-__,-__"></a></h3>
+
+<p>Causes an explicit garbage collection in JIT'd code if above threshold and avoids further implicit ones. </p>
+
+<p>Exits the trace if the garbage collector is already in an atomic or finalized state.</p>
+
+<h3>HIOP,   S , ref, ref<a class="anchor" id="HIOP,---S-,-ref,-ref" href="#HIOP,---S-,-ref,-ref"></a></h3>
+
+<p>Support for 64 bit operations in 32 bit mode. </p>
+
+<p>Unused on x64 or without FFI.</p>
+
+<h3>LOOP,   S , <em>__, _</em>_<a class="anchor" id="LOOP,---S-,-__,-__" href="#LOOP,---S-,-__,-__"></a></h3>
+
+<p>Middle part of a loop.</p>
+
+<p>LOOP is a guard, so the snapshot number is up to date.</p>
+
+<p>LOOP marks the transition from the variant to the invariant part.</p>
+
+<p>Implies GCSTEP instruction.</p>
+
+<h3>USE,    S , ref, ___<a class="anchor" id="USE,----S-,-ref,-___" href="#USE,----S-,-ref,-___"></a></h3>
+
+<h3>PHI,    S , ref, ref<a class="anchor" id="PHI,----S-,-ref,-ref" href="#PHI,----S-,-ref,-ref"></a></h3>
+
+<p>The SSA phi thing.  Should be explained further...</p>
+
+<h3>RENAME, S , ref, lit<a class="anchor" id="RENAME,-S-,-ref,-lit" href="#RENAME,-S-,-ref,-lit"></a></h3>
+
+<p>Emitted by the register allocation algorithm.</p>
+
+<p>Used when a renaming and moving registers.</p>
+
+<h2>Constants<a class="anchor" id="Constants" href="#Constants"></a></h2>
+
+<h3>KPRI,   N , <em>__, _</em>_<a class="anchor" id="KPRI,---N-,-__,-__" href="#KPRI,---N-,-__,-__"></a></h3>
+
+<p>Constant primitive.</p>
+
+<p>Primitives are some form of a TValue. Possibly nil/false/true.</p>
+
+<h3>KINT,   N , cst, ___<a class="anchor" id="KINT,---N-,-cst,-___" href="#KINT,---N-,-cst,-___"></a></h3>
+
+<h3>KGC,    N , cst, ___<a class="anchor" id="KGC,----N-,-cst,-___" href="#KGC,----N-,-cst,-___"></a></h3>
+
+<h3>KPTR,   N , cst, ___<a class="anchor" id="KPTR,---N-,-cst,-___" href="#KPTR,---N-,-cst,-___"></a></h3>
+
+<p>Const pointer to possibly non-const data.</p>
+
+<h3>KKPTR,  N , cst, ___<a class="anchor" id="KKPTR,--N-,-cst,-___" href="#KKPTR,--N-,-cst,-___"></a></h3>
+
+<p>Const pointer to definitely const data.
+Notes from commit: "Only content known by the VM to be const qualifies.  Content tagged as const by users (e.g. const char *) doesn't."</p>
+
+<p><a href="http://repo.or.cz/w/luajit-2.0.git/commitdiff/925050fe3ffae269f77757679270432dbad7f010?hp=685dfc317270642fbf2a686799ca2b31ea42e0de">commit</a></p>
+
+<h3>KNULL,  N , cst, ___<a class="anchor" id="KNULL,--N-,-cst,-___" href="#KNULL,--N-,-cst,-___"></a></h3>
+
+<h3>KNUM,   N , cst, ___<a class="anchor" id="KNUM,---N-,-cst,-___" href="#KNUM,---N-,-cst,-___"></a></h3>
+
+<h3>KINT64, N , cst, ___<a class="anchor" id="KINT64,-N-,-cst,-___" href="#KINT64,-N-,-cst,-___"></a></h3>
+
+<h3>KSLOT,  N , ref, lit<a class="anchor" id="KSLOT,--N-,-ref,-lit" href="#KSLOT,--N-,-ref,-lit"></a></h3>
+
+<p>Related to alias analysis for array and hash access using key-based disambiguation and array and hash load forwarding.</p>
+
+<h2>Bit ops<a class="anchor" id="Bit-ops" href="#Bit-ops"></a></h2>
+
+<h3>BNOT,   N , ref, ___<a class="anchor" id="BNOT,---N-,-ref,-___" href="#BNOT,---N-,-ref,-___"></a></h3>
+
+<p>Bitwise not.  See <a href="http://bitop.luajit.org/api.html#bnot">bit.bnot</a>.</p>
+
+<h3>BSWAP,  N , ref, ___<a class="anchor" id="BSWAP,--N-,-ref,-___" href="#BSWAP,--N-,-ref,-___"></a></h3>
+
+<p>See <a href="http://bitop.luajit.org/api.html#bswap">bit.bswap</a>.</p>
+
+<h3>BAND,   C , ref, ref<a class="anchor" id="BAND,---C-,-ref,-ref" href="#BAND,---C-,-ref,-ref"></a></h3>
+
+<p>See <a href="http://bitop.luajit.org/api.html#band">bit.band</a>.</p>
+
+<h3>BOR,    C , ref, ref<a class="anchor" id="BOR,----C-,-ref,-ref" href="#BOR,----C-,-ref,-ref"></a></h3>
+
+<p>See <a href="http://bitop.luajit.org/api.html#bor">bit.bor</a>.</p>
+
+<h3>BXOR,   C , ref, ref<a class="anchor" id="BXOR,---C-,-ref,-ref" href="#BXOR,---C-,-ref,-ref"></a></h3>
+
+<p>See <a href="http://bitop.luajit.org/api.html#bxor">bit.bxor</a>.</p>
+
+<h3>BSHL,   N , ref, ref<a class="anchor" id="BSHL,---N-,-ref,-ref" href="#BSHL,---N-,-ref,-ref"></a></h3>
+
+<p>See <a href="http://bitop.luajit.org/api.html#lshift">bit.lshift</a>.</p>
+
+<h3>BSHR,   N , ref, ref<a class="anchor" id="BSHR,---N-,-ref,-ref" href="#BSHR,---N-,-ref,-ref"></a></h3>
+
+<p>See <a href="http://bitop.luajit.org/api.html#rshift">bit.rshift</a>.</p>
+
+<h3>BSAR,   N , ref, ref<a class="anchor" id="BSAR,---N-,-ref,-ref" href="#BSAR,---N-,-ref,-ref"></a></h3>
+
+<p>See <a href="http://bitop.luajit.org/api.html#arshift">bit.arshift</a>.</p>
+
+<h3>BROL,   N , ref, ref<a class="anchor" id="BROL,---N-,-ref,-ref" href="#BROL,---N-,-ref,-ref"></a></h3>
+
+<p>See <a href="http://bitop.luajit.org/api.html#rol">bit.rol</a>.</p>
+
+<h3>BROR,   N , ref, ref<a class="anchor" id="BROR,---N-,-ref,-ref" href="#BROR,---N-,-ref,-ref"></a></h3>
+
+<p>See <a href="http://bitop.luajit.org/api.html#ror">bit.ror</a>.</p>
+
+<h2>Arithmetic ops<a class="anchor" id="Arithmetic-ops" href="#Arithmetic-ops"></a></h2>
+
+<h3>ADD,    C , ref, ref<a class="anchor" id="ADD,----C-,-ref,-ref" href="#ADD,----C-,-ref,-ref"></a></h3>
+
+<p>x + y</p>
+
+<p>op1: x, op2: y</p>
+
+<h3>SUB,    N , ref, ref<a class="anchor" id="SUB,----N-,-ref,-ref" href="#SUB,----N-,-ref,-ref"></a></h3>
+
+<p>x - y</p>
+
+<h3>MUL,    C , ref, ref<a class="anchor" id="MUL,----C-,-ref,-ref" href="#MUL,----C-,-ref,-ref"></a></h3>
+
+<p>x * y</p>
+
+<h3>DIV,    N , ref, ref<a class="anchor" id="DIV,----N-,-ref,-ref" href="#DIV,----N-,-ref,-ref"></a></h3>
+
+<p>x / y</p>
+
+<h3>POW,    N , ref, ref<a class="anchor" id="POW,----N-,-ref,-ref" href="#POW,----N-,-ref,-ref"></a></h3>
+
+<p>Raise to power (with integer exponent).</p>
+
+<h3>NEG,    N , ref, ref<a class="anchor" id="NEG,----N-,-ref,-ref" href="#NEG,----N-,-ref,-ref"></a></h3>
+
+<p>Negation (-x).</p>
+
+<h3>ABS,    N , ref, ref<a class="anchor" id="ABS,----N-,-ref,-ref" href="#ABS,----N-,-ref,-ref"></a></h3>
+
+<p>Absolute value.  see <a href="http://www.lua.org/manual/5.2/manual.html#pdf-math.abs">math.abs</a>.</p>
+
+<h3>ATAN2,  N , ref, ref<a class="anchor" id="ATAN2,--N-,-ref,-ref" href="#ATAN2,--N-,-ref,-ref"></a></h3>
+
+<p>atan2.  see <a href="http://www.lua.org/manual/5.2/manual.html#pdf-math.aaran2">math.atan2</a>.</p>
+
+<h3>LDEXP,  N , ref, ref<a class="anchor" id="LDEXP,--N-,-ref,-ref" href="#LDEXP,--N-,-ref,-ref"></a></h3>
+
+<p>see <a href="http://www.lua.org/manual/5.2/manual.html#pdf-math.ldexp">math.ldexp</a>.</p>
+
+<h3>MIN,    C , ref, ref<a class="anchor" id="MIN,----C-,-ref,-ref" href="#MIN,----C-,-ref,-ref"></a></h3>
+
+<p>see <a href="http://www.lua.org/manual/5.2/manual.html#pdf-math.min">math.min</a>.</p>
+
+<h3>MAX,    C , ref, ref<a class="anchor" id="MAX,----C-,-ref,-ref" href="#MAX,----C-,-ref,-ref"></a></h3>
+
+<p>see <a href="http://www.lua.org/manual/5.2/manual.html#pdf-math.max">math.max</a>.</p>
+
+<h3>FPMATH, N , ref, lit<a class="anchor" id="FPMATH,-N-,-ref,-lit" href="#FPMATH,-N-,-ref,-lit"></a></h3>
+
+<p>Floating point math operation.</p>
+
+<div class="highlight"><pre>op2: (values from irfpm in vmdef.lua and IRFPMDEF in lj_ir.h)
+"floor" - FLOOR
+"ceil"  - CEIL
+"trunc" - TRUNC
+"sqrt"  - SQRT
+"exp"   - EXP
+"exp2"  - EXP2
+"log"   - LOG
+"log2"  - LOG2
+"log10" - LOG10
+"sin"   - SIN
+"cos"   - COS
+"tan"   - TAN
+"other" - OTHER
+</pre></div>
+
+<h2>Overflow-checking arithmetic ops<a class="anchor" id="Overflow-checking-arithmetic-ops" href="#Overflow-checking-arithmetic-ops"></a></h2>
+
+<p>The following instructions utilize integer arithmetic and are a part of the dual-number mode and narrowing of numbers to integers optimization.</p>
+
+<h3>ADDOV,  C , ref, ref<a class="anchor" id="ADDOV,--C-,-ref,-ref" href="#ADDOV,--C-,-ref,-ref"></a></h3>
+
+<p>Integer addition.</p>
+
+<h3>SUBOV,  N , ref, ref<a class="anchor" id="SUBOV,--N-,-ref,-ref" href="#SUBOV,--N-,-ref,-ref"></a></h3>
+
+<p>Integer subtraction.</p>
+
+<h3>MULOV,  CW, ref, ref<a class="anchor" id="MULOV,--CW,-ref,-ref" href="#MULOV,--CW,-ref,-ref"></a></h3>
+
+<p>Integer multiplication.</p>
+
+<h2>Memory ops<a class="anchor" id="Memory-ops" href="#Memory-ops"></a></h2>
+
+<p>A = array, H = hash, U = upvalue, F = field, S = stack.</p>
+
+<p>Memory references.</p>
+
+<h3>AREF,   R , ref, ref<a class="anchor" id="AREF,---R-,-ref,-ref" href="#AREF,---R-,-ref,-ref"></a></h3>
+
+<p>Array reference</p>
+
+<h3>HREFK,  R , ref, ref<a class="anchor" id="HREFK,--R-,-ref,-ref" href="#HREFK,--R-,-ref,-ref"></a></h3>
+
+<p>Hash reference (with constant key?)</p>
+
+<ul><li>op1: index to IR for table hash part (tab.node)?</li>
+<li>op2: key?</li>
+</ul><h3>HREF,   L , ref, ref<a class="anchor" id="HREF,---L-,-ref,-ref" href="#HREF,---L-,-ref,-ref"></a></h3>
+
+<p>Hash reference.</p>
+
+<ul><li>op1: index to IR for table</li>
+<li>op2: index to IR for key</li>
+</ul><h3>NEWREF, S , ref, ref<a class="anchor" id="NEWREF,-S-,-ref,-ref" href="#NEWREF,-S-,-ref,-ref"></a></h3>
+
+<p>This is something related to creating a new table key (lj_tab_newkey).</p>
+
+<ul><li>op1: index to IR for table</li>
+<li>op2: index to IR for key</li>
+</ul><h3>UREFO,  LW, ref, lit<a class="anchor" id="UREFO,--LW,-ref,-lit" href="#UREFO,--LW,-ref,-lit"></a></h3>
+
+<p>Upvalue reference, open?</p>
+
+<ul><li>op1 is the index to the IR for the function value.</li>
+<li>op2 - bits 0..7 are some type of hash value for the upvalue (see rec_upvalue).  Bits above that represent the upvalue index (0-based integer) in the function.</li>
+</ul><h3>UREFC,  LW, ref, lit<a class="anchor" id="UREFC,--LW,-ref,-lit" href="#UREFC,--LW,-ref,-lit"></a></h3>
+
+<p>upvalue reference, closed?</p>
+
+<p>op1 and op2 are the same as in <code>UREFO</code>.</p>
+
+<h3>FREF,   R , ref, lit<a class="anchor" id="FREF,---R-,-ref,-lit" href="#FREF,---R-,-ref,-lit"></a></h3>
+
+<p>Field reference</p>
+
+<ul><li>op1:</li>
+<li>op2: field identifier - see op2 values in <code>FLOAD</code>.</li>
+</ul><h3>STRREF, N , ref, ref<a class="anchor" id="STRREF,-N-,-ref,-ref" href="#STRREF,-N-,-ref,-ref"></a></h3>
+
+<p>String reference</p>
+
+<h2>Loads and Stores<a class="anchor" id="Loads-and-Stores" href="#Loads-and-Stores"></a></h2>
+
+<h3>ALOAD,  L , ref, ___<a class="anchor" id="ALOAD,--L-,-ref,-___" href="#ALOAD,--L-,-ref,-___"></a></h3>
+
+<p>Array load</p>
+
+<h3>HLOAD,  L , ref, ___<a class="anchor" id="HLOAD,--L-,-ref,-___" href="#HLOAD,--L-,-ref,-___"></a></h3>
+
+<p>Hash table load</p>
+
+<h3>ULOAD,  L , ref, ___<a class="anchor" id="ULOAD,--L-,-ref,-___" href="#ULOAD,--L-,-ref,-___"></a></h3>
+
+<p>Upvalue load</p>
+
+<p>op1: index of IR for upvalue reference (e.g. <code>UREFC</code>/<code>UREFO</code>).</p>
+
+<h3>FLOAD,  L , ref, lit<a class="anchor" id="FLOAD,--L-,-ref,-lit" href="#FLOAD,--L-,-ref,-lit"></a></h3>
+
+<p>Field load.  This accesses the field identified by (lit) in a C struct located at the address referred to in (ref).  The fields are at known constant offsets from the structure base address.</p>
+
+<div class="highlight"><pre><span class="nx">op2</span><span class="o">:</span> <span class="p">(</span><span class="nx">values</span> <span class="nx">from</span> <span class="nx">irfield</span> <span class="k">in</span> <span class="nx">vmdef</span><span class="p">.</span><span class="nx">lua</span> <span class="nx">and</span> <span class="nx">IRFLDEF</span> <span class="k">in</span> <span class="nx">lj_ir</span><span class="p">.</span><span class="nx">h</span><span class="p">)</span>
+<span class="s2">"str.len"</span> <span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="nx">STR_LEN</span> <span class="o">-</span> <span class="nx">string</span> <span class="nx">length</span> <span class="p">(</span><span class="nx">GCstr</span><span class="p">.</span><span class="nx">len</span><span class="p">)</span>
+<span class="s2">"func.env"</span> <span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="nx">FUNC_ENV</span> <span class="o">-</span> <span class="kd">function</span> <span class="nx">environment</span> <span class="p">(</span><span class="nx">GCfunc</span><span class="p">.</span><span class="nx">l</span><span class="p">.</span><span class="nx">env</span><span class="p">)</span>
+<span class="s2">"tab.meta"</span> <span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="nx">TAB_META</span> <span class="o">-</span> <span class="nx">table</span> <span class="nx">metatable</span> <span class="p">(</span><span class="nx">GCtab</span><span class="p">.</span><span class="nx">metatable</span><span class="p">)</span>
+<span class="s2">"tab.array"</span> <span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="nx">TAB_ARRAY</span> <span class="o">-</span> <span class="nx">table</span> <span class="nx">array</span> <span class="nx">part</span> <span class="p">(</span><span class="nx">GCtab</span><span class="p">.</span><span class="nx">array</span><span class="p">)</span>
+<span class="s2">"tab.node"</span> <span class="p">(</span><span class="mi">4</span><span class="p">)</span> <span class="nx">TAB_NODE</span> <span class="o">-</span> <span class="nx">table</span> <span class="nx">hash</span> <span class="nx">part</span> <span class="p">(</span><span class="nx">GCtab</span><span class="p">.</span><span class="nx">node</span><span class="p">)</span>
+<span class="s2">"tab.asize"</span> <span class="p">(</span><span class="mi">5</span><span class="p">)</span> <span class="nx">TAB_ASIZE</span> <span class="o">-</span> <span class="nx">table</span> <span class="nx">array</span> <span class="nx">part</span> <span class="nx">size</span> <span class="p">(</span><span class="nx">GCtab</span><span class="p">.</span><span class="nx">asize</span><span class="p">)</span>
+<span class="s2">"tab.hmask"</span> <span class="p">(</span><span class="mi">6</span><span class="p">)</span> <span class="nx">TAB_HMASK</span> <span class="o">-</span> <span class="nx">table</span> <span class="s2">"Hash part mask (size of hash part - 1)"</span> <span class="p">(</span><span class="nx">GCtab</span><span class="p">.</span><span class="nx">hmask</span><span class="p">)</span>
+<span class="s2">"tab.nomm"</span> <span class="p">(</span><span class="mi">7</span><span class="p">)</span> <span class="nx">TAB_NOMM</span> <span class="o">-</span> <span class="nx">table</span> <span class="s2">"Negative cache for fast metamethods"</span> <span class="p">(</span><span class="nx">GCtab</span><span class="p">.</span><span class="nx">nomm</span><span class="p">)</span>
+<span class="s2">"udata.meta"</span> <span class="p">(</span><span class="mi">8</span><span class="p">)</span> <span class="nx">UDATA_META</span> <span class="o">-</span> <span class="nx">userdata</span> <span class="nx">metatable</span> <span class="p">(</span><span class="nx">GCudata</span><span class="p">.</span><span class="nx">metatable</span><span class="p">)</span>
+<span class="s2">"udata.udtype"</span> <span class="p">(</span><span class="mi">9</span><span class="p">)</span> <span class="nx">UDATA_UDTYPE</span> <span class="s2">"Userdata type"</span> <span class="p">(</span><span class="nx">GCudata</span><span class="p">.</span><span class="nx">udtype</span><span class="p">)</span>
+<span class="s2">"udata.file"</span> <span class="p">(</span><span class="mi">10</span><span class="p">)</span> <span class="nx">UDATA_FILE</span>
+<span class="s2">"cdata.typeid"</span> <span class="p">(</span><span class="mi">11</span><span class="p">)</span> <span class="nx">CDATA_TYPEID</span> <span class="p">(</span><span class="nx">GCcdata</span><span class="p">.</span><span class="nx">typeid</span><span class="p">)</span> <span class="o">-</span> <span class="nx">FFI</span> <span class="nx">C</span> <span class="nx">type</span> <span class="nx">ID</span> <span class="p">(</span><span class="nx">unique</span> <span class="nx">to</span> <span class="nx">every</span> <span class="nx">C</span> <span class="nx">type</span><span class="p">)</span>
+<span class="s2">"cdata.ptr"</span> <span class="p">(</span><span class="mi">12</span><span class="p">)</span> <span class="nx">CDATA_PTR</span> 
+</pre></div>
+
+<h3>XLOAD,  L , ref, lit<a class="anchor" id="XLOAD,--L-,-ref,-lit" href="#XLOAD,--L-,-ref,-lit"></a></h3>
+
+<p>Load from pointer?  Note: can occur with FFI cdata.</p>
+
+<ul><li>op1: index of IR for pointer to load from</li>
+<li>op2: bitwise OR of</li>
+</ul><div class="highlight"><pre>"<span class="n">R</span>" <span class="mi">1</span> <span class="p">(</span><span class="n">IRXLOAD_READONLY</span><span class="p">,</span>  <span class="n">Load</span> <span class="n">from</span> <span class="n">read</span><span class="o">-</span><span class="n">only</span> <span class="n">data</span><span class="p">.)</span>
+"<span class="n">V</span>" <span class="mi">2</span> <span class="p">(</span><span class="n">IRXLOAD_VOLATILE</span><span class="p">,</span>  <span class="n">Load</span> <span class="n">from</span> <span class="n">volatile</span> <span class="n">data</span><span class="p">.)</span>
+"<span class="n">U</span>" <span class="mi">4</span> <span class="p">(</span><span class="n">IRXLOAD_UNALIGNED</span><span class="p">,</span> <span class="n">Unaligned</span> <span class="n">load</span><span class="p">.)</span>
+</pre></div>
+
+<h3>SLOAD,  L , lit, lit<a class="anchor" id="SLOAD,--L-,-lit,-lit" href="#SLOAD,--L-,-lit,-lit"></a></h3>
+
+<p>Stack load</p>
+
+<ul><li>op1: stack slot number to load from.</li>
+<li>op2 values:</li>
+</ul><div class="highlight"><pre>"<span class="n">P</span>"  <span class="mi">1</span> <span class="p">(</span><span class="n">IRSLOAD_PARENT</span><span class="p">,</span> <span class="n">Coalesce</span> <span class="n">with</span> <span class="n">parent</span> <span class="n">trace</span><span class="p">)</span>
+"<span class="n">F</span>"  <span class="mi">2</span> <span class="p">(</span><span class="n">IRSLOAD_FRAME</span><span class="p">,</span> <span class="n">Load</span> <span class="n">hiword</span> <span class="n">of</span> <span class="n">frame</span><span class="p">)</span>
+"<span class="n">T</span>"  <span class="mi">4</span> <span class="p">(</span><span class="n">IRSLOAD_TYPECHECK</span><span class="p">,</span> <span class="n">Needs</span> <span class="n">type</span> <span class="n">check</span><span class="p">)</span>
+"<span class="n">C</span>"  <span class="mi">8</span> <span class="p">(</span><span class="n">IRSLOAD_CONVERT</span><span class="p">,</span> <span class="n">Number</span> <span class="n">to</span> <span class="n">integer</span> <span class="n">conversion</span><span class="p">)</span>
+"<span class="n">R</span>" <span class="mi">16</span> <span class="p">(</span><span class="n">IRSLOAD_READONLY</span><span class="p">,</span> <span class="n">Read</span><span class="o">-</span><span class="n">only</span><span class="p">,</span> <span class="n">omit</span> <span class="n">slot</span> <span class="n">store</span><span class="p">)</span>
+"<span class="n">I</span>" <span class="mi">32</span> <span class="p">(</span><span class="n">IRSLOAD_INHERIT</span><span class="p">,</span> <span class="n">Inherited</span> <span class="n">by</span> <span class="n">exits</span><span class="o">/</span><span class="n">side</span> <span class="n">traces</span><span class="p">)</span>
+</pre></div>
+
+<h3>VLOAD,  L , ref, ___<a class="anchor" id="VLOAD,--L-,-ref,-___" href="#VLOAD,--L-,-ref,-___"></a></h3>
+
+<p>Vararg load</p>
+
+<h3>ASTORE, S , ref, ref<a class="anchor" id="ASTORE,-S-,-ref,-ref" href="#ASTORE,-S-,-ref,-ref"></a></h3>
+
+<p>Array store</p>
+
+<h3>HSTORE, S , ref, ref<a class="anchor" id="HSTORE,-S-,-ref,-ref" href="#HSTORE,-S-,-ref,-ref"></a></h3>
+
+<p>Hash table store</p>
+
+<ul><li>op1: index of IR for reference to value in hash table.</li>
+<li>op2: key</li>
+</ul><h3>USTORE, S , ref, ref<a class="anchor" id="USTORE,-S-,-ref,-ref" href="#USTORE,-S-,-ref,-ref"></a></h3>
+
+<p>Upvalue store</p>
+
+<h3>FSTORE, S , ref, ref<a class="anchor" id="FSTORE,-S-,-ref,-ref" href="#FSTORE,-S-,-ref,-ref"></a></h3>
+
+<p>Field store</p>
+
+<h3>XSTORE, S , ref, ref<a class="anchor" id="XSTORE,-S-,-ref,-ref" href="#XSTORE,-S-,-ref,-ref"></a></h3>
+
+<p>Store to pointer?  Note: can occur with FFI cdata.</p>
+
+<ul><li>op1: index of IR for pointer to store to</li>
+<li>op2: index of of IR for value to store</li>
+</ul><h2>Allocations.<a class="anchor" id="Allocations." href="#Allocations."></a></h2>
+
+<h3>SNEW,   N , ref, ref<a class="anchor" id="SNEW,---N-,-ref,-ref" href="#SNEW,---N-,-ref,-ref"></a></h3>
+
+<p>Create new string.  (lj_str_new)</p>
+
+<ul><li>op1: const char *str; op2: size_t len.</li>
+</ul><h3>XSNEW,  A , ref, ref<a class="anchor" id="XSNEW,--A-,-ref,-ref" href="#XSNEW,--A-,-ref,-ref"></a></h3>
+
+<h3>TNEW,   AW, lit, lit<a class="anchor" id="TNEW,---AW,-lit,-lit" href="#TNEW,---AW,-lit,-lit"></a></h3>
+
+<p>Create new table.</p>
+
+<h3>TDUP,   AW, ref, ___<a class="anchor" id="TDUP,---AW,-ref,-___" href="#TDUP,---AW,-ref,-___"></a></h3>
+
+<p>Duplicate a table.  (lj_tab_dup)</p>
+
+<ul><li>op1: table to copy</li>
+</ul><h3>CNEW,   AW, ref, ref<a class="anchor" id="CNEW,---AW,-ref,-ref" href="#CNEW,---AW,-ref,-ref"></a></h3>
+
+<p>Allocate new FFI cdata.</p>
+
+<h3>CNEWI,  NW, ref, ref<a class="anchor" id="CNEWI,--NW,-ref,-ref" href="#CNEWI,--NW,-ref,-ref"></a></h3>
+
+<p>Initialize new FFI cdata.</p>
+
+<h2>Write barriers<a class="anchor" id="Write-barriers" href="#Write-barriers"></a></h2>
+
+<h3>TBAR,   S , ref, ___<a class="anchor" id="TBAR,---S-,-ref,-___" href="#TBAR,---S-,-ref,-___"></a></h3>
+
+<p>(?)</p>
+
+<h3>OBAR,   S , ref, ref<a class="anchor" id="OBAR,---S-,-ref,-ref" href="#OBAR,---S-,-ref,-ref"></a></h3>
+
+<p>Specialized barrier for closed upvalue?</p>
+
+<h3>XBAR,   S , <em>__, _</em>_<a class="anchor" id="XBAR,---S-,-__,-__" href="#XBAR,---S-,-__,-__"></a></h3>
+
+<p>Writer barrier for XLOAD/XSTORE. </p>
+
+<h2>Type conversions<a class="anchor" id="Type-conversions" href="#Type-conversions"></a></h2>
+
+<h3>CONV,   N , ref, lit<a class="anchor" id="CONV,---N-,-ref,-lit" href="#CONV,---N-,-ref,-lit"></a></h3>
+
+<p>Various int and float number conversions.</p>
+
+<ul><li>op1: lref</li>
+<li>op2: type conversion.</li>
+</ul><div class="highlight"><pre><span class="n">Bits</span> <span class="mf">0.</span><span class="p">.</span><span class="mi">4</span> <span class="p">(</span><span class="n">IRCONV_SRCMASK</span><span class="p">)</span> <span class="n">are</span> <span class="n">type</span> <span class="n">converted</span> <span class="n">from</span><span class="p">.</span>
+<span class="n">Bits</span> <span class="mf">5.</span><span class="p">.</span><span class="mi">9</span> <span class="p">(</span><span class="n">IRCONV_DSTMASK</span><span class="p">)</span> <span class="n">are</span> <span class="n">type</span> <span class="n">converted</span> <span class="n">to</span><span class="p">.</span>  <span class="n">See</span> "<span class="n">IR</span> <span class="n">Types</span>" <span class="n">above</span><span class="p">.</span>
+<span class="n">Bit</span> <span class="mi">10</span> <span class="p">(</span><span class="mi">0</span><span class="n">x400</span><span class="p">,</span> <span class="n">IRCONV_TRUNC</span><span class="p">)</span> <span class="n">is</span> "<span class="n">trunc</span>" <span class="p">(</span><span class="n">Truncate</span> <span class="n">number</span> <span class="n">to</span> <span class="n">integer</span><span class="p">).</span>
+<span class="n">Bit</span> <span class="mi">11</span> <span class="p">(</span><span class="mi">0</span><span class="n">x800</span><span class="p">,</span> <span class="n">IRCONV_SEXT</span><span class="p">)</span> <span class="n">is</span> "<span class="n">sext</span>" <span class="p">(</span><span class="n">Sign</span><span class="o">-</span><span class="n">extend</span> <span class="n">integer</span> <span class="n">to</span> <span class="n">integer</span><span class="p">).</span>
+<span class="n">Bits</span> <span class="mf">14.</span><span class="p">.</span><span class="mi">15</span> <span class="n">are</span> <span class="mi">2</span> "<span class="n">index</span>"  <span class="n">or</span> <span class="mi">3</span> "<span class="n">check</span>"<span class="p">.</span> <span class="p">(</span>?? <span class="o">-</span> <span class="n">dump</span><span class="p">.</span><span class="n">lua</span> <span class="n">and</span> <span class="n">IRCONV_</span><span class="o">*</span> <span class="n">inconsistent</span>?<span class="p">)</span>
+</pre></div>
+
+<h3>TOBIT,  N , ref, ref<a class="anchor" id="TOBIT,--N-,-ref,-ref" href="#TOBIT,--N-,-ref,-ref"></a></h3>
+
+<p>(see bit.tobit)</p>
+
+<ul><li>op1: dest</li>
+<li>op1: source</li>
+</ul><h3>TOSTR,  N , ref, ___<a class="anchor" id="TOSTR,--N-,-ref,-___" href="#TOSTR,--N-,-ref,-___"></a></h3>
+
+<p>Convert to string.</p>
+
+<h3>STRTO,  N , ref, ___<a class="anchor" id="STRTO,--N-,-ref,-___" href="#STRTO,--N-,-ref,-___"></a></h3>
+
+<p>Convert string to number.</p>
+
+<h2>Calls<a class="anchor" id="Calls" href="#Calls"></a></h2>
+
+<h3>CALLN,  N , ref, lit<a class="anchor" id="CALLN,--N-,-ref,-lit" href="#CALLN,--N-,-ref,-lit"></a></h3>
+
+<p>Call Normal/Ref (N)?</p>
+
+<h3>CALLL,  L , ref, lit<a class="anchor" id="CALLL,--L-,-ref,-lit" href="#CALLL,--L-,-ref,-lit"></a></h3>
+
+<p>Call Load (L)?</p>
+
+<h3>CALLS,  S , ref, lit<a class="anchor" id="CALLS,--S-,-ref,-lit" href="#CALLS,--S-,-ref,-lit"></a></h3>
+
+<p>Call Store (S)?</p>
+
+<h3>CALLXS, S , ref, ref<a class="anchor" id="CALLXS,-S-,-ref,-ref" href="#CALLXS,-S-,-ref,-ref"></a></h3>
+
+<h3>CARG,   N , ref, ref<a class="anchor" id="CARG,---N-,-ref,-ref" href="#CARG,---N-,-ref,-ref"></a></h3>
+
+<p>(?) something related to function call arguments</p>
+    </div>
+  </div>
+  </div>
+
+</div>
+<div id="footer">
+  <p id="last-edit">Last edited by <b>Jason</b>, 2012-07-10 10:37:18</p>
+  <p>
+    <a id="delete-link" href="/luajit-wiki/SSA-IR" data-confirm="Are you sure you want to delete this page?"><span>Delete this Page</span></a>
+  </p>
+</div>
+</div>
+<div id="cust-footer">
+  <p>Sponsored by <a href="http://www.networkradius.com">Network RADIUS</a></p>
+</div>
+
+
+</body>
+</html>

@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-type" content="text/html;charset=utf-8">
+  <meta name="MobileOptimized" content="width">
+  <meta name="HandheldFriendly" content="true">
+  <meta name="viewport" content="width=device-width">
+  <link rel=”alternate” type=”application/rss+xml” title=”wiki.luajit.org edit and commit log” href=”http://wiki.luajit.org/feeds/global.xml” />
+  <link rel="stylesheet" type="text/css" href="/luajit-wiki/css/gollum.css" media="all">
+  <link rel="stylesheet" type="text/css" href="/luajit-wiki/css/editor.css" media="all">
+  <link rel="stylesheet" type="text/css" href="/luajit-wiki/css/dialog.css" media="all">
+  <link rel="stylesheet" type="text/css" href="/luajit-wiki/css/template.css" media="all">
+  <link rel="stylesheet" type="text/css" href="/luajit-wiki/css/print.css" media="print">
+  <link rel="stylesheet" type="text/css" href="/luajit-wiki/custom.css" media="all">
+  <meta name="robots" content="noindex, nofollow" />
+
+  <!--[if IE 7]>
+  <link rel="stylesheet" type="text/css" href="/luajit-wiki/css/ie7.css" media="all">
+  <![endif]-->
+
+  <script>
+      var baseUrl = '';
+      var uploadDest   = '';
+      var pageFullPath = 'FFI Bindings';
+  </script>
+  <script type="text/javascript" src="/luajit-wiki/javascript/jquery-1.7.2.min.js"></script>
+  <script type="text/javascript" src="/luajit-wiki/javascript/mousetrap.min.js"></script>
+  <script type="text/javascript" src="/luajit-wiki/javascript/gollum.js"></script>
+  <script type="text/javascript" src="/luajit-wiki/javascript/gollum.dialog.js"></script>
+  <script type="text/javascript" src="/luajit-wiki/javascript/gollum.placeholder.js"></script>
+  <script type="text/javascript" src="/luajit-wiki/javascript/editor/gollum.editor.js"></script>
+
+  
+
+  <title>FFI Bindings</title>
+</head>
+<body>
+
+<div id="cust-site">
+  <a href="http://luajit.org"><span>Lua<span id="cust-logo">JIT</span></span></a>
+</div>
+<div id="cust-header">
+  <h1>The LuaJIT Wiki</h1>
+</div>
+<div id="user">
+    <p>
+      not logged in | <strong><a href="/luajit-wiki/__omnigollum__/login">[Login]</a></strong>
+    <p>
+</div>
+
+<script>
+Mousetrap.bind(['e'], function( e ) {
+  e.preventDefault();
+  window.location = "/edit" + window.location.pathname;
+  return false;
+});
+</script>
+<div id="wiki-wrapper" class="page">
+<div id="head">
+  <h1>FFI Bindings</h1>
+  <ul class="actions">
+    <li class="minibutton">
+      <div id="searchbar">
+        <form action="/search" method="get" id="search-form">
+        <div id="searchbar-fauxtext">
+          <input type="text" name="q" id="search-query" value="Search&hellip;" autocomplete="off">
+          <a href="#" id="search-submit" title="Search this wiki">
+            <span>Search</span>
+          </a>
+        </div>
+        </form>
+      </div>    </li>
+    <li class="minibutton"><a href="/luajit-wiki/"
+       class="action-home-page">Home</a></li>
+    <li class="minibutton"><a href="/luajit-wiki/pages"
+      class="action-all-pages">All</a></li>
+    <li class="minibutton"><a href="/luajit-wiki/fileview"
+    class="action-fileview">Files</a></li>
+      <li class="minibutton jaws">
+        <a href="#" id="minibutton-new-page">New</a></li>
+  </ul>
+</div>
+<div id="wiki-content">
+<div class="">
+  <div id="wiki-body" class="gollum-markdown-content">
+    <div class="markdown-body">
+      <h1>List of Available FFI Bindings</h1>
+
+<p>Please note that most developers prefer to only bind to the few library
+calls they actually need. E.g. an rmdir() binding is just a single line
+with the LuaJIT FFI. And a simple binding to e.g. zlib takes only two
+dozen lines, see the <a href="http://luajit.org/ext_ffi_tutorial.html" rel="nofollow">FFI Tutorial</a>.
+You can find many examples for this floating around on the net.</p>
+
+<p>The following list only shows larger or somewhat comprehensive library
+bindings:</p>
+
+<h2><a class="anchor" id="core-os-libraries" href="#core-os-libraries"><i class="fa fa-link"></i></a>Core OS Libraries</h2>
+
+<ul>
+<li><p><a href="https://github.com/justincormack/ljsyscall" rel="nofollow">ljsyscall</a>: Linux system calls.</p></li>
+<li><p><a href="http://luapower.com/winapi" rel="nofollow">luapower/winapi</a>: Win32 API</p></li>
+<li><p><a href="http://luapower.com/objc" rel="nofollow">luapower/objc</a>: Objective-C &amp; Cocoa bridge</p></li>
+<li><p><a href="https://github.com/Wiladams/LJIT2Win32" rel="nofollow">LJIT2Win32</a>: Core Windows libraries.</p></li>
+<li><p><a href="https://github.com/duncanc/ljf-com" rel="nofollow">ljf-com</a>: Microsoft COM.</p></li>
+<li><p><a href="https://github.com/Wiladams/LJIT2RPi" rel="nofollow">LJIT2RPi</a>: VideoCore of Raspberry Pi.</p></li>
+<li><p><a href="https://github.com/Wiladams/TINN" rel="nofollow">TINN</a>: Windows API Sets, includes a shell.</p></li>
+</ul>
+
+<h2><a class="anchor" id="databases" href="#databases"><i class="fa fa-link"></i></a>Databases</h2>
+
+<ul>
+<li><p><a href="https://github.com/kengonakajima/luajit-mysql" rel="nofollow">luajit-mysql</a>: MySQL.</p></li>
+<li><p><a href="http://luapower.com/mysql" rel="nofollow">luapower/mysql</a>: MySQL.</p></li>
+<li><p><a href="https://github.com/Wiladams/LJIT2Sophia.git" rel="nofollow">LJIT2Sophia</a>: Sophia.</p></li>
+<li><p><a href="https://github.com/ColonelThirtyTwo/lsqlite3-ffi" rel="nofollow">lsqlite3-ffi</a>: SQLite.</p></li>
+<li><p><a href="https://github.com/Wiladams/LJIT2SQLite" rel="nofollow">LJIT2SQLite</a>: SQLite.</p></li>
+<li><p><a href="http://scilua.org/ljsqlite3.html" rel="nofollow">LJSQLite3</a>: SQLite3.</p></li>
+<li><p><a href="https://bitbucket.org/neomantra/mongolua" rel="nofollow">mongolua</a>: MongoDB and BSON library.</p></li>
+<li><p><a href="https://bitbucket.org/sirpengi/luajit-unqlite" rel="nofollow">luajit-unqlite</a>: UnQLite.</p></li>
+</ul>
+
+<h2><a class="anchor" id="graphics" href="#graphics"><i class="fa fa-link"></i></a>Graphics</h2>
+
+<ul>
+<li><p><a href="https://github.com/nanoant/glua" rel="nofollow">glua</a>: OpenGL/GLUT.</p></li>
+<li><p><a href="https://github.com/ColonelThirtyTwo/LuaJIT-GLFW" rel="nofollow">luajit-glfw</a>: OpenGL and GLFW.</p></li>
+<li><p><a href="https://github.com/Wiladams/LJIT2Khronos" rel="nofollow">LJIT2Khronos</a>: Khronos (OpenGL, EGL, OpenCL, OpenVG)</p></li>
+<li><p><a href="http://luapower.com/cairo" rel="nofollow">luapower/cairo</a>: cairo.</p></li>
+<li><p><a href="http://luapower.com/clipper" rel="nofollow">luapower/clipper</a>: clipper.</p></li>
+<li><p><a href="http://luapower.com/giflib" rel="nofollow">luapower/giflib</a>: giflib.</p></li>
+<li><p><a href="http://luapower.com/nanojpeg" rel="nofollow">luapower/nanojpeg</a>: nanojpeg.</p></li>
+<li><p><a href="http://luapower.com/freetype" rel="nofollow">luapower/freetype</a>: freetype.</p></li>
+</ul>
+
+<h2><a class="anchor" id="audio-video" href="#audio-video"><i class="fa fa-link"></i></a>Audio &amp; Video</h2>
+
+<ul>
+<li><p><a href="https://github.com/daurnimator/openal-lua-ffi" rel="nofollow">openal-lua-ffi</a>: OpenAL.</p></li>
+<li><p><a href="https://github.com/daurnimator/wavpack-lua-ffi" rel="nofollow">wavpack-lua-ffi</a>: Wavpack.</p></li>
+<li><p><a href="https://github.com/daurnimator/libsndfile-lua-ffi" rel="nofollow">libsndfile-lua-ffi</a>: libsndfile.</p></li>
+<li><p><a href="https://github.com/daurnimator/mad-lua-ffi" rel="nofollow">mad-lua-ffi</a>: MAD (MPEG Audio Decoder).</p></li>
+<li><p><a href="https://github.com/daurnimator/ffmpeg-lua-ffi" rel="nofollow">ffmpeg-lua-ffi</a>: ffmpeg.</p></li>
+<li><p><a href="https://github.com/Wiladams/LJIT2X264" rel="nofollow">LJIT2X264</a>: X264</p></li>
+</ul>
+
+<h2><a class="anchor" id="messaging-events" href="#messaging-events"><i class="fa fa-link"></i></a>Messaging &amp; Events</h2>
+
+<ul>
+<li><p><a href="https://github.com/Neopallium/lua-zmq" rel="nofollow">lua-zmq</a>: ZeroMQ.</p></li>
+<li><p><a href="https://github.com/moteus/lzmq" rel="nofollow">lzmq</a>: ZeroMQ.</p></li>
+<li><p><a href="https://github.com/neomantra/nm-luajit-playground/blob/master/ffi/libev.lua" rel="nofollow">libev</a>: libev.</p></li>
+<li><p><a href="https://github.com/chatid/fend" rel="nofollow">fend</a>: epoll.</p></li>
+<li><p><a href="https://github.com/JohnAbrahamsen/nonsence-ng/blob/experimental/nonsence/epoll_ffi.lua" rel="nofollow">epoll_ffi</a>: epoll.</p></li>
+</ul>
+
+<h2><a class="anchor" id="networking" href="#networking"><i class="fa fa-link"></i></a>Networking</h2>
+
+<ul>
+<li>
+<a href="https://github.com/ColonelThirtyTwo/luajit-ffi-enet" rel="nofollow">luajit-ffi-enet</a>: Enet.</li>
+</ul>
+
+<h2><a class="anchor" id="encoding-decoding" href="#encoding-decoding"><i class="fa fa-link"></i></a>Encoding &amp; Decoding</h2>
+
+<ul>
+<li><p><a href="https://github.com/catwell/luajit-msgpack-pure" rel="nofollow">luajit-msgpack-pure</a>: MessagePack.</p></li>
+<li><p><a href="https://github.com/daurnimator/iconv-lua-ffi" rel="nofollow">iconv-lua-ffi</a>: iconv.</p></li>
+<li><p><a href="https://github.com/Wiladams/LJIT2Http_Parser" rel="nofollow">LJIT2Http_Parser</a>: HTTP parser.</p></li>
+<li><p><a href="http://luapower.com/expat" rel="nofollow">luapower/expat</a>: expat XML parser.</p></li>
+<li><p><a href="http://luapower.com/genx" rel="nofollow">luapower/genx</a>: genx XML generator.</p></li>
+</ul>
+
+<h2><a class="anchor" id="crypto" href="#crypto"><i class="fa fa-link"></i></a>Crypto</h2>
+
+<ul>
+<li><p><a href="https://bitbucket.org/eoranged/lua-libssh/overview" rel="nofollow">lua-libssh</a>: libssh (OpenSSH).</p></li>
+<li><p><a href="https://github.com/Wiladams/LJIT2WinCNG" rel="nofollow">LJIT2WinCNG</a>: WinCNG.</p></li>
+<li><p><a href="http://luapower.com/md5" rel="nofollow">luapower/md5</a>: MD5.</p></li>
+<li><p><a href="http://luapower.com/sha2" rel="nofollow">luapower/sha2</a>: SHA-256, SHA-384, SHA-512.</p></li>
+</ul>
+
+<h2><a class="anchor" id="compression" href="#compression"><i class="fa fa-link"></i></a>Compression</h2>
+
+<ul>
+<li><p><a href="http://luapower.com/zlib" rel="nofollow">luapower/zlib</a>: zlib.</p></li>
+<li><p><a href="http://luapower.com/minizip" rel="nofollow">luapower/minizip</a>: minizip.</p></li>
+</ul>
+
+<h2><a class="anchor" id="game-engines" href="#game-engines"><i class="fa fa-link"></i></a>Game Engines</h2>
+
+<ul>
+<li>
+<a href="https://github.com/jabb/allua" rel="nofollow">allua</a>: Allegro 5.</li>
+</ul>
+
+<h2><a class="anchor" id="cross-language-bridges" href="#cross-language-bridges"><i class="fa fa-link"></i></a>Cross-language Bridges</h2>
+
+<ul>
+<li>
+<a href="https://github.com/fjolnir/TLC" rel="nofollow">TLC (Tiny Lua Cocoa bridge)</a>: Objective-C bridge.</li>
+</ul>
+
+<h2><a class="anchor" id="unicode" href="#unicode"><i class="fa fa-link"></i></a>Unicode</h2>
+
+<ul>
+<li>
+<a href="http://luapower.com/libunibreak" rel="nofollow">luapower/libunibreak</a>: unicode line breaking and word breaking.</li>
+</ul>
+
+<h2><a class="anchor" id="miscellaneous" href="#miscellaneous"><i class="fa fa-link"></i></a>Miscellaneous</h2>
+
+<ul>
+<li><p><a href="http://github.com/malkia/ufo" rel="nofollow">ufo</a>: Precompiled binaries for OSX/Windows and other platforms. Bindings for: Cairo, Pixman, SDL 1.3, zlib, libpng, libbz2, ZeroMQ, Expat, Freetype, GLFW, APR, AntTweakBar, OpenGL, OpenCL.</p></li>
+<li><p><a href="http://luapower.com/hunspell" rel="nofollow">luapower/hunspell</a> - hunspell (spell checking)</p></li>
+</ul>
+
+    </div>
+  </div>
+  </div>
+
+</div>
+<div id="footer">
+  <p id="last-edit">Last edited by <b>Playermet (Playermet)</b>, 2016-06-05 00:38:37</p>
+    <p>
+      <a id="delete-link" href="/luajit-wiki/FFI-Bindings" data-confirm="Are you sure you want to delete this page?"><span>Delete this Page</span></a>
+    </p>
+</div>
+</div>
+
+<form name="rename" method="POST" action="/rename/FFI-Bindings">
+  <input type="hidden" name="rename"/>
+  <input type="hidden" name="message"/>
+</form>
+<div id="cust-footer">
+  <p>Sponsored by <a href="http://www.networkradius.com">Network RADIUS</a></p>
+</div>
+
+
+</body>
+</html>

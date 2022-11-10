@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-type" content="text/html;charset=utf-8">
+  <link rel=”alternate” type=”application/rss+xml” title=”wiki.luajit.org edit and commit log” href=”http://wiki.luajit.org/feeds/global.xml” />
+  <link rel="stylesheet" type="text/css" href="/css/gollum.css" media="all">
+  <link rel="stylesheet" type="text/css" href="/css/editor.css" media="all">
+  <link rel="stylesheet" type="text/css" href="/css/dialog.css" media="all">
+  <link rel="stylesheet" type="text/css" href="/css/template.css" media="all">
+  <link rel="stylesheet" type="text/css" href="/custom.css" media="all">
+
+  <!--[if IE 7]>
+  <link rel="stylesheet" type="text/css" href="/css/ie7.css" media="all">
+  <![endif]-->
+
+  <script>var baseUrl = ''</script>
+  <script type="text/javascript" src="/javascript/jquery-1.7.2.min.js"></script>
+  <script type="text/javascript" src="/javascript/mousetrap.min.js"></script>
+  <script type="text/javascript" src="/javascript/gollum.js"></script>
+  <script type="text/javascript" src="/javascript/gollum.dialog.js"></script>
+  <script type="text/javascript" src="/javascript/gollum.placeholder.js"></script>
+  <script type="text/javascript" src="/javascript/editor/gollum.editor.js"></script>
+
+
+  <title>Search results for Search...</title>
+</head>
+<body>
+<div id="cust-site">
+  <a href="http://luajit.org"><span>Lua<span id="cust-logo">JIT</span></span></a>
+</div>
+<div id="cust-header">
+  <h1>The LuaJIT Wiki</h1>
+</div>
+<div id="user">
+    <p>
+      not logged in | <strong><a href="/__omnigollum__/login">[Login]</a></strong>
+    <p>
+</div>
+
+<div id="wiki-wrapper" class="results">
+<div id="head">
+  <h1>Search Results for <strong>Search...</strong></h1>
+  <ul class="actions">
+    <li class="minibutton">
+      <div id="searchbar">
+        <form action="/search" method="get" id="search-form">
+        <div id="searchbar-fauxtext">
+          <input type="text" name="q" id="search-query" value="Search&hellip;" autocomplete="off">
+          <a href="#" id="search-submit" title="Search this wiki">
+            <span>Search</span>
+          </a>
+        </div>
+        </form>
+      </div>    </li>
+    <li class="minibutton"><a href="/"
+       class="action-edit-page">Home</a></li>
+  </ul>
+</div>
+<div id="results">
+
+  <ul>
+    <li>
+      <a href="/New-Garbage-Collector">New-Garbage-Collector</a>
+      <span class="count">(7 matches)</span>
+    </li>
+    <li>
+      <a href="/Allocation-Sinking-Optimization">Allocation-Sinking-Optimization</a>
+      <span class="count">(3 matches)</span>
+    </li>
+    <li>
+      <a href="/SSA-IR-2.0">SSA-IR-2.0</a>
+      <span class="count">(2 matches)</span>
+    </li>
+    <li>
+      <a href="/custom.css">custom.css</a>
+      <span class="count">(2 matches)</span>
+    </li>
+    <li>
+      <a href="/NYI">NYI</a>
+      <span class="count">(1 matches)</span>
+    </li>
+  </ul>
+
+
+</div>
+<div id="footer">
+  <ul class="actions">
+    <li class="minibutton"><a href="#">Back to Top</a></li>
+  </ul>
+</div>
+</div>
+
+
+
+</body>
+</html>

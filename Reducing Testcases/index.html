@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-type" content="text/html;charset=utf-8">
+  <link rel=”alternate” type=”application/rss+xml” title=”wiki.luajit.org edit/commit log” href=”http://wiki.luajit.org/feeds/global.xml” />
+ 
+  <link rel="stylesheet" type="text/css" href="/luajit-wiki/css/gollum.css" media="all">
+  <link rel="stylesheet" type="text/css" href="/luajit-wiki/css/editor.css" media="all">
+  <link rel="stylesheet" type="text/css" href="/luajit-wiki/css/dialog.css" media="all">
+  <link rel="stylesheet" type="text/css" href="/luajit-wiki/css/template.css" media="all">
+ 
+  <link rel="stylesheet" type="text/css" href="/luajit-wiki/css/custom.css" media="all">
+  <!--[if IE 7]>
+  <link rel="stylesheet" type="text/css" href="/luajit-wiki/css/ie7.css" media="all">
+  <![endif]-->
+  
+  <script type="text/javascript" src="/luajit-wiki/javascript/jquery.js"></script>
+  <script type="text/javascript" src="/luajit-wiki/javascript/gollum.js"></script>
+  <script type="text/javascript" src="/luajit-wiki/javascript/gollum.dialog.js"></script>
+  <script type="text/javascript" src="/luajit-wiki/javascript/gollum.placeholder.js"></script>
+  
+  <script type="text/javascript" src="/luajit-wiki/javascript/editor/gollum.editor.js"></script>
+  <script type="text/javascript" src="https://c328740.ssl.cf1.rackcdn.com/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  <title>Reducing Testcases</title>
+</head>
+<body>
+<div id="cust-site">
+  <a href="http://luajit.org"><span>Lua<span id="cust-logo">JIT</span></span></a>
+</div>
+<div id="cust-header">
+  <h1>The LuaJIT Wiki</h1>
+</div>
+<div id="user">
+    <p>
+      not logged in | <strong><a href="/luajit-wiki/__omnigollum__/login">[Login]</a></strong>
+    <p>
+</div>
+
+<div id="wiki-wrapper" class="page">
+<div id="head">
+  <h1>Reducing Testcases</h1>
+  <ul class="actions">
+    <li class="minibutton">
+      <div id="searchbar">
+        <form action="/search" method="get" id="search-form">
+        <div id="searchbar-fauxtext">
+          <input type="text" name="q" id="search-query" value="Search&hellip;" autocomplete="off">
+          <a href="#" id="search-submit" title="Search this wiki">
+            <span>Search</span>
+          </a>
+        </div>
+        </form>
+      </div>    </li>
+    <li class="minibutton"><a href="/luajit-wiki/pages"
+      class="action-all-pages">All Pages</a></li>
+    <li class="minibutton"><a href="/luajit-wiki/fileview"
+    class="action-all-pages">File View</a></li>
+    <li class="minibutton" class="jaws">
+      <a href="#" id="minibutton-new-page">New Page</a></li>
+    <li class="minibutton"><a href="/luajit-wiki/edit/Reducing+Testcases"
+       class="action-edit-page">Edit Page</a></li>
+    <li class="minibutton"><a href="/luajit-wiki/history/Reducing+Testcases"
+       class="action-page-history">Page History</a></li>
+  </ul>
+</div>
+<div id="wiki-content">
+<div class=" has-toc">
+  <div id="wiki-toc-main">
+    <div class="toc">
+  <div class="toc-title">Table of Contents</div>
+  <ul>
+    <li>
+      <a href="#Reducing-Test-Cases-for-Bugs">Reducing Test Cases for Bugs</a>
+    </li>
+  </ul>
+  <ul>
+    <ul>
+      <li>
+        <a href="#These-things-are-hard-to-catch">These things are hard to catch</a>
+      </li>
+    </ul>
+  </ul>
+  <ul>
+    <ul>
+      <li>
+        <a href="#Don%27t-print">Don't print</a>
+      </li>
+    </ul>
+  </ul>
+  <ul>
+    <ul>
+      <li>
+        <a href="#Dump-it">Dump it</a>
+      </li>
+    </ul>
+  </ul>
+  <ul>
+    <ul>
+      <li>
+        <a href="#Try-all-the-options">Try all the options</a>
+      </li>
+    </ul>
+  </ul>
+  <ul>
+    <ul>
+      <li>
+        <a href="#Turn-the-compiler-off">Turn the compiler off</a>
+      </li>
+    </ul>
+  </ul>
+  <ul>
+    <ul>
+      <li>
+        <a href="#Find-unused-code">Find unused code</a>
+      </li>
+    </ul>
+  </ul>
+</div>
+  </div>
+  <div id="wiki-body" class="gollum-markdown-content">
+    <div class="markdown-body">
+      <h1>Reducing Test Cases for Bugs<a class="anchor" id="Reducing-Test-Cases-for-Bugs" href="#Reducing-Test-Cases-for-Bugs"></a>
+</h1>
+
+<p>So you think you've found a bug in LuaJIT?</p>
+
+<p>Hold your breath for a minute - are you sure it's not your mistake?</p>
+
+<p>Run your code with PUC <code>lua</code>, and with  <code>luajit -joff</code> and check that you don't
+see the bug, and that you do with <code>luajit</code>.</p>
+
+<p>Check that you're not relying on any undefined behaviour.
+I once thought I had found a bug, but in fact I was relying on the order in
+which <code>pairs</code> traversed a hash table.
+Both <code>lua</code> and <code>luajit -joff</code> always traversed the table in exactly the same
+order, but sometimes <code>luajit</code> legitimately traversed the table in a different
+order.</p>
+
+<p>If you still think it might be LuaJIT's fault, read on...</p>
+
+<h2>These things are hard to catch<a class="anchor" id="These-things-are-hard-to-catch" href="#These-things-are-hard-to-catch"></a>
+</h2>
+
+<p>JIT bugs can be hard to catch.
+The JIT compiler uses a number of heuristics to decide which traces to compile,
+and your bug showing up will probably depend on a particular trace starting
+at the right line being chosen for compilation at the right time.</p>
+
+<p>Almost anything can tickle the trace-choosing heuristics and make the bug
+disappear, so the process of reducing your code to a smaller testcase can
+be slow.
+Even removing unused code can move or hide the problem - but sometimes code you
+couldn't remove at one stage can be removed later after other changes.</p>
+
+<p>Persistence does win in the end.</p>
+
+<h2>Don't <code>print</code><a class="anchor" id="Don%27t-print" href="#Don%27t-print"></a>
+</h2>
+
+<p>If you're like me, you'll be tempted to sprinkle <code>print</code>s in your code to see
+if you can find out what's going on.
+<code>print</code> isn't implemented as a fast function, so traces containing <code>print</code> are
+aborted.
+So if you put a <code>print</code> in the middle of the problem trace,
+you'll stop the trace being compiled and hide your problem.</p>
+
+<p>If you want to get some output use <code>io.write</code> which doesn't abort traces,
+but beware - it does tickle the heuristics.</p>
+
+<h2>Dump it<a class="anchor" id="Dump-it" href="#Dump-it"></a>
+</h2>
+
+<p>Try to get a dump of your code:
+<code>luajit -jdump=+rsx,&lt;dump_file_name&gt; &lt;file.lua&gt;</code>.
+Unfortunately recording a dump can also influence the heuristics and so move or
+hide the problem.</p>
+
+<p>The smaller the dumpfile, the easier it'll be to finally track down the problem,
+use the size of the file as a metric of how well you're doing at reducing your
+case.</p>
+
+<h2>Try all the options<a class="anchor" id="Try-all-the-options" href="#Try-all-the-options"></a>
+</h2>
+
+<p>Different compiler options to LuaJIT can move, hide or expose the problem,
+so it's worth trying a few of them to ferret it out.
+I've found that there's usually a value of <code>-Ohotloop=X</code> that'll set the bug
+off so it's worth trying a few.</p>
+
+<p>Here's a shell script that'll run your code with a whole range of compiler
+options.
+It assumes your code has a non-zero exit code when the bug occurs.</p>
+
+<div class="highlight">
+<pre>lua <span class="nv">$1</span> &gt; /dev/null
+<span class="nb">echo</span> <span class="s2">"lua OK"</span>
+luajit -joff <span class="nv">$1</span> &gt; /dev/null
+<span class="nb">echo</span> <span class="s2">"luajit -joff OK"</span>
+
+<span class="k">for </span>i in <span class="o">{</span>1..50<span class="o">}</span>
+<span class="k">do</span>
+<span class="k">  </span><span class="nb">echo</span> -Ohotloop<span class="o">=</span><span class="nv">$i</span>
+  luajit -Ohotloop<span class="o">=</span><span class="nv">$i</span> -jdump<span class="o">=</span>+rsx,test.dump <span class="nv">$1</span> &gt; /dev/null
+  <span class="k">if</span> <span class="o">[</span> <span class="nv">$?</span> -ne 0 <span class="o">]</span>
+  <span class="k">then</span>
+<span class="k">    </span><span class="nb">echo</span> <span class="s2">"Error on "</span>  luajit -Ohotloop<span class="o">=</span><span class="nv">$i</span> -jdump<span class="o">=</span>+rsx,test.dump <span class="nv">$1</span> <span class="s2">"&gt; /dev/null"</span>
+    mv test.dump error.dump
+    <span class="k">for </span>o in <span class="s2">""</span> <span class="s2">"1"</span> <span class="s2">"2"</span> <span class="s2">"3"</span> <span class="s2">"-fold"</span> <span class="s2">"-cse"</span> <span class="s2">"-dce"</span> <span class="s2">"-narrow"</span> <span class="s2">"-loop"</span> <span class="s2">"-fwd"</span> <span class="s2">"-dse"</span> <span class="s2">"-abc"</span> <span class="s2">"-fuse"</span>
+    <span class="k">do</span>
+<span class="k">      </span><span class="nb">echo</span> -O<span class="nv">$o</span> -Ohotloop<span class="o">=</span><span class="nv">$i</span>
+      luajit -O<span class="nv">$o</span> -Ohotloop<span class="o">=</span><span class="nv">$i</span> -jdump<span class="o">=</span>+rsx,test.dump <span class="nv">$1</span> &gt; /dev/null
+    <span class="k">done</span>
+<span class="k">    </span><span class="nb">break</span>
+<span class="nb">  </span><span class="k">fi</span>
+<span class="k">done </span>
+
+rm test.dump
+</pre>
+</div>
+
+
+<h2>Turn the compiler off<a class="anchor" id="Turn-the-compiler-off" href="#Turn-the-compiler-off"></a>
+</h2>
+
+<p>Even if you have a very large test case and can't reduce it much,
+the problem trace could still be a short piece of code.
+You can reduce the size of the dump and track down the problem by turning
+the jit compiler off for your modules one-by-one.
+Put <code>if jit then jit.off(true, true) end</code> at the top of your modules,
+and see if the problem goes away.
+If it does go away, remove the line.
+If the problem persists, that module doesn't need to be compiled to exhibit
+the problem, and you've just made the dump smaller.</p>
+
+<h2>Find unused code<a class="anchor" id="Find-unused-code" href="#Find-unused-code"></a>
+</h2>
+
+<p>Sorry for the shameless plug, but I use
+<a href="http://github.com/geoffleyland/luatrace">luatrace</a>
+to find unused code that can (possibly) be removed, again reducing the size of
+the test case.
+Run <code>lua -luatrace.profile &lt;file.lua&gt;</code> and look at <code>annotated-source.txt</code> -
+you'll see which lines aren't executed.</p>
+
+<p>Of course, as I said earlier, not all unused code can be removed.</p>
+    </div>
+  </div>
+  </div>
+
+</div>
+<div id="footer">
+  <p id="last-edit">Last edited by <b>Mike Pall</b>, 2012-05-31 16:41:13</p>
+</div>
+</div>
+<div id="cust-footer">
+  <p>Sponsored by <a href="http://www.networkradius.com">Network RADIUS</a></p>
+</div>
+
+
+</body>
+</html>

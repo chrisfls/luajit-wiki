@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-type" content="text/html;charset=utf-8">
+  <meta name="MobileOptimized" content="width">
+  <meta name="HandheldFriendly" content="true">
+  <meta name="viewport" content="width=device-width">
+  <link rel=”alternate” type=”application/rss+xml” title=”wiki.luajit.org edit and commit log” href=”http://wiki.luajit.org/feeds/global.xml” />
+  <link rel="stylesheet" type="text/css" href="/luajit-wiki/css/gollum.css" media="all">
+  <link rel="stylesheet" type="text/css" href="/luajit-wiki/css/editor.css" media="all">
+  <link rel="stylesheet" type="text/css" href="/luajit-wiki/css/dialog.css" media="all">
+  <link rel="stylesheet" type="text/css" href="/luajit-wiki/css/template.css" media="all">
+  <link rel="stylesheet" type="text/css" href="/luajit-wiki/css/print.css" media="print">
+  <link rel="stylesheet" type="text/css" href="/luajit-wiki/custom.css" media="all">
+  
+
+  <!--[if IE 7]>
+  <link rel="stylesheet" type="text/css" href="/luajit-wiki/css/ie7.css" media="all">
+  <![endif]-->
+
+  <script>
+      var baseUrl = '';
+      var uploadDest   = '';
+      var pageFullPath = 'FFI Callback Restrictions: Encountered Cases';
+  </script>
+  <script type="text/javascript" src="/luajit-wiki/javascript/jquery-1.7.2.min.js"></script>
+  <script type="text/javascript" src="/luajit-wiki/javascript/mousetrap.min.js"></script>
+  <script type="text/javascript" src="/luajit-wiki/javascript/gollum.js"></script>
+  <script type="text/javascript" src="/luajit-wiki/javascript/gollum.dialog.js"></script>
+  <script type="text/javascript" src="/luajit-wiki/javascript/gollum.placeholder.js"></script>
+  <script type="text/javascript" src="/luajit-wiki/javascript/editor/gollum.editor.js"></script>
+
+  
+
+  <title>FFI Callback Restrictions: Encountered Cases</title>
+</head>
+<body>
+
+<div id="cust-site">
+  <a href="http://luajit.org"><span>Lua<span id="cust-logo">JIT</span></span></a>
+</div>
+<div id="cust-header">
+  <h1>The LuaJIT Wiki</h1>
+</div>
+<div id="user">
+    <p>
+      not logged in | <strong><a href="/luajit-wiki/__omnigollum__/login">[Login]</a></strong>
+    <p>
+</div>
+
+<div id="wiki-wrapper" class="history">
+<div id="head">
+  <h1>History for <strong>FFI Callback Restrictions: Encountered Cases</strong></h1>
+  <ul class="actions">
+    <li class="minibutton">
+      <div id="searchbar">
+        <form action="/search" method="get" id="search-form">
+        <div id="searchbar-fauxtext">
+          <input type="text" name="q" id="search-query" value="Search&hellip;" autocomplete="off">
+          <a href="#" id="search-submit" title="Search this wiki">
+            <span>Search</span>
+          </a>
+        </div>
+        </form>
+      </div>    </li>
+    <li class="minibutton"><a href="/luajit-wiki/FFI-Callback-Restrictions%3A-Encountered-Cases"
+       class="action-view-page">View Page</a></li>
+      <li class="minibutton"><a href="/luajit-wiki/edit/FFI-Callback-Restrictions%3A-Encountered-Cases"
+         class="action-edit-page">Edit Page</a></li>
+  </ul>
+</div>
+<div id="wiki-history">
+
+  <ul class="actions">
+    <li class="minibutton"><a href="javascript:void(0);"
+       class="action-compare-revision">Compare Revisions</a></li>
+  </ul>
+
+  <form name="compare-versions" id="version-form" method="post"
+   action="/compare/FFI-Callback-Restrictions%3A-Encountered-Cases">
+  <fieldset>
+  <table>
+    <tbody>
+
+      <tr>
+        <td class="checkbox">
+          <input type="checkbox" name="versions[]" value="ad05cd45364e55ff013f775ce4ddc2262def7a1b">
+        </td>
+        <td class="author">
+            <a href="javascript:void(0)">
+            <img src="https://secure.gravatar.com/avatar/422b698b031716505e67c7d184c67d23?s=16"
+                alt="avatar: Bob Holcomb (bholcomb)" class="mini-gravatar"/>
+                <span class="username">Bob Holcomb (bholcomb)</span>
+            </a>
+        </td>
+        <td class="commit-name">
+          <span class="time-elapsed" title="2018-04-29 21:07:07 +0000">April 29, 2018:</span>&nbsp;
+          Updated FFI Callback Restrictions: Encountered Cases (markdown)
+          [<a href="/luajit-wiki/FFI-Callback-Restrictions%3A-Encountered-Cases/ad05cd45364e55ff013f775ce4ddc2262def7a1b" title="View commit">ad05cd4</a>]
+        </td>
+      </tr>
+      <tr>
+        <td class="checkbox">
+          <input type="checkbox" name="versions[]" value="d7cfb43677d500926e660589d577d0e811044c30">
+        </td>
+        <td class="author">
+            <a href="javascript:void(0)">
+            <img src="https://secure.gravatar.com/avatar/422b698b031716505e67c7d184c67d23?s=16"
+                alt="avatar: Bob Holcomb (bholcomb)" class="mini-gravatar"/>
+                <span class="username">Bob Holcomb (bholcomb)</span>
+            </a>
+        </td>
+        <td class="commit-name">
+          <span class="time-elapsed" title="2018-04-29 20:57:43 +0000">April 29, 2018:</span>&nbsp;
+          Updated FFI Callback Restrictions: Encountered Cases (markdown)
+          [<a href="/luajit-wiki/FFI-Callback-Restrictions%3A-Encountered-Cases/d7cfb43677d500926e660589d577d0e811044c30" title="View commit">d7cfb43</a>]
+        </td>
+      </tr>
+      <tr>
+        <td class="checkbox">
+          <input type="checkbox" name="versions[]" value="bfe96b664c47b0f9ab8c90efc29cb28ccc983f5e">
+        </td>
+        <td class="author">
+            <a href="javascript:void(0)">
+            <img src="https://secure.gravatar.com/avatar/6ed9c81f7dad91894ac41cc715e55b22?s=16"
+                alt="avatar: Cosmin Apreutesei (capr)" class="mini-gravatar"/>
+                <span class="username">Cosmin Apreutesei (capr)</span>
+            </a>
+        </td>
+        <td class="commit-name">
+          <span class="time-elapsed" title="2015-12-17 12:08:16 +0000">December 17, 2015:</span>&nbsp;
+          Updated FFI Callback Restrictions: Encountered Cases (markdown)
+          [<a href="/luajit-wiki/FFI-Callback-Restrictions%3A-Encountered-Cases/bfe96b664c47b0f9ab8c90efc29cb28ccc983f5e" title="View commit">bfe96b6</a>]
+        </td>
+      </tr>
+      <tr>
+        <td class="checkbox">
+          <input type="checkbox" name="versions[]" value="187b5df53ca6461c5949a5a28a96d0a18d00a38d">
+        </td>
+        <td class="author">
+            <a href="javascript:void(0)">
+            <img src="https://secure.gravatar.com/avatar/6ed9c81f7dad91894ac41cc715e55b22?s=16"
+                alt="avatar: Cosmin Apreutesei (capr)" class="mini-gravatar"/>
+                <span class="username">Cosmin Apreutesei (capr)</span>
+            </a>
+        </td>
+        <td class="commit-name">
+          <span class="time-elapsed" title="2015-12-17 12:07:41 +0000">December 17, 2015:</span>&nbsp;
+          Updated FFI Callback Restrictions: Encountered Cases (markdown)
+          [<a href="/luajit-wiki/FFI-Callback-Restrictions%3A-Encountered-Cases/187b5df53ca6461c5949a5a28a96d0a18d00a38d" title="View commit">187b5df</a>]
+        </td>
+      </tr>
+      <tr>
+        <td class="checkbox">
+          <input type="checkbox" name="versions[]" value="b3bd4b406c6b4ceaba1b97df67a2aa25c1a339d3">
+        </td>
+        <td class="author">
+            <a href="javascript:void(0)">
+            <img src="https://secure.gravatar.com/avatar/f5b96b30080c75874b13702a8a7cc56b?s=16"
+                alt="avatar: Konstantin A. Olkhovskiy (Lupus)" class="mini-gravatar"/>
+                <span class="username">Konstantin A. Olkhovskiy (Lupus)</span>
+            </a>
+        </td>
+        <td class="commit-name">
+          <span class="time-elapsed" title="2013-06-16 08:00:49 +0000">June 16, 2013:</span>&nbsp;
+          Updated FFI Callback Restrictions: Encountered Cases (markdown)
+          [<a href="/luajit-wiki/FFI-Callback-Restrictions%3A-Encountered-Cases/b3bd4b406c6b4ceaba1b97df67a2aa25c1a339d3" title="View commit">b3bd4b4</a>]
+        </td>
+      </tr>
+      <tr>
+        <td class="checkbox">
+          <input type="checkbox" name="versions[]" value="7480145f8f05e5d8f58316bc37186d798f1f62c0">
+        </td>
+        <td class="author">
+            <a href="javascript:void(0)">
+            <img src="https://secure.gravatar.com/avatar/22dd35580f3d9191cfc46e7fe8690ae5?s=16"
+                alt="avatar: Philipp Saveliev (fillest)" class="mini-gravatar"/>
+                <span class="username">Philipp Saveliev (fillest)</span>
+            </a>
+        </td>
+        <td class="commit-name">
+          <span class="time-elapsed" title="2013-01-24 12:01:12 +0000">January 24, 2013:</span>&nbsp;
+          Updated FFI Callback Restrictions: Encountered Cases (markdown)
+          [<a href="/luajit-wiki/FFI-Callback-Restrictions%3A-Encountered-Cases/7480145f8f05e5d8f58316bc37186d798f1f62c0" title="View commit">7480145</a>]
+        </td>
+      </tr>
+      <tr>
+        <td class="checkbox">
+          <input type="checkbox" name="versions[]" value="10f7e2ef51af6d76b43ade1999243b127091daff">
+        </td>
+        <td class="author">
+            <a href="javascript:void(0)">
+            <img src="https://secure.gravatar.com/avatar/c0964b2b66453764470cdb3ce8a7361a?s=16"
+                alt="avatar: Duncan Cross (xdunc)" class="mini-gravatar"/>
+                <span class="username">Duncan Cross (xdunc)</span>
+            </a>
+        </td>
+        <td class="commit-name">
+          <span class="time-elapsed" title="2013-01-24 11:22:36 +0000">January 24, 2013:</span>&nbsp;
+          Updated FFI Callback Restrictions: Encountered Cases (markdown)
+          [<a href="/luajit-wiki/FFI-Callback-Restrictions%3A-Encountered-Cases/10f7e2ef51af6d76b43ade1999243b127091daff" title="View commit">10f7e2e</a>]
+        </td>
+      </tr>
+      <tr>
+        <td class="checkbox">
+          <input type="checkbox" name="versions[]" value="a9cc7e090b401b679e361ad3860e0b9dbc1d6116">
+        </td>
+        <td class="author">
+            <a href="javascript:void(0)">
+            <img src="https://secure.gravatar.com/avatar/c0964b2b66453764470cdb3ce8a7361a?s=16"
+                alt="avatar: Duncan Cross" class="mini-gravatar"/>
+                <span class="username">Duncan Cross</span>
+            </a>
+        </td>
+        <td class="commit-name">
+          <span class="time-elapsed" title="2012-09-19 14:43:01 +0000">September 19, 2012:</span>&nbsp;
+          
+          [<a href="/luajit-wiki/FFI-Callback-Restrictions%3A-Encountered-Cases/a9cc7e090b401b679e361ad3860e0b9dbc1d6116" title="View commit">a9cc7e0</a>]
+        </td>
+      </tr>
+      <tr>
+        <td class="checkbox">
+          <input type="checkbox" name="versions[]" value="96777ec527495ba328a74f4d70254b37b2c313b3">
+        </td>
+        <td class="author">
+            <a href="javascript:void(0)">
+            <img src="https://secure.gravatar.com/avatar/c0964b2b66453764470cdb3ce8a7361a?s=16"
+                alt="avatar: Duncan Cross" class="mini-gravatar"/>
+                <span class="username">Duncan Cross</span>
+            </a>
+        </td>
+        <td class="commit-name">
+          <span class="time-elapsed" title="2012-09-19 12:47:49 +0000">September 19, 2012:</span>&nbsp;
+          Created FFI Callback Restrictions: Encountered Cases (markdown)
+          [<a href="/luajit-wiki/FFI-Callback-Restrictions%3A-Encountered-Cases/96777ec527495ba328a74f4d70254b37b2c313b3" title="View commit">96777ec</a>]
+        </td>
+      </tr>
+
+    </tbody>
+  </table>
+  </fieldset>
+  </form>
+</div>
+<div id="footer">
+  <ul class="actions">
+    <li class="minibutton"><a href="javascript:void(0);"
+       class="action-compare-revision">Compare Revisions</a></li>
+
+    <!-- only show this button if we have more than 20 revisions -->
+    <li class="minibutton"><a href="#"
+       class="action-back-to-top">Back to Top</a></li>
+  </ul>
+</div>
+</div>
+
+
+</body>
+</html>
